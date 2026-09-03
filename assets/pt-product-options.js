@@ -55,9 +55,11 @@ if (!customElements.get('pt-product-options')) {
           if (data?.sectionId !== this.sectionId) return;
           // data.variant is set only when a real variant was resolved.
           this.toggleDynamicCheckout(Boolean(data.variant));
+          this.snapshot = this.selectionValues();
           this.syncGallery();
         });
 
+        this.snapshot = this.selectionValues();
         this.syncGallery();
       }
 
@@ -108,6 +110,11 @@ if (!customElements.get('pt-product-options')) {
         return this.optionGroups[index]?.querySelector('[data-option-name]')?.dataset.optionName || '';
       }
 
+      // Just the chosen values, positionally - what we diff a click against.
+      selectionValues() {
+        return this.readSelection().map((item) => (item ? item.value : null));
+      }
+
       isComplete(selection) {
         return selection.length > 0 && selection.every(Boolean);
       }
@@ -129,6 +136,8 @@ if (!customElements.get('pt-product-options')) {
 
         const selection = this.readSelection();
         if (!selection.length) return false;
+
+        this.snapshot = selection.map((item) => (item ? item.value : null));
 
         // Colour filtering is independent of the preselect behaviour, so do it either way.
         this.syncGallery(selection);
@@ -222,10 +231,17 @@ if (!customElements.get('pt-product-options')) {
         if (!this.noPreselect) return;
 
         const input = event.target.closest?.('input[type="radio"]');
-        if (!input || !input.checked || !this.variantSelects?.contains(input)) return;
+        if (!input || !this.variantSelects?.contains(input)) return;
 
-        // A checked radio cannot be unchecked by the browser and fires no `change`
-        // event, which is why this is a `click` handler rather than a `change` one.
+        // IMPORTANT: the browser runs a radio's "pre-click activation steps" before
+        // dispatching this event, so input.checked is already true even on a brand
+        // new selection. Reading it here would make every first click look like a
+        // deselect. Compare against the snapshot taken before this click instead.
+        const index = this.optionGroups.indexOf(input.closest(PT_OPTION_GROUP_SELECTOR));
+        if (index === -1 || this.snapshot?.[index] !== input.value) return;
+
+        // Same value clicked twice: deselect. A checked radio cannot be unchecked by
+        // the browser and fires no `change`, which is why this is a click handler.
         event.preventDefault();
         input.checked = false;
 
@@ -234,6 +250,7 @@ if (!customElements.get('pt-product-options')) {
         if (label) label.innerHTML = '';
 
         const selection = this.readSelection();
+        this.snapshot = selection.map((item) => (item ? item.value : null));
         this.applyIncompleteState(selection);
         this.syncGallery(selection);
       }
