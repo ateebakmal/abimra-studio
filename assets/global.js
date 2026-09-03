@@ -1086,7 +1086,9 @@ class VariantSelects extends HTMLElement {
     const options = [];
     this.querySelectorAll('fieldset, .product-form__input--dropdown').forEach((group) => {
       const checked = group.querySelector('input:checked') || group.querySelector('select option[selected]');
-      if (checked) {
+      // [custom] The "no preselect" placeholder <option> has no option-value id, so it
+      // must not be reported as a chosen option value.
+      if (checked && checked.dataset.optionValueId) {
         options.push({ name: checked.dataset.optionName || '', value: checked.value });
       }
     });
@@ -1182,9 +1184,9 @@ class VariantSelects extends HTMLElement {
   }
 
   get selectedOptionValues() {
-    return Array.from(this.querySelectorAll('select option[selected], fieldset input:checked')).map(
-      ({ dataset }) => dataset.optionValueId
-    );
+    return Array.from(this.querySelectorAll('select option[selected], fieldset input:checked'))
+      .map(({ dataset }) => dataset.optionValueId)
+      .filter(Boolean); // [custom] drops the "no preselect" placeholder option
   }
 }
 

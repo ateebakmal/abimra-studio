@@ -63,6 +63,12 @@ if (!customElements.get('product-info')) {
       handleOptionValueChange({ data: { event, target, selectedOptionValues } }) {
         if (!this.contains(event.target)) return;
 
+        // [custom] With "Don't preselect a variant" on, a partial selection (e.g. a colour
+        // but no size yet) identifies no variant, so there is nothing for the server to
+        // render. <pt-product-options> paints the "nothing selected" state locally and
+        // returns true; every complete selection falls through to Dawn's normal flow below.
+        if (this.querySelector('pt-product-options')?.interceptOptionValueChange?.()) return;
+
         this.resetProductFormState();
 
         const productUrl = target.dataset.productUrl || this.pendingRequestUrl || this.dataset.url;

@@ -107,6 +107,8 @@
   "products": {
     "product": {
       "add_to_cart": "Add to cart",
+      "pt_select_option": "Select a {{ option }}",
+      "pt_choose_option": "Choose a {{ option }}",
       "choose_options": "Choose options",
       "choose_product_options": "Choose options for {{ product_name }}",
       "description": "Description",
@@ -274,7 +276,6 @@
       "announcement": "Announcement",
       "announcement_bar": "Announcement bar"
     },
-
     "header": {
       "announcement": "Announcement",
       "menu": "Menu",

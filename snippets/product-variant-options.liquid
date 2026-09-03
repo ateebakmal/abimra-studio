@@ -18,6 +18,16 @@
 {% endcomment %}
 {%- liquid
   assign product_form_id = 'product-form-' | append: section.id
+
+  # [custom] "Don't preselect a variant".
+  # product.selected_variant is only set when the request explicitly asked for one
+  # (a ?variant= in the URL, or the option_values Dawn sends on its section re-fetch).
+  # product.selected_or_first_available_variant, by contrast, always falls back to
+  # variant #1 - which is exactly the preselection we want to suppress on first load.
+  assign pt_no_preselect = false
+  if section.settings.pt_no_preselect and product.selected_variant == nil
+    assign pt_no_preselect = true
+  endif
 -%}
 
 {%- for value in option.values -%}
@@ -36,6 +46,12 @@
     assign option_disabled = true
     if value.available
       assign option_disabled = false
+    endif
+
+    # [custom] Nothing is marked as chosen while we are in "don't preselect" mode.
+    assign pt_checked = value.selected
+    if pt_no_preselect
+      assign pt_checked = false
     endif
   -%}
 
@@ -74,7 +90,7 @@
       value: escaped_value,
       swatch: value.swatch,
       product_form_id: product_form_id,
-      checked: value.selected,
+      checked: pt_checked,
       visually_disabled: option_disabled,
       shape: block.settings.swatch_shape,
       help_text: help_text,
@@ -87,7 +103,7 @@
       name="{{ input_name | escape }}"
       value="{{ escaped_value }}"
       form="{{ product_form_id }}"
-      {% if value.selected %}
+      {% if pt_checked %}
         checked
       {% endif %}
       {% if option_disabled %}
@@ -103,7 +119,7 @@
     <option
       id="{{ input_id }}"
       value="{{ escaped_value }}"
-      {% if value.selected %}
+      {% if pt_checked %}
         selected="selected"
       {% endif %}
       {% if swatch_value and picker_type == 'swatch_dropdown' %}

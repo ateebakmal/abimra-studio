@@ -8,6 +8,14 @@
   Usage:
   {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
 {% endcomment %}
+{%- liquid
+  # [custom] "Don't preselect a variant" - see snippets/product-variant-options.liquid
+  # for why product.selected_variant is the right signal to key this off.
+  assign pt_no_preselect = false
+  if section.settings.pt_no_preselect and product.selected_variant == nil
+    assign pt_no_preselect = true
+  endif
+-%}
 {%- unless product.has_only_default_variant -%}
   <variant-selects
     id="variant-selects-{{ section.id }}"
@@ -19,6 +27,8 @@
     {% # theme-check-disable %}
     data-selected-price-amount="{{ product.selected_or_first_available_variant.price | default: 0 | money_amount | escape }}"
     {% # theme-check-enable %}
+    {%- comment -%} [custom] Lets JS and apps detect the "nothing chosen yet" state. {%- endcomment -%}
+    data-pt-no-preselect="{{ pt_no_preselect }}"
     {{ block.shopify_attributes }}
   >
     {%- for option in product.options_with_values -%}
@@ -39,7 +49,7 @@
           <legend class="form__label">
             {{ option.name }}:
             <span data-selected-value>
-              {{- option.selected_value -}}
+              {%- unless pt_no_preselect -%}{{ option.selected_value }}{%- endunless -%}
             </span>
           </legend>
           {% render 'product-variant-options',
@@ -79,6 +89,15 @@
               name="options[{{ option.name | escape }}]"
               form="{{ product_form_id }}"
             >
+              {%- if pt_no_preselect -%}
+                {%- comment -%}
+                  [custom] Placeholder for the unselected state. No data-option-value-id,
+                  so VariantSelects.selectedOptionValues treats it as "nothing chosen".
+                {%- endcomment -%}
+                <option value="" selected="selected" data-pt-placeholder>
+                  {{- 'products.product.pt_choose_option' | t: option: option.name -}}
+                </option>
+              {%- endif -%}
               {% render 'product-variant-options',
                 product: product,
                 option: option,
@@ -95,7 +114,8 @@
     {%- endfor -%}
 
     <script type="application/json" data-selected-variant>
-      {{ product.selected_or_first_available_variant | json }}
+      {%- comment -%} [custom] null while nothing is chosen, so nothing downstream guesses. {%- endcomment -%}
+      {% if pt_no_preselect %}null{% else %}{{ product.selected_or_first_available_variant | json }}{% endif %}
     </script>
   </variant-selects>
 {%- endunless -%}

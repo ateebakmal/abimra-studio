@@ -25,7 +25,29 @@
     {{ 'component-volume-pricing.css' | asset_url | stylesheet_tag }}
   {%- endif -%}
 
+  {%- liquid
+    # [custom] "Don't preselect a variant" - see snippets/product-variant-options.liquid
+    # for why product.selected_variant (not selected_or_first_available_variant) is
+    # the right signal. True only when the shopper has not asked for a variant yet.
+    assign pt_no_preselect = false
+    if section.settings.pt_no_preselect and product.selected_variant == nil and product.has_only_default_variant == false
+      assign pt_no_preselect = true
+    endif
+
+    # snippets/price.liquid shows the variant price when use_variant is true, and the
+    # product's price range ("From X") when it is false.
+    assign pt_use_variant = true
+    if pt_no_preselect
+      assign pt_use_variant = false
+    endif
+  -%}
+
   {%- style -%}
+    /* [custom] display:none (not visibility) so Dawn's slider stops measuring the slide. */
+    .pt-media-hidden {
+      display: none !important;
+    }
+
     .section-{{ section.id }}-padding {
       padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
       padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
@@ -41,6 +63,8 @@
 
   <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+  {%- comment -%} [custom] No-preselect, deselect and colour-filtered gallery behaviour. {%- endcomment -%}
+  <script src="{{ 'pt-product-options.js' | asset_url }}" defer="defer"></script>
   {%- if product.quantity_price_breaks_configured? -%}
     <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
@@ -73,6 +97,20 @@
   {%- endif -%}
 
   {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
+
+  {%- comment -%}
+    [custom] Drives the no-preselect / deselect / colour-filter behaviour.
+    data-no-preselect carries the *setting* rather than the current render state, so
+    deselecting still works on a page opened with ?variant=.
+  {%- endcomment -%}
+  <pt-product-options
+    data-section-id="{{ section.id }}"
+    data-no-preselect="{{ section.settings.pt_no_preselect }}"
+    data-filter-gallery="{{ section.settings.pt_filter_gallery_by_color }}"
+    data-color-option="{{ section.settings.pt_color_option_name | default: 'Color' | escape }}"
+    data-select-label="{{ 'products.product.pt_select_option' | t: option: '[option]' | escape }}"
+  ></pt-product-options>
+
   <product-component view-event-payload="{{ product | standard_event_data: 'view', context: 'page' | escape }}">
     <div class="page-width">
       <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
@@ -108,13 +146,29 @@
                   </div>
                 {%- when 'price' -%}
                   <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
+                    {%- comment -%}
+                      [custom] use_variant: false makes snippets/price.liquid fall back to
+                      product.price_min/price_max, i.e. the range or "From X".
+                    {%- endcomment -%}
                     {%- render 'price',
                       product: product,
-                      use_variant: true,
+                      use_variant: pt_use_variant,
                       show_badges: true,
                       price_class: 'price--large'
                     -%}
                   </div>
+                  {%- comment -%}
+                    [custom] The same range markup, kept aside so pt-product-options.js can
+                    restore it instantly when the shopper clears their selection.
+                  {%- endcomment -%}
+                  <template id="PtPriceRange-{{ section.id }}">
+                    {%- render 'price',
+                      product: product,
+                      use_variant: false,
+                      show_badges: true,
+                      price_class: 'price--large'
+                    -%}
+                  </template>
                   {%- if product.quantity_price_breaks_configured? -%}
                     <div class="volume-pricing-note" id="Volume-Note-{{ section.id }}">
                       <span>{{ 'products.product.volume_pricing.note' | t }}</span>
@@ -143,7 +197,7 @@
                   </div>
                 {%- when 'inventory' -%}
                   <p
-                    class="product__inventory{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.inventory_management != 'shopify' %} visibility-hidden{% endif %}"
+                    class="product__inventory{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.inventory_management != 'shopify' %} visibility-hidden{% endif %}{% if pt_no_preselect %} hidden{% endif %}"
                     {{ block.shopify_attributes }}
                     id="Inventory-{{ section.id }}"
                     role="status"
@@ -200,7 +254,7 @@
                   {%- endif -%}
                 {%- when 'sku' -%}
                   <p
-                    class="product__sku{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.sku.size == 0 %} visibility-hidden{% endif %}"
+                    class="product__sku{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.sku.size == 0 %} visibility-hidden{% endif %}{% if pt_no_preselect %} hidden{% endif %}"
                     id="Sku-{{ section.id }}"
                     role="status"
                     {{ block.shopify_attributes }}
@@ -2147,6 +2201,31 @@
     }
   ],
   "settings": [
+    {
+      "type": "header",
+      "content": "Personalised product behaviour"
+    },
+    {
+      "type": "checkbox",
+      "id": "pt_no_preselect",
+      "default": true,
+      "label": "Don't preselect a variant",
+      "info": "Load the page with nothing selected, showing all media and the price range. Add to cart stays disabled until every option is chosen. Links with ?variant= still select that variant."
+    },
+    {
+      "type": "checkbox",
+      "id": "pt_filter_gallery_by_color",
+      "default": true,
+      "label": "Filter gallery by colour alt text",
+      "info": "Show only media whose alt text matches the selected colour. Falls back to all media when that colour has no images of its own."
+    },
+    {
+      "type": "text",
+      "id": "pt_color_option_name",
+      "default": "Color",
+      "label": "Colour option name",
+      "info": "The product option used for gallery filtering and the 'Select a colour' prompt. Change this if you rename the option."
+    },
     {
       "type": "checkbox",
       "id": "enable_sticky_info",

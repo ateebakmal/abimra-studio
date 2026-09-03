@@ -22,6 +22,28 @@
       if block.settings.show_dynamic_checkout and gift_card_recipient_feature_active == false
         assign show_dynamic_checkout = true
       endif
+
+      # [custom] "Don't preselect a variant" - see snippets/product-variant-options.liquid.
+      assign pt_no_preselect = false
+      if section.settings.pt_no_preselect and product.selected_variant == nil and product.has_only_default_variant == false
+        assign pt_no_preselect = true
+      endif
+
+      # Name the option we are waiting on, so the button reads "Select a color".
+      # Falls back to the first option if the configured colour option isn't on this product.
+      assign pt_color_name = section.settings.pt_color_option_name | default: 'Color' | downcase | strip
+      assign pt_prompt_option = ''
+      for pt_option in product.options_with_values
+        assign pt_option_name = pt_option.name | downcase | strip
+        if pt_option_name == pt_color_name
+          assign pt_prompt_option = pt_option.name
+          break
+        endif
+      endfor
+      if pt_prompt_option == blank
+        assign pt_prompt_option = product.options_with_values.first.name
+      endif
+      assign pt_prompt_option = pt_prompt_option | downcase
     -%}
 
     <product-form
@@ -46,8 +68,10 @@
         <input
           type="hidden"
           name="id"
-          value="{{ product.selected_or_first_available_variant.id }}"
-          {% if product.selected_or_first_available_variant.available == false
+          {%- comment -%} [custom] Blank + disabled while no variant is chosen. {%- endcomment -%}
+          value="{% unless pt_no_preselect %}{{ product.selected_or_first_available_variant.id }}{% endunless %}"
+          {% if pt_no_preselect
+            or product.selected_or_first_available_variant.available == false
             or quantity_rule_soldout
             or product.selected_or_first_available_variant == null
           %}
@@ -75,7 +99,8 @@
             type="submit"
             name="add"
             class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
-            {% if product.selected_or_first_available_variant.available == false
+            {% if pt_no_preselect
+              or product.selected_or_first_available_variant.available == false
               or quantity_rule_soldout
               or product.selected_or_first_available_variant == null
             %}
@@ -83,7 +108,13 @@
             {% endif %}
           >
             <span>
-              {%- if product.selected_or_first_available_variant == null -%}
+              {%- comment -%}
+                [custom] pt-product-options.js keeps this text in sync client-side
+                while the shopper works through the options.
+              {%- endcomment -%}
+              {%- if pt_no_preselect -%}
+                {{ 'products.product.pt_select_option' | t: option: pt_prompt_option }}
+              {%- elsif product.selected_or_first_available_variant == null -%}
                 {{ 'products.product.unavailable' | t }}
               {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
                 {{ 'products.product.sold_out' | t }}
@@ -123,11 +154,12 @@
 
     <pickup-availability
       class="product__pickup-availabilities quick-add-hidden"
-      {% if product.selected_or_first_available_variant.available and pick_up_availabilities.size > 0 %}
+      {%- comment -%} [custom] Stays empty until a variant is actually chosen. {%- endcomment -%}
+      {% if pt_no_preselect == false and product.selected_or_first_available_variant.available and pick_up_availabilities.size > 0 %}
         available
       {% endif %}
       data-root-url="{{ routes.root_url }}"
-      data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+      data-variant-id="{% unless pt_no_preselect %}{{ product.selected_or_first_available_variant.id }}{% endunless %}"
       data-has-only-default-variant="{{ product.has_only_default_variant }}"
       data-product-page-color-scheme="gradient color-{{ section.settings.color_scheme }}"
     >
