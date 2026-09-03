@@ -25,6 +25,12 @@
     assign pt_featured = nil
   endif
 
+  # [custom] "Carousel" gallery layout: one image at a time with arrows and dots.
+  assign pt_carousel = false
+  if section.settings.gallery_layout == 'carousel'
+    assign pt_carousel = true
+  endif
+
   if section.settings.hide_variants and variant_images.size == product.media.size
     assign single_media_visible = true
   endif
@@ -58,9 +64,8 @@
 <media-gallery
   id="MediaGallery-{{ section.id }}"
   role="region"
-  {% if section.settings.enable_sticky_info %}
-    class="product__column-sticky"
-  {% endif %}
+  {%- comment -%} [custom] pt-carousel switches on the carousel styling. {%- endcomment -%}
+  class="{% if section.settings.enable_sticky_info %}product__column-sticky{% endif %}{% if pt_carousel %} pt-carousel{% endif %}"
   aria-label="{{ 'products.product.media.gallery_viewer' | t }}"
   data-desktop-layout="{{ section.settings.gallery_layout }}"
 >
@@ -71,7 +76,7 @@
     </a>
     <ul
       id="Slider-Gallery-{{ section.id }}"
-      class="product__media-list contains-media grid grid--peek list-unstyled slider slider--mobile"
+      class="product__media-list contains-media grid grid--peek list-unstyled slider slider--mobile{% if pt_carousel %} slider--everywhere{% endif %}"
       role="list"
     >
       {%- if pt_featured != null -%}
@@ -142,34 +147,70 @@
         {%- endunless -%}
       {%- endfor -%}
     </ul>
-    <div class="slider-buttons quick-add-hidden{% if hide_mobile_slider %} small-hide{% endif %}">
-      <button
-        type="button"
-        class="slider-button slider-button--prev"
-        name="previous"
-        aria-label="{{ 'general.slider.previous_slide' | t }}"
-      >
-        <span class="svg-wrapper">
-          {{- 'icon-caret.svg' | inline_asset_content -}}
-        </span>
-      </button>
-      <div class="slider-counter caption">
-        <span class="slider-counter--current">1</span>
-        <span aria-hidden="true"> / </span>
-        <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
-        <span class="slider-counter--total">{{ media_count }}</span>
+    {%- if pt_carousel -%}
+      {%- comment -%}
+        [custom] Carousel controls. The arrows keep Dawn's name="previous"/"next"
+        so SliderComponent binds them exactly as it does in every other layout;
+        only their position changes. The dots are built by pt-gallery-carousel.js.
+      {%- endcomment -%}
+      <div class="pt-carousel__arrows quick-add-hidden">
+        <button
+          type="button"
+          class="slider-button slider-button--prev"
+          name="previous"
+          aria-label="{{ 'general.slider.previous_slide' | t }}"
+          aria-controls="Slider-Gallery-{{ section.id }}"
+        >
+          <span class="svg-wrapper">
+            {{- 'icon-caret.svg' | inline_asset_content -}}
+          </span>
+        </button>
+        <button
+          type="button"
+          class="slider-button slider-button--next"
+          name="next"
+          aria-label="{{ 'general.slider.next_slide' | t }}"
+          aria-controls="Slider-Gallery-{{ section.id }}"
+        >
+          <span class="svg-wrapper">
+            {{- 'icon-caret.svg' | inline_asset_content -}}
+          </span>
+        </button>
       </div>
-      <button
-        type="button"
-        class="slider-button slider-button--next"
-        name="next"
-        aria-label="{{ 'general.slider.next_slide' | t }}"
-      >
-        <span class="svg-wrapper">
-          {{- 'icon-caret.svg' | inline_asset_content -}}
-        </span>
-      </button>
-    </div>
+      <pt-gallery-dots
+        class="pt-carousel__dots slider-counter slider-counter--dots quick-add-hidden"
+        data-dot-label="{{ 'products.product.media.load_image' | t: index: '[index]' | escape }}"
+      ></pt-gallery-dots>
+    {%- else -%}
+      <div class="slider-buttons quick-add-hidden{% if hide_mobile_slider %} small-hide{% endif %}">
+        <button
+          type="button"
+          class="slider-button slider-button--prev"
+          name="previous"
+          aria-label="{{ 'general.slider.previous_slide' | t }}"
+        >
+          <span class="svg-wrapper">
+            {{- 'icon-caret.svg' | inline_asset_content -}}
+          </span>
+        </button>
+        <div class="slider-counter caption">
+          <span class="slider-counter--current">1</span>
+          <span aria-hidden="true"> / </span>
+          <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
+          <span class="slider-counter--total">{{ media_count }}</span>
+        </div>
+        <button
+          type="button"
+          class="slider-button slider-button--next"
+          name="next"
+          aria-label="{{ 'general.slider.next_slide' | t }}"
+        >
+          <span class="svg-wrapper">
+            {{- 'icon-caret.svg' | inline_asset_content -}}
+          </span>
+        </button>
+      </div>
+    {%- endif -%}
   </slider-component>
   {%- if first_3d_model -%}
     <button
@@ -193,6 +234,8 @@
       assign is_not_limited_to_single_item = true
     endif
   -%}
+  {%- comment -%} [custom] The carousel uses dots instead of a thumbnail strip. {%- endcomment -%}
+  {%- unless pt_carousel -%}
   {%- if is_not_limited_to_single_item
     and media_count > 1
     and section.settings.gallery_layout contains 'thumbnail'
@@ -350,4 +393,5 @@
       </button>
     </slider-component>
   {%- endif -%}
+  {%- endunless -%}
 </media-gallery>

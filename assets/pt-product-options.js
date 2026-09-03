@@ -255,6 +255,9 @@ if (!customElements.get('pt-product-options')) {
 
         this.resetSliders(gallery);
         this.activateFirstVisible(gallery);
+
+        // Tell the carousel dots to rebuild for whatever is still visible.
+        gallery.dispatchEvent(new CustomEvent('pt:gallery-filtered', { bubbles: true }));
       }
 
       // Dawn's slider measures its slides, so it must re-measure after we hide some.

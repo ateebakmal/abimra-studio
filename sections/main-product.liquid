@@ -65,6 +65,11 @@
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
   {%- comment -%} [custom] No-preselect, deselect and colour-filtered gallery behaviour. {%- endcomment -%}
   <script src="{{ 'pt-product-options.js' | asset_url }}" defer="defer"></script>
+  {%- if section.settings.gallery_layout == 'carousel' -%}
+    {%- comment -%} [custom] One-image-at-a-time gallery with arrows and dots. {%- endcomment -%}
+    {{ 'pt-gallery-carousel.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'pt-gallery-carousel.js' | asset_url }}" defer="defer"></script>
+  {%- endif -%}
   {%- if product.quantity_price_breaks_configured? -%}
     <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
@@ -2299,6 +2304,10 @@
         {
           "value": "thumbnail",
           "label": "t:sections.main-product.settings.gallery_layout.options__3.label"
+        },
+        {
+          "value": "carousel",
+          "label": "Carousel (one image, arrows and dots)"
         },
         {
           "value": "thumbnail_slider",

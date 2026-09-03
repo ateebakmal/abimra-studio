@@ -1,0 +1,164 @@
+/*
+  Product gallery carousel: one image at a time at every breakpoint, prev/next
+  arrows floating over the image, dot indicators underneath.
+
+  Enabled by choosing the "Carousel" gallery layout on the main product section.
+  Every rule is scoped to .pt-carousel (set on <media-gallery>) so Dawn's other
+  gallery layouts - stacked, columns, thumbnail, thumbnail slider - are untouched.
+
+  It builds on Dawn's own slider: the <ul> gets Dawn's .slider--everywhere class,
+  which supplies the scroll-snap track, and SliderComponent keeps handling the
+  arrows. This file only sizes the slides and repositions the controls.
+*/
+
+.pt-carousel {
+  /* The arrow overlay stops short of the dots row by exactly this much. */
+  --pt-carousel-dots-height: 4.4rem;
+  display: block;
+}
+
+.pt-carousel slider-component {
+  position: relative;
+  display: block;
+}
+
+/* ---------------------------------------------------------------- *
+ * One slide fills the track at every breakpoint
+ * ---------------------------------------------------------------- */
+
+/* Specificity is deliberately high: it has to beat Dawn's own
+   .slider.slider--mobile .slider__slide and .product--stacked rules. */
+.pt-carousel .product__media-list.slider .product__media-item.slider__slide {
+  width: 100%;
+  max-width: 100%;
+  flex: 0 0 100%;
+  margin-bottom: 0;
+  scroll-snap-align: center;
+}
+
+.pt-carousel .product__media-list.slider {
+  margin-bottom: 0;
+  gap: 0;
+}
+
+/* Dawn bleeds the gallery past the page gutter on mobile to show a peek of the
+   next image. A one-up carousel wants neither the bleed nor the peek. */
+@media screen and (max-width: 749px) {
+  .pt-carousel .product__media-list.slider {
+    margin-left: 0;
+    margin-bottom: 0;
+    width: 100%;
+  }
+
+  .pt-carousel slider-component:not(.thumbnail-slider--no-slide) {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* ---------------------------------------------------------------- *
+ * Arrows over the image
+ * ---------------------------------------------------------------- */
+
+.pt-carousel__arrows {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  /* Cover the image area only, not the dots row, so top:50% is the image centre. */
+  bottom: var(--pt-carousel-dots-height);
+  pointer-events: none;
+}
+
+.pt-carousel__arrows .slider-button {
+  pointer-events: auto;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 4.4rem;
+  height: 4.4rem;
+  border-radius: 50%;
+  color: rgb(var(--color-foreground));
+  background: rgba(var(--color-background), 0.85);
+  box-shadow: 0 0.2rem 0.8rem rgba(var(--color-shadow), 0.25);
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.pt-carousel__arrows .slider-button--prev {
+  left: 1.2rem;
+}
+
+.pt-carousel__arrows .slider-button--next {
+  right: 1.2rem;
+}
+
+.pt-carousel__arrows .slider-button .icon {
+  height: 0.9rem;
+}
+
+.pt-carousel__arrows .slider-button:not([disabled]):hover {
+  background: rgb(var(--color-background));
+}
+
+/* Dawn disables the arrows at each end of the track; fade them rather than
+   leaving a dead button sitting over the artwork. */
+.pt-carousel__arrows .slider-button[disabled] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media screen and (max-width: 749px) {
+  .pt-carousel__arrows .slider-button {
+    width: 3.6rem;
+    height: 3.6rem;
+  }
+
+  .pt-carousel__arrows .slider-button--prev {
+    left: 0.6rem;
+  }
+
+  .pt-carousel__arrows .slider-button--next {
+    right: 0.6rem;
+  }
+}
+
+/* ---------------------------------------------------------------- *
+ * Dots
+ * ---------------------------------------------------------------- */
+
+.pt-carousel__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: var(--pt-carousel-dots-height);
+  margin: 0;
+}
+
+.pt-carousel__dots .slider-counter__link {
+  padding: 0.7rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* A single image needs no controls at all. */
+.pt-carousel--single .pt-carousel__arrows,
+.pt-carousel--single .pt-carousel__dots {
+  display: none;
+}
+
+/* Keyboard focus has to stay visible against the artwork. */
+.pt-carousel__arrows .slider-button:focus-visible,
+.pt-carousel__dots .slider-counter__link:focus-visible {
+  outline: 0.2rem solid rgb(var(--color-foreground));
+  outline-offset: 0.3rem;
+  border-radius: 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-carousel .product__media-list.slider {
+    scroll-behavior: auto;
+  }
+}
