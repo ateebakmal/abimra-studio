@@ -146,6 +146,15 @@ if (!customElements.get('pt-product-options')) {
 
         // Only some options are chosen, so there is no variant to render: skip the
         // round-trip and paint the "nothing selected" state locally instead.
+        //
+        // Dawn has already dispatched Shopify's ProductSelectEvent with a promise
+        // that the theme is expected to settle. Because we are about to skip the
+        // code that normally settles it, resolve it here with variant: null - the
+        // same thing Dawn reports when no variant matches. Without this, any app
+        // awaiting that promise (SB Product Designer included, if it uses the
+        // StandardEvents API) would hang on every partial selection.
+        this.variantSelects?.resolvePendingSelectPromise?.(null);
+
         this.applyIncompleteState(selection);
         return true;
       }
