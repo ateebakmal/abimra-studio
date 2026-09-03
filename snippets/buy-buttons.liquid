@@ -68,7 +68,7 @@
         <input
           type="hidden"
           name="id"
-          {%- comment -%} [custom] Blank + disabled while no variant is chosen. {%- endcomment -%}
+          {% comment %} [custom] Blank + disabled while no variant is chosen. {% endcomment %}
           value="{% unless pt_no_preselect %}{{ product.selected_or_first_available_variant.id }}{% endunless %}"
           {% if pt_no_preselect
             or product.selected_or_first_available_variant.available == false
@@ -108,10 +108,10 @@
             {% endif %}
           >
             <span>
-              {%- comment -%}
+              {% comment %}
                 [custom] pt-product-options.js keeps this text in sync client-side
                 while the shopper works through the options.
-              {%- endcomment -%}
+              {% endcomment %}
               {%- if pt_no_preselect -%}
                 {{ 'products.product.pt_select_option' | t: option: pt_prompt_option }}
               {%- elsif product.selected_or_first_available_variant == null -%}
@@ -125,7 +125,15 @@
             {%- render 'loading-spinner' -%}
           </button>
           {%- if show_dynamic_checkout -%}
-            {{ form | payment_button }}
+            {% comment %}
+              [custom] "Buy it now" posts the same form, so it has to respect the
+              same gate as Add to cart - otherwise it is a way around choosing a
+              variant. pt-product-options.js toggles the class as the shopper
+              completes or clears their selection.
+            {% endcomment %}
+            <div class="pt-dynamic-checkout{% if pt_no_preselect %} pt-awaiting-variant{% endif %}">
+              {{ form | payment_button }}
+            </div>
           {%- endif -%}
         </div>
       {%- endform -%}
@@ -154,7 +162,7 @@
 
     <pickup-availability
       class="product__pickup-availabilities quick-add-hidden"
-      {%- comment -%} [custom] Stays empty until a variant is actually chosen. {%- endcomment -%}
+      {% comment %} [custom] Stays empty until a variant is actually chosen. {% endcomment %}
       {% if pt_no_preselect == false and product.selected_or_first_available_variant.available and pick_up_availabilities.size > 0 %}
         available
       {% endif %}

@@ -48,6 +48,11 @@
       display: none !important;
     }
 
+    /* [custom] Hide the dynamic checkout button until a variant is actually chosen. */
+    .pt-dynamic-checkout.pt-awaiting-variant {
+      display: none;
+    }
+
     .section-{{ section.id }}-padding {
       padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
       padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
@@ -63,10 +68,10 @@
 
   <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
-  {%- comment -%} [custom] No-preselect, deselect and colour-filtered gallery behaviour. {%- endcomment -%}
+  {% comment %} [custom] No-preselect, deselect and colour-filtered gallery behaviour. {% endcomment %}
   <script src="{{ 'pt-product-options.js' | asset_url }}" defer="defer"></script>
   {%- if section.settings.gallery_layout == 'carousel' -%}
-    {%- comment -%} [custom] One-image-at-a-time gallery with arrows and dots. {%- endcomment -%}
+    {% comment %} [custom] One-image-at-a-time gallery with arrows and dots. {% endcomment %}
     {{ 'pt-gallery-carousel.css' | asset_url | stylesheet_tag }}
     <script src="{{ 'pt-gallery-carousel.js' | asset_url }}" defer="defer"></script>
   {%- endif -%}
@@ -103,11 +108,11 @@
 
   {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
 
-  {%- comment -%}
+  {% comment %}
     [custom] Drives the no-preselect / deselect / colour-filter behaviour.
     data-no-preselect carries the *setting* rather than the current render state, so
     deselecting still works on a page opened with ?variant=.
-  {%- endcomment -%}
+  {% endcomment %}
   <pt-product-options
     data-section-id="{{ section.id }}"
     data-no-preselect="{{ section.settings.pt_no_preselect }}"
@@ -151,10 +156,10 @@
                   </div>
                 {%- when 'price' -%}
                   <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
-                    {%- comment -%}
+                    {% comment %}
                       [custom] use_variant: false makes snippets/price.liquid fall back to
                       product.price_min/price_max, i.e. the range or "From X".
-                    {%- endcomment -%}
+                    {% endcomment %}
                     {%- render 'price',
                       product: product,
                       use_variant: pt_use_variant,
@@ -162,10 +167,10 @@
                       price_class: 'price--large'
                     -%}
                   </div>
-                  {%- comment -%}
+                  {% comment %}
                     [custom] The same range markup, kept aside so pt-product-options.js can
                     restore it instantly when the shopper clears their selection.
-                  {%- endcomment -%}
+                  {% endcomment %}
                   <template id="PtPriceRange-{{ section.id }}">
                     {%- render 'price',
                       product: product,

@@ -64,7 +64,7 @@
 <media-gallery
   id="MediaGallery-{{ section.id }}"
   role="region"
-  {%- comment -%} [custom] pt-carousel switches on the carousel styling. {%- endcomment -%}
+  {% comment %} [custom] pt-carousel switches on the carousel styling. {% endcomment %}
   class="{% if section.settings.enable_sticky_info %}product__column-sticky{% endif %}{% if pt_carousel %} pt-carousel{% endif %}"
   aria-label="{{ 'products.product.media.gallery_viewer' | t }}"
   data-desktop-layout="{{ section.settings.gallery_layout }}"
@@ -85,7 +85,7 @@
           id="Slide-{{ section.id }}-{{ featured_media.id }}"
           class="product__media-item grid__item slider__slide is-active{% if single_media_visible %} product__media-item--single{% endif %}{% if featured_media.media_type != 'image' %} product__media-item--full{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
           data-media-id="{{ section.id }}-{{ featured_media.id }}"
-          {%- comment -%} [custom] Colour this media belongs to, read by pt-product-options.js. {%- endcomment -%}
+          {% comment %} [custom] Colour this media belongs to, read by pt-product-options.js. {% endcomment %}
           data-pt-alt="{{ featured_media.alt | default: '' | strip | downcase | escape }}"
         >
           {%- assign media_position = 1 -%}
@@ -119,7 +119,7 @@
             id="Slide-{{ section.id }}-{{ media.id }}"
             class="product__media-item grid__item slider__slide{% if single_media_visible %} product__media-item--single{% endif %}{% if pt_featured == nil and forloop.index == 1 %} is-active{% endif %}{% if media.media_type != 'image' %} product__media-item--full{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
             data-media-id="{{ section.id }}-{{ media.id }}"
-            {%- comment -%} [custom] Colour this media belongs to, read by pt-product-options.js. {%- endcomment -%}
+            {% comment %} [custom] Colour this media belongs to, read by pt-product-options.js. {% endcomment %}
             data-pt-alt="{{ media.alt | default: '' | strip | downcase | escape }}"
           >
             {%- liquid
@@ -148,11 +148,11 @@
       {%- endfor -%}
     </ul>
     {%- if pt_carousel -%}
-      {%- comment -%}
+      {% comment %}
         [custom] Carousel controls. The arrows keep Dawn's name="previous"/"next"
         so SliderComponent binds them exactly as it does in every other layout;
         only their position changes. The dots are built by pt-gallery-carousel.js.
-      {%- endcomment -%}
+      {% endcomment %}
       <div class="pt-carousel__arrows quick-add-hidden">
         <button
           type="button"
@@ -234,7 +234,7 @@
       assign is_not_limited_to_single_item = true
     endif
   -%}
-  {%- comment -%} [custom] The carousel uses dots instead of a thumbnail strip. {%- endcomment -%}
+  {% comment %} [custom] The carousel uses dots instead of a thumbnail strip. {% endcomment %}
   {%- unless pt_carousel -%}
   {%- if is_not_limited_to_single_item
     and media_count > 1
@@ -286,7 +286,7 @@
             class="thumbnail-list__item slider__slide{% if section.settings.hide_variants and variant_images contains featured_media.src %} thumbnail-list_item--variant{% endif %}"
             data-target="{{ section.id }}-{{ featured_media.id }}"
             data-media-position="{{ media_index }}"
-            {%- comment -%} [custom] Colour this media belongs to, read by pt-product-options.js. {%- endcomment -%}
+            {% comment %} [custom] Colour this media belongs to, read by pt-product-options.js. {% endcomment %}
             data-pt-alt="{{ featured_media.alt | default: '' | strip | downcase | escape }}"
           >
             {%- capture thumbnail_id -%}
@@ -332,7 +332,7 @@
               class="thumbnail-list__item slider__slide{% if section.settings.hide_variants and variant_images contains media.src %} thumbnail-list_item--variant{% endif %}"
               data-target="{{ section.id }}-{{ media.id }}"
               data-media-position="{{ media_index }}"
-              {%- comment -%} [custom] Colour this media belongs to, read by pt-product-options.js. {%- endcomment -%}
+              {% comment %} [custom] Colour this media belongs to, read by pt-product-options.js. {% endcomment %}
               data-pt-alt="{{ media.alt | default: '' | strip | downcase | escape }}"
             >
               {%- if media.media_type == 'model' -%}

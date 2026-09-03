@@ -27,7 +27,7 @@
     {% # theme-check-disable %}
     data-selected-price-amount="{{ product.selected_or_first_available_variant.price | default: 0 | money_amount | escape }}"
     {% # theme-check-enable %}
-    {%- comment -%} [custom] Lets JS and apps detect the "nothing chosen yet" state. {%- endcomment -%}
+    {% comment %} [custom] Lets JS and apps detect the "nothing chosen yet" state. {% endcomment %}
     data-pt-no-preselect="{{ pt_no_preselect }}"
     {{ block.shopify_attributes }}
   >
@@ -90,10 +90,10 @@
               form="{{ product_form_id }}"
             >
               {%- if pt_no_preselect -%}
-                {%- comment -%}
+                {% comment %}
                   [custom] Placeholder for the unselected state. No data-option-value-id,
                   so VariantSelects.selectedOptionValues treats it as "nothing chosen".
-                {%- endcomment -%}
+                {% endcomment %}
                 <option value="" selected="selected" data-pt-placeholder>
                   {{- 'products.product.pt_choose_option' | t: option: option.name -}}
                 </option>
@@ -114,7 +114,7 @@
     {%- endfor -%}
 
     <script type="application/json" data-selected-variant>
-      {%- comment -%} [custom] null while nothing is chosen, so nothing downstream guesses. {%- endcomment -%}
+      {% comment %} [custom] null while nothing is chosen, so nothing downstream guesses. {% endcomment %}
       {% if pt_no_preselect %}null{% else %}{{ product.selected_or_first_available_variant | json }}{% endif %}
     </script>
   </variant-selects>

@@ -53,6 +53,8 @@ if (!customElements.get('pt-product-options')) {
         // our colour filter once its DOM update has landed.
         this.variantChangeUnsubscriber = subscribe(PUB_SUB_EVENTS.variantChange, ({ data }) => {
           if (data?.sectionId !== this.sectionId) return;
+          // data.variant is set only when a real variant was resolved.
+          this.toggleDynamicCheckout(Boolean(data.variant));
           this.syncGallery();
         });
 
@@ -149,6 +151,7 @@ if (!customElements.get('pt-product-options')) {
         this.productForm?.toggleSubmitButton(true, this.promptLabel(selection));
         this.showPriceRange();
         this.toggleVariantDetails(false);
+        this.toggleDynamicCheckout(false);
         this.clearVariantParam();
       }
 
@@ -192,6 +195,14 @@ if (!customElements.get('pt-product-options')) {
         ['Sku', 'Inventory', 'Price-Per-Item', 'Volume', 'Volume-Note', 'Quantity-Rules'].forEach((id) => {
           this.productInfo.querySelector(`#${id}-${this.sectionId}`)?.classList.toggle(PT_DAWN_HIDDEN_CLASS, !show);
         });
+      }
+
+      // "Buy it now" posts the same form as Add to cart, so it must follow the
+      // same gate. Dawn never re-renders the buy-buttons block, so JS owns this.
+      toggleDynamicCheckout(show) {
+        this.productInfo
+          .querySelector('.pt-dynamic-checkout')
+          ?.classList.toggle('pt-awaiting-variant', !show);
       }
 
       clearVariantParam() {
