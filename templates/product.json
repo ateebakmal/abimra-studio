@@ -9,9 +9,25 @@
  */
 {
   "sections": {
+    "1788471033526a1bf0": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
     "main": {
       "type": "main-product",
       "blocks": {
+        "customify_customize_area_section_dDY6dC": {
+          "type": "shopify://apps/customify/blocks/customize-area-section/0cb55c9f-fdee-4f0f-864c-f296929a4bbb",
+          "settings": {
+            "canvasSelector": "",
+            "priceSelector": "",
+            "quantitySelector": "",
+            "checkoutSelector": "",
+            "liquid_code_product": ""
+          }
+        },
         "vendor": {
           "type": "text",
           "settings": {
@@ -57,6 +73,7 @@
         }
       },
       "block_order": [
+        "customify_customize_area_section_dDY6dC",
         "vendor",
         "title",
         "price",
@@ -67,6 +84,9 @@
         "share"
       ],
       "settings": {
+        "pt_no_preselect": true,
+        "pt_filter_gallery_by_color": true,
+        "pt_color_option_name": "Color",
         "enable_sticky_info": true,
         "color_scheme": "scheme-1",
         "media_size": "large",
@@ -85,6 +105,10 @@
     "disclosures": {
       "type": "disclosures",
       "settings": {
+        "heading": "Disclosures",
+        "heading_size": "h2",
+        "open_by_default": false,
+        "color_scheme": "",
         "padding_top": 36,
         "padding_bottom": 0
       }
@@ -109,6 +133,7 @@
     }
   },
   "order": [
+    "1788471033526a1bf0",
     "main",
     "disclosures",
     "related-products"
