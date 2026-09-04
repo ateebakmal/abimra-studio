@@ -56,6 +56,7 @@ if (!customElements.get('pt-product-options')) {
           // data.variant is set only when a real variant was resolved.
           this.toggleDynamicCheckout(Boolean(data.variant));
           this.snapshot = this.selectionValues();
+          this.syncDesigner(data.variant);
           this.syncGallery();
         });
 
@@ -262,6 +263,37 @@ if (!customElements.get('pt-product-options')) {
         this.snapshot = selection.map((item) => (item ? item.value : null));
         this.applyIncompleteState(selection);
         this.syncGallery(selection);
+      }
+
+      /* ------------------------------------------------------------------ *
+       * Product designer bridge (Customify)
+       * ------------------------------------------------------------------ */
+
+      // Customify only re-draws its canvas when it sees a change on
+      // `.single-option-selector` or `#productSelect` - class names from the old
+      // Shopify themes it was written against. Dawn 16 has neither, so clicking a
+      // swatch never reaches the app and the mockup keeps showing the old colour;
+      // it only ever looked right because a fresh page load carried ?variant= .
+      //
+      // Rather than fake a .single-option-selector (its handler reads
+      // select[name=id], which Dawn does not render, and would wrongly flip the
+      // button to SOLD OUT), drive the switcher the app ships for itself: the
+      // .swapProduct thumbnails inside the designer. Clicking one is the app's own
+      // supported path - it sets the variant, updates the URL and redraws, with no
+      // page reload. This is exactly what the app's internal fallback does.
+      //
+      // No-op when the designer is not on the page.
+      syncDesigner(variant) {
+        if (!variant?.title) return;
+
+        const swaps = Array.from(document.querySelectorAll('.swapProduct'));
+        if (!swaps.length) return;
+
+        const wanted = String(variant.title).trim();
+        const match = swaps.find((el) => (el.dataset.title || '').trim() === wanted);
+        if (!match || match.classList.contains('active')) return;
+
+        match.click();
       }
 
       /* ------------------------------------------------------------------ *
