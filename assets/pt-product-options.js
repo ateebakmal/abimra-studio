@@ -268,8 +268,18 @@ if (!customElements.get('pt-product-options')) {
        * Gallery filtering by media alt text
        * ------------------------------------------------------------------ */
 
+      // The Customify designer mounts its canvas onto the product media area, so
+      // while it is running our carousel is not on screen at all. Filtering it
+      // then is pure DOM churn in a subtree the app owns - and churn there makes
+      // the app tear its canvas down and rebuild it. Stand down and let it own
+      // that space. No-op when the app is absent.
+      get designerActive() {
+        const area = document.getElementById('customify-area');
+        return Boolean(area && area.childElementCount > 0);
+      }
+
       syncGallery(selection = this.readSelection()) {
-        if (!this.filterGallery) return;
+        if (!this.filterGallery || this.designerActive) return;
 
         const gallery = this.mediaGallery;
         if (!gallery) return;
