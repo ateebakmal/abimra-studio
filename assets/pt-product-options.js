@@ -86,7 +86,15 @@ if (!customElements.get('pt-product-options')) {
       }
 
       get optionGroups() {
-        return Array.from(this.variantSelects?.querySelectorAll(PT_OPTION_GROUP_SELECTOR) || []);
+        return (
+          Array.from(this.variantSelects?.querySelectorAll(PT_OPTION_GROUP_SELECTOR) || [])
+            // Apps inject their own markup into the picker - Customify adds a Note
+            // row - and a stray fieldset here is fatal: it is a group that can never
+            // be filled, so the selection never looks complete and every swatch click
+            // gets treated as a partial selection and blocked. Count only the groups
+            // that actually hold product option values.
+            .filter((group) => group.querySelector('[data-option-value-id]'))
+        );
       }
 
       // One entry per product option, in option order; null where nothing is chosen.
