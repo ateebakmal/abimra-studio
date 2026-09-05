@@ -53,6 +53,36 @@
       display: none;
     }
 
+    /*
+      [custom] Customify shows #cst-loader while it redraws its canvas. On a colour
+      change that redraw is near-instant, so the spinner only ever appears as a
+      flicker. The app toggles it with jQuery .show()/.hide(), which writes an inline
+      display, so we cannot hide it with a display rule - and we should not, because
+      a genuinely slow redraw still needs feedback.
+
+      Instead hold it at opacity 0 for a moment: the animation restarts every time the
+      app un-hides the element, so a redraw finishing inside the delay never shows it,
+      while anything slower fades in as normal.
+    */
+    #cst-loader {
+      animation: pt-loader-delay 150ms linear 400ms both;
+    }
+
+    @keyframes pt-loader-delay {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #cst-loader {
+        animation-duration: 1ms;
+      }
+    }
+
     .section-{{ section.id }}-padding {
       padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
       padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;

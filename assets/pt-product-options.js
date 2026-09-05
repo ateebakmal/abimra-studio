@@ -29,6 +29,11 @@ const PT_DAWN_HIDDEN_CLASS = 'hidden';
 // The option groups Dawn itself looks for in VariantSelects.getAllSelectedOptions().
 const PT_OPTION_GROUP_SELECTOR = 'fieldset, .product-form__input--dropdown';
 
+// Dawn's scroll-reveal classes, from assets/animations.js.
+const PT_SCROLL_TRIGGER_CLASS = 'scroll-trigger';
+const PT_SCROLL_OFFSCREEN_CLASS = 'scroll-trigger--offscreen';
+const PT_SCROLL_CANCEL_CLASS = 'scroll-trigger--cancel';
+
 if (!customElements.get('pt-product-options')) {
   customElements.define(
     'pt-product-options',
@@ -327,7 +332,9 @@ if (!customElements.get('pt-product-options')) {
         const hasColorMedia = wanted !== null && slides.some((slide) => slide.dataset.ptAlt === wanted);
 
         slides.forEach((slide) => {
-          slide.classList.toggle(PT_HIDDEN_MEDIA_CLASS, hasColorMedia && slide.dataset.ptAlt !== wanted);
+          const hide = hasColorMedia && slide.dataset.ptAlt !== wanted;
+          slide.classList.toggle(PT_HIDDEN_MEDIA_CLASS, hide);
+          if (!hide) this.cancelRevealAnimation(slide);
         });
 
         this.resetSliders(gallery);
@@ -335,6 +342,20 @@ if (!customElements.get('pt-product-options')) {
 
         // Tell the carousel dots to rebuild for whatever is still visible.
         gallery.dispatchEvent(new CustomEvent('pt:gallery-filtered', { bubbles: true }));
+      }
+
+      // Stop Dawn's scroll-reveal animation replaying on a slide we just un-hid.
+      //
+      // A display:none slide reads as "off screen" to Dawn's IntersectionObserver, so
+      // animations.js adds scroll-trigger--offscreen (opacity 0) AND strips
+      // scroll-trigger--cancel. Showing the slide again therefore replays
+      // animate--fade-in, which is the pale flash before the new colour appears.
+      // product-info.js does exactly this when it swaps in fetched variant HTML; our
+      // filter reveals slides by a different route, so it has to do it too.
+      cancelRevealAnimation(slide) {
+        if (!slide.classList.contains(PT_SCROLL_TRIGGER_CLASS)) return;
+        slide.classList.remove(PT_SCROLL_OFFSCREEN_CLASS);
+        slide.classList.add(PT_SCROLL_CANCEL_CLASS);
       }
 
       // Dawn's slider measures its slides, so it must re-measure after we hide some.
