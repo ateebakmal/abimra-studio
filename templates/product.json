@@ -18,16 +18,6 @@
     "main": {
       "type": "main-product",
       "blocks": {
-        "customify_customize_area_section_dDY6dC": {
-          "type": "shopify://apps/customify/blocks/customize-area-section/0cb55c9f-fdee-4f0f-864c-f296929a4bbb",
-          "settings": {
-            "canvasSelector": "",
-            "priceSelector": "",
-            "quantitySelector": "",
-            "checkoutSelector": "",
-            "liquid_code_product": ""
-          }
-        },
         "vendor": {
           "type": "text",
           "settings": {
@@ -73,7 +63,6 @@
         }
       },
       "block_order": [
-        "customify_customize_area_section_dDY6dC",
         "vendor",
         "title",
         "price",
