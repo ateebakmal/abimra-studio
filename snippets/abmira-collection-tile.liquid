@@ -1,0 +1,44 @@
+{% comment %}
+  Renders one "Shop by theme" tile.
+
+  Shared by both render paths in sections/abmira-collection-grid.liquid -
+  the automatic listing and the hand-picked blocks - so the markup can only
+  drift in one place.
+
+  Accepts:
+  - url:           {String}  link target, '#' when there is no collection yet
+  - title:         {String}  tile label
+  - count:         {Number}  product count, or blank to hide the line
+  - bg:            {String}  tile background colour
+  - symbol:        {String}  '#ab-tee' or '#ab-hood'
+  - garment_color: {String}  silhouette colour
+  - attributes:    {String}  block.shopify_attributes, when it came from a block
+
+  Usage:
+  {% render 'abmira-collection-tile', url: c.url, title: c.title, ... %}
+{% endcomment %}
+
+<a
+  class="ab-coll-tile"
+  href="{{ url | default: '#' }}"
+  style="background: {{ bg }};"
+  {{ attributes }}
+>
+  {%- if title != blank -%}
+    <h3 class="ab-d3">{{ title | escape }}</h3>
+  {%- endif -%}
+
+  {%- if count != blank -%}
+    <span class="ab-meta">{{ count }} designs</span>
+  {%- endif -%}
+
+  <svg
+    class="ab-coll-garment"
+    viewBox="0 0 300 340"
+    style="--g: {{ garment_color | default: '#191813' }};"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <use href="{{ symbol | default: '#ab-tee' }}"/>
+  </svg>
+</a>

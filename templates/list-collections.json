@@ -32,93 +32,12 @@
     },
     "grid": {
       "type": "abmira-collection-grid",
-      "blocks": {
-        "t1": {
-          "type": "collection",
-          "settings": {
-            "title_override": "Streetwear",
-            "bg": "#E8E2D4",
-            "garment": "tee",
-            "garment_color": "#191813"
-          }
-        },
-        "t2": {
-          "type": "collection",
-          "settings": {
-            "title_override": "Gym",
-            "bg": "#DFE7DC",
-            "garment": "tee",
-            "garment_color": "#5F5B52"
-          }
-        },
-        "t3": {
-          "type": "collection",
-          "settings": {
-            "title_override": "Cars",
-            "bg": "#EDE3C9",
-            "garment": "tee",
-            "garment_color": "#191813"
-          }
-        },
-        "t4": {
-          "type": "collection",
-          "settings": {
-            "title_override": "Couples",
-            "bg": "#FBE7E1",
-            "garment": "tee",
-            "garment_color": "#A32209"
-          }
-        },
-        "t5": {
-          "type": "collection",
-          "settings": {
-            "title_override": "Family",
-            "bg": "#E3EAF6",
-            "garment": "hood",
-            "garment_color": "#1B4FA0"
-          }
-        },
-        "t6": {
-          "type": "collection",
-          "settings": {
-            "title_override": "Gifts",
-            "bg": "#DCD9CF",
-            "garment": "tee",
-            "garment_color": "#191813"
-          }
-        },
-        "t7": {
-          "type": "collection",
-          "settings": {
-            "title_override": "New arrivals",
-            "bg": "#E8E2D4",
-            "garment": "hood",
-            "garment_color": "#5F5B52"
-          }
-        },
-        "t8": {
-          "type": "collection",
-          "settings": {
-            "title_override": "Best sellers",
-            "bg": "#DFE7DC",
-            "garment": "tee",
-            "garment_color": "#191813"
-          }
-        }
-      },
-      "block_order": [
-        "t1",
-        "t2",
-        "t3",
-        "t4",
-        "t5",
-        "t6",
-        "t7",
-        "t8"
-      ],
       "settings": {
         "heading": "Shop by theme",
-        "intro": "The same garments, grouped by what people actually search for. A place to start if you're not sure."
+        "intro": "The same garments, grouped by what people actually search for. A place to start if you're not sure.",
+        "source": "auto",
+        "limit": 12,
+        "hide_empty": true
       }
     },
     "closer": {
