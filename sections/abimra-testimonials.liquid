@@ -1,0 +1,190 @@
+
+{%- comment -%}
+  Desktop is a scatter: three cards, slight rotation, the middle one
+  inverted and pulled down. Below 769px it becomes a swipeable deck -
+  see assets/abimra.js.
+
+  Two things make the deck work, both learned the hard way:
+    - Cards are equal height with the attribution pinned, or how far
+      each card peeks is set by quote length and the stack looks random.
+    - No opacity on the stack. Fading an opaque card lets you read the
+      one behind it through the front.
+{%- endcomment -%}
+
+{%- liquid
+  assign quotes = section.blocks | where: 'type', 'quote'
+-%}
+
+<div class="ab-section">
+  <section class="ab-sec">
+    <div class="ab-wrap">
+      <div class="ab-sec-head ab-rv">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="ab-d2">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.link_label != blank -%}
+          <a class="ab-meta" href="{{ section.settings.link | default: '#' }}">
+            {{- section.settings.link_label | escape -}}
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- if quotes.size > 0 -%}
+        <div class="ab-quotes ab-rv ab-rv-1">
+          {%- for block in quotes -%}
+            <div
+              class="ab-quote {% if block.settings.invert %}ab-q-dark{% else %}ab-q-light{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              {%- if block.settings.stars > 0 -%}
+                <div class="ab-q-stars" aria-label="{{ block.settings.stars }} out of 5">
+                  {%- for i in (1..block.settings.stars) -%}★{%- endfor -%}
+                </div>
+              {%- endif -%}
+
+              <p>{{ block.settings.quote | escape }}</p>
+
+              <div class="ab-q-who">
+                {%- if block.settings.initials != blank -%}
+                  <span class="ab-q-av">{{ block.settings.initials | escape }}</span>
+                {%- endif -%}
+                <div>
+                  <b>{{ block.settings.name | escape }}</b>
+                  <span>{{ block.settings.garment | escape }}</span>
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- comment -%}
+          Dots are the direct-access and keyboard route on the deck.
+          Hidden by CSS above 769px.
+        {%- endcomment -%}
+        <div class="ab-q-dots">
+          {%- for block in quotes -%}
+            <button type="button" aria-label="Show review {{ forloop.index }}"></button>
+          {%- endfor -%}
+        </div>
+        <p class="ab-q-hint">{{ section.settings.hint | escape }}</p>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "ABIMRA testimonials",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Worn and reviewed"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link beside heading",
+      "default": "Read all reviews"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "text",
+      "id": "hint",
+      "label": "Swipe hint",
+      "default": "Tap or swipe for the next",
+      "info": "Shown on phones only, fades after the first interaction."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "quote",
+      "name": "Review",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "range",
+          "id": "stars",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "label": "Stars",
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "I sent them a drawing my daughter made and it came back on a hoodie looking better than I'd imagined."
+        },
+        {
+          "type": "text",
+          "id": "initials",
+          "label": "Initials",
+          "default": "HM"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Hannah M."
+        },
+        {
+          "type": "text",
+          "id": "garment",
+          "label": "Garment",
+          "default": "Heavy hoodie, navy"
+        },
+        {
+          "type": "checkbox",
+          "id": "invert",
+          "label": "Invert this card",
+          "default": false,
+          "info": "Dark card. Use on the middle review only."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "ABIMRA testimonials",
+      "blocks": [
+        {
+          "type": "quote",
+          "settings": {
+            "quote": "I sent them a drawing my daughter made and it came back on a hoodie looking better than I'd imagined. She hasn't taken it off since.",
+            "initials": "HM",
+            "name": "Hannah M.",
+            "garment": "Heavy hoodie, navy"
+          }
+        },
+        {
+          "type": "quote",
+          "settings": {
+            "quote": "What arrived is exactly what the preview showed. I've been burned by print sites before where the design shifts or comes out half the size — this was spot on, down to the placement.",
+            "initials": "DO",
+            "name": "Daniel O.",
+            "garment": "Oversized tee, black",
+            "invert": true
+          }
+        },
+        {
+          "type": "quote",
+          "settings": {
+            "quote": "Ordered twelve for our five-a-side team, all with different names on the back. Every one correct, all here in four days.",
+            "initials": "PR",
+            "name": "Priya R.",
+            "garment": "Classic tee, white × 12"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,84 +1,254 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "image_banner": {
-      "type": "image-banner",
+    "hero": {
+      "type": "abimra-hero",
       "blocks": {
-        "heading": {
-          "type": "heading",
+        "f1": {
+          "type": "feature",
           "settings": {
-            "heading": "Browse our latest products",
-            "heading_size": "h0"
+            "icon": "print",
+            "label": "High quality\nprinting"
           }
         },
-        "button": {
-          "type": "buttons",
+        "f2": {
+          "type": "feature",
           "settings": {
-            "button_label_1": "Shop all",
-            "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
+            "icon": "delivery",
+            "label": "Delivered across\nthe UK"
+          }
+        },
+        "f3": {
+          "type": "feature",
+          "settings": {
+            "icon": "star",
+            "label": "No minimum\norder"
           }
         }
       },
-      "block_order": [
-        "heading",
-        "button"
-      ],
+      "block_order": ["f1", "f2", "f3"],
       "settings": {
-        "image_overlay_opacity": 40,
-        "image_height": "large",
-        "desktop_content_position": "bottom-center",
-        "show_text_box": false,
-        "image_behavior": "none",
-        "desktop_content_alignment": "center",
-        "color_scheme": "scheme-3",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
+        "eyebrow": "Printed to order. Delivered across the UK.",
+        "accent_word": "Design",
+        "headline_line_1": "it,",
+        "headline_line_2": "wear it.",
+        "subheading": "Upload your artwork, add text, design it however you like. We print it and send it to you.",
+        "cta_primary_label": "Design your own",
+        "cta_secondary_label": "Shop Studio Originals",
+        "avatar_initials": "HM, DO, PR, +",
+        "rating_text": "4.9 from 126 orders",
+        "collage_image": "shopify://shop_images/hero-image.png",
+        "collage_mat_color": "#F3EFE5"
       }
     },
-    "featured_collection": {
-      "type": "featured-collection",
+    "marquee": {
+      "type": "abimra-marquee",
+      "blocks": {
+        "m1": { "type": "item", "settings": { "text": "Tees, hoodies and sweatshirts" } },
+        "m2": { "type": "item", "settings": { "text": "Upload artwork or add text" } },
+        "m3": { "type": "item", "settings": { "text": "Front, back, chest or sleeve" } },
+        "m4": { "type": "item", "settings": { "text": "Background removed for you" } },
+        "m5": { "type": "item", "settings": { "text": "Live resolution check" } },
+        "m6": { "type": "item", "settings": { "text": "Printed in our own studio" } },
+        "m7": { "type": "item", "settings": { "text": "2–4 day dispatch" } },
+        "m8": { "type": "item", "settings": { "text": "One shirt or fifty" } }
+      },
+      "block_order": ["m1", "m2", "m3", "m4", "m5", "m6", "m7", "m8"],
       "settings": {
-        "title": "Featured products",
-        "heading_size": "h2",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
-        "collection": "all",
-        "products_to_show": 8,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "full_width": false,
-        "show_view_all": true,
-        "view_all_style": "solid",
-        "enable_desktop_slider": false,
-        "swipe_on_mobile": false,
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "none",
-        "columns_mobile": "2",
-        "padding_top": 44,
-        "padding_bottom": 36
+        "speed": 52,
+        "aria_label": "What we do"
+      }
+    },
+    "steps": {
+      "type": "abimra-steps",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "image": "shopify://shop_images/vector-art-step-1.png",
+            "heading": "Upload your artwork",
+            "body": "Drop in a photo or a logo. We check the resolution live as you scale it.",
+            "invert": false
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "image": "shopify://shop_images/vector-art-step-2.png",
+            "heading": "Add your text",
+            "body": "Pick a typeface, set the colour, place it exactly where you want it.",
+            "invert": true
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "image": "shopify://shop_images/vector-art-step-3.png",
+            "heading": "See it before you buy",
+            "body": "A live preview on the exact garment and colour you picked.",
+            "invert": false
+          }
+        }
+      },
+      "block_order": ["s1", "s2", "s3"],
+      "settings": {
+        "heading": "Designed by you, printed by us",
+        "body": "Upload your artwork, add your text, choose your garment. See it on the real thing before you order.",
+        "cta_label": "Start designing",
+        "cta_note": "No account needed to try it."
+      }
+    },
+    "designed_worn": {
+      "type": "abimra-designed-worn",
+      "blocks": {
+        "p1": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/model-image-1.png",
+            "name": "Yusuf A.",
+            "garment": "Oversized tee, black",
+            "show_prefix": true
+          }
+        },
+        "p2": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/model-image-2.png",
+            "name": "Mei L.",
+            "garment": "Heavy hoodie, bone",
+            "show_prefix": true
+          }
+        },
+        "p3": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/model-image-3.png",
+            "name": "Print detail",
+            "garment": "DTF on washed cotton",
+            "show_prefix": false
+          }
+        }
+      },
+      "block_order": ["p1", "p2", "p3"],
+      "settings": {
+        "heading": "Designed and worn",
+        "body": "Real orders from real people. Tag us when yours lands and we'll add it here."
+      }
+    },
+    "categories": {
+      "type": "abimra-categories",
+      "blocks": {
+        "c1": {
+          "type": "category",
+          "settings": {
+            "heading": "T-shirts",
+            "caption": "From £24.99",
+            "background": "#E8E2D4",
+            "invert": false
+          }
+        },
+        "c2": {
+          "type": "category",
+          "settings": {
+            "heading": "Hoodies",
+            "caption": "From £44.99",
+            "background": "#DFE7DC",
+            "invert": false
+          }
+        },
+        "c3": {
+          "type": "category",
+          "settings": {
+            "heading": "Sweatshirts",
+            "caption": "From £39.99",
+            "background": "#E3EAF6",
+            "invert": false
+          }
+        },
+        "c4": {
+          "type": "category",
+          "settings": {
+            "heading": "See\neverything",
+            "caption": "Caps, totes and more",
+            "invert": true
+          }
+        }
+      },
+      "block_order": ["c1", "c2", "c3", "c4"],
+      "settings": {
+        "heading": "Customise apparel"
+      }
+    },
+    "originals": {
+      "type": "abimra-originals",
+      "settings": {
+        "heading": "Studio Originals",
+        "products_to_show": 6,
+        "show_badge": true,
+        "badge_label": "Design your own"
+      }
+    },
+    "testimonials": {
+      "type": "abimra-testimonials",
+      "blocks": {
+        "q1": {
+          "type": "quote",
+          "settings": {
+            "stars": 5,
+            "quote": "I sent them a drawing my daughter made and it came back on a hoodie looking better than I'd imagined. She hasn't taken it off since.",
+            "initials": "HM",
+            "name": "Hannah M.",
+            "garment": "Heavy hoodie, navy",
+            "invert": false
+          }
+        },
+        "q2": {
+          "type": "quote",
+          "settings": {
+            "stars": 5,
+            "quote": "What arrived is exactly what the preview showed. I've been burned by print sites before where the design shifts or comes out half the size — this was spot on, down to the placement.",
+            "initials": "DO",
+            "name": "Daniel O.",
+            "garment": "Oversized tee, black",
+            "invert": true
+          }
+        },
+        "q3": {
+          "type": "quote",
+          "settings": {
+            "stars": 5,
+            "quote": "Ordered twelve for our five-a-side team, all with different names on the back. Every one correct, all here in four days.",
+            "initials": "PR",
+            "name": "Priya R.",
+            "garment": "Classic tee, white × 12",
+            "invert": false
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3"],
+      "settings": {
+        "heading": "Worn and reviewed",
+        "link_label": "Read all reviews",
+        "hint": "Tap or swipe for the next"
+      }
+    },
+    "closer": {
+      "type": "abimra-closer",
+      "settings": {
+        "show_mark": true,
+        "heading": "What will\nyou make?",
+        "body": "Your name. Your artwork. Your message.\nBlack, bone or navy — tee or hoodie, printed to order.",
+        "cta_label": "Design your own"
       }
     }
   },
   "order": [
-    "image_banner",
-    "featured_collection"
+    "hero",
+    "marquee",
+    "steps",
+    "designed_worn",
+    "categories",
+    "originals",
+    "testimonials",
+    "closer"
   ]
 }

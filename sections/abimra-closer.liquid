@@ -1,0 +1,82 @@
+{% render 'abimra-symbols' %}
+
+{%- comment -%}
+  Dark band, centred, red logomark above a display headline, sub capped
+  at 46ch, inverted pill button, 14px dot texture at 14% white.
+
+  The band is inside .ab-wrap so it keeps the page margin rather than
+  running full-bleed.
+{%- endcomment -%}
+
+<div class="ab-section">
+  <section class="ab-wrap" style="padding-top: var(--ab-sec); padding-bottom: 0;">
+    <div class="ab-band ab-closer ab-rv">
+      <div class="ab-closer-dots" aria-hidden="true"></div>
+      <div class="ab-closer-in">
+        {%- if section.settings.show_mark -%}
+          <svg class="ab-closer-mark" viewBox="0 0 100 96" aria-hidden="true">
+            <use href="#ab-mark"/>
+          </svg>
+        {%- endif -%}
+
+        {%- if section.settings.heading != blank -%}
+          <h2 class="ab-d1">{{ section.settings.heading | escape | newline_to_br }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.body != blank -%}
+          <p>{{ section.settings.body | escape | newline_to_br }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.cta_label != blank -%}
+          <a class="ab-btn ab-btn-i" href="{{ section.settings.cta_link | default: '#' }}">
+            {{- section.settings.cta_label | escape -}}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "ABIMRA closing band",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_mark",
+      "label": "Show logomark",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What will\nyou make?",
+      "info": "Press Enter to break the line."
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body",
+      "default": "Your name. Your artwork. Your message.\nBlack, bone or navy — tee or hoodie, printed to order."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button",
+      "default": "Design your own"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "ABIMRA closing band"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,69 @@
+{% comment %}
+  ABIMRA — shared SVG symbol definitions.
+
+  Rendered once per page by any ABIMRA section that needs them, guarded
+  by a flag so several sections on one page emit only one copy.
+
+  Garment symbols are coloured through the --g custom property:
+    <svg viewBox="0 0 300 340" style="--g:#191813"><use href="#ab-tee"/></svg>
+
+  Swap #ab-tee / #ab-hood for real flat mockups when they exist - same
+  aspect ratio, same slots.
+
+  Usage: {% render 'abimra-symbols' %}
+{% endcomment %}
+
+{%- unless abimra_symbols_rendered -%}
+  {%- assign abimra_symbols_rendered = true -%}
+  <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="ab-tee" viewBox="0 0 300 340">
+        <path
+          d="M110 24 Q150 56 190 24 L242 40 L292 122 L246 148 L246 320 L54 320 L54 148 L8 122 L58 40 Z"
+          fill="var(--g, #191813)"
+          stroke="rgba(0,0,0,.16)"
+          stroke-width="1.5"
+        />
+        <path d="M110 24 Q150 56 190 24" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="3" />
+      </symbol>
+
+      <symbol id="ab-hood" viewBox="0 0 300 340">
+        <path
+          d="M104 30 Q150 78 196 30 L248 46 L294 126 L250 150 L250 322 L50 322 L50 150 L6 126 L52 46 Z"
+          fill="var(--g, #191813)"
+          stroke="rgba(0,0,0,.16)"
+          stroke-width="1.5"
+        />
+        <path d="M104 30 Q150 22 196 30 Q178 74 150 76 Q122 74 104 30Z" fill="rgba(0,0,0,.18)" />
+        <rect x="106" y="216" width="88" height="52" rx="8" fill="rgba(0,0,0,.14)" />
+        <path
+          d="M126 40 L134 118 M174 40 L166 118"
+          stroke="rgba(255,255,255,.3)"
+          stroke-width="4"
+          stroke-linecap="round"
+        />
+      </symbol>
+
+      {% comment %} registration mark - print furniture {% endcomment %}
+      <symbol id="ab-regmark" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="6.5" fill="none" stroke="currentColor" stroke-width="1" />
+        <path d="M12 0V24M0 12H24" stroke="currentColor" stroke-width="1" />
+      </symbol>
+
+      <symbol id="ab-mark" viewBox="0 0 100 96">
+        <path d="M50 4 L96 92 H70 L50 50 L30 92 H4 Z" />
+      </symbol>
+
+      <symbol id="ab-tick" viewBox="0 0 16 16">
+        <path
+          d="M3 8.5L6.2 11.5L13 4.5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </symbol>
+    </defs>
+  </svg>
+{%- endunless -%}

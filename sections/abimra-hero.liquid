@@ -1,0 +1,264 @@
+{% render 'abimra-symbols' %}
+
+{%- liquid
+  assign feature_blocks = section.blocks | where: 'type', 'feature'
+-%}
+
+<div class="ab-section">
+  <header class="ab-hero">
+    <div class="ab-wrap">
+      <div class="ab-hero-grid">
+        <div>
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="ab-eyebrow"><i></i>{{ section.settings.eyebrow | escape }}</p>
+          {%- endif -%}
+
+          {%- comment -%}
+            Two masked lines. The accent word is pulled out of line one so the
+            guide's "one coloured word per headline, total" rule is enforced by
+            the markup rather than by discipline.
+          {%- endcomment -%}
+          <h1 class="ab-d1" data-ab-headline>
+            <span class="ab-ln"
+              ><span>
+                {%- if section.settings.accent_word != blank -%}
+                  <span class="ab-accent">{{ section.settings.accent_word | escape }}</span>
+                {%- endif -%}
+                {{ section.settings.headline_line_1 | escape }}</span
+              ></span
+            >
+            {%- if section.settings.headline_line_2 != blank -%}
+              <span class="ab-ln"><span>{{ section.settings.headline_line_2 | escape }}</span></span>
+            {%- endif -%}
+          </h1>
+
+          {%- if section.settings.subheading != blank -%}
+            <p class="ab-hero-sub ab-rv ab-rv-1">{{ section.settings.subheading | escape }}</p>
+          {%- endif -%}
+
+          {%- if section.settings.cta_primary_label != blank or section.settings.cta_secondary_label != blank -%}
+            <div class="ab-hero-cta ab-rv ab-rv-2">
+              {%- if section.settings.cta_primary_label != blank -%}
+                <a
+                  class="ab-btn ab-btn-p"
+                  href="{{ section.settings.cta_primary_link | default: '#' }}"
+                >
+                  {{- section.settings.cta_primary_label | escape -}}
+                </a>
+              {%- endif -%}
+              {%- if section.settings.cta_secondary_label != blank -%}
+                <a
+                  class="ab-btn ab-btn-s"
+                  href="{{ section.settings.cta_secondary_link | default: '#' }}"
+                >
+                  {{- section.settings.cta_secondary_label | escape -}}
+                </a>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.rating_text != blank -%}
+            <div class="ab-hero-proof ab-rv ab-rv-3">
+              {%- if section.settings.avatar_initials != blank -%}
+                <div class="ab-avs">
+                  {%- assign initials = section.settings.avatar_initials | split: ',' -%}
+                  {%- for pair in initials -%}
+                    <span>{{ pair | strip | escape }}</span>
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+              <div><span class="ab-stars">★★★★★</span> {{ section.settings.rating_text | escape }}</div>
+            </div>
+          {%- endif -%}
+
+          {%- if feature_blocks.size > 0 -%}
+            <div class="ab-hero-feats ab-rv ab-rv-3">
+              {%- for block in feature_blocks -%}
+                <div class="ab-hero-feat" {{ block.shopify_attributes }}>
+                  {%- case block.settings.icon -%}
+                    {%- when 'print' -%}
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M7 3 9.5 4.6a3 3 0 0 0 5 0L17 3l3.2 1.6L22 9l-3 1.3V21H5V10.3L2 9l1.8-4.4Z"/></svg>
+                    {%- when 'delivery' -%}
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10v9H2zM12 10h4.5l3.5 3.2V16H12z"/><circle cx="6.5" cy="18.5" r="1.9"/><circle cx="16.5" cy="18.5" r="1.9"/></svg>
+                    {%- else -%}
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5 13.9 9 20.5 11l-6.6 2L12 19.5 10.1 13 3.5 11 10.1 9Z"/></svg>
+                  {%- endcase -%}
+                  <span>{{ block.settings.label | escape | newline_to_br }}</span>
+                </div>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%}
+          The mat colour is sampled from the collage's own background so the
+          two read as one surface. Re-export the image and this must be
+          resampled, or a visible rectangle appears around it.
+        {%- endcomment -%}
+        <div
+          class="ab-hero-art ab-rv ab-rv-2"
+          style="background-color: {{ section.settings.collage_mat_color }};"
+        >
+          {%- if section.settings.collage_image != blank -%}
+            {{
+              section.settings.collage_image
+              | image_url: width: 1200
+              | image_tag:
+                loading: 'eager',
+                fetchpriority: 'high',
+                widths: '400, 600, 800, 1000, 1200',
+                sizes: '(min-width: 1025px) 46vw, 92vw',
+                alt: section.settings.collage_image.alt | default: section.settings.headline_line_1
+            }}
+          {%- else -%}
+            {{ 'hero-apparel-1' | placeholder_svg_tag: 'ab-placeholder' }}
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </header>
+</div>
+
+{% schema %}
+{
+  "name": "ABIMRA hero",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Printed to order. Delivered across the UK.",
+      "info": "Preceded by a pulsing red dot. Sentence case - never tracked-out caps."
+    },
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "text",
+      "id": "accent_word",
+      "label": "Accent word",
+      "default": "Design",
+      "info": "Shown in red at the start of line one. Only one coloured word per headline."
+    },
+    {
+      "type": "text",
+      "id": "headline_line_1",
+      "label": "Headline line 1",
+      "default": "it,"
+    },
+    {
+      "type": "text",
+      "id": "headline_line_2",
+      "label": "Headline line 2",
+      "default": "wear it.",
+      "info": "Keep each line short enough to stay on one line on desktop."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Upload your artwork, add text, design it however you like. We print it and send it to you."
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "cta_primary_label",
+      "label": "Primary button",
+      "default": "Design your own",
+      "info": "One primary button per view. No arrow after the label - the verb does the work."
+    },
+    {
+      "type": "url",
+      "id": "cta_primary_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "cta_secondary_label",
+      "label": "Secondary button",
+      "default": "Shop Studio Originals"
+    },
+    {
+      "type": "url",
+      "id": "cta_secondary_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Proof"
+    },
+    {
+      "type": "text",
+      "id": "avatar_initials",
+      "label": "Avatar initials",
+      "default": "HM, DO, PR, +",
+      "info": "Comma separated. Shown as overlapping circles."
+    },
+    {
+      "type": "text",
+      "id": "rating_text",
+      "label": "Rating text",
+      "default": "4.9 from 126 orders"
+    },
+    {
+      "type": "header",
+      "content": "Collage"
+    },
+    {
+      "type": "image_picker",
+      "id": "collage_image",
+      "label": "Collage image",
+      "info": "Choose hero-image from your Files."
+    },
+    {
+      "type": "color",
+      "id": "collage_mat_color",
+      "label": "Mat colour",
+      "default": "#F3EFE5",
+      "info": "Sample this from the image's own background, or a rectangle appears around it."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "print", "label": "Print quality" },
+            { "value": "delivery", "label": "Delivery" },
+            { "value": "star", "label": "No minimum" }
+          ],
+          "default": "print"
+        },
+        {
+          "type": "textarea",
+          "id": "label",
+          "label": "Label",
+          "default": "High quality\nprinting",
+          "info": "Two short lines reads best. Press Enter between them."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "ABIMRA hero",
+      "blocks": [
+        { "type": "feature", "settings": { "icon": "print", "label": "High quality\nprinting" } },
+        { "type": "feature", "settings": { "icon": "delivery", "label": "Delivered across\nthe UK" } },
+        { "type": "feature", "settings": { "icon": "star", "label": "No minimum\norder" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

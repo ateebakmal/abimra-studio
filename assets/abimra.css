@@ -1,0 +1,1427 @@
+/* ============================================================
+   ABIMRA Studio — design system
+   Ported from design-guides/abimra-tokens.css + abimra-mockup.html.
+
+   TWO DELIBERATE DEPARTURES FROM THE SOURCE FILES:
+
+   1. MOBILE-FIRST. The mockup is desktop-first (max-width) because it
+      grew that way; the guide (§7) asks the theme to be written
+      mobile-first. Base styles below are the phone styles and
+      complexity is added upward at 401 / 641 / 769 / 861 / 1025.
+
+   2. NAMESPACED. Every component class is prefixed `ab-`. Dawn already
+      defines .card (306 rules), .price (69) and .badge (4); reusing
+      those names would silently restyle the product and collection
+      pages. Layout tokens are prefixed too (--ab-sec, --ab-pm, --ab-mw,
+      --ab-e). The colour tokens keep their documented names because
+      they are collision-free and §8 exposes three of them as theme
+      settings.
+
+   Load-bearing rules from the guide:
+     - --red is a BRAND colour, never an error colour.
+     - No box-shadow on cards. Separation = value + hairline.
+     - Every grid track is minmax(0,1fr), never 1fr.
+     - Reveal classes are .ab-rv / .ab-rv-1..3, NEVER .d1/.d2/.d3.
+   ============================================================ */
+
+:root {
+  /* paper and ink */
+  --paper: #eeeae0;
+  --paper-raised: #f7f5ef;
+  --ink: #191813;
+  --graphite: #5f5b52;
+  --rule: #d6d1c4;
+  --rule-inv: rgba(255, 255, 255, 0.14);
+
+  /* two inks */
+  --red: #d42e12;
+  --red-deep: #a32209;
+  --red-wash: #fbe7e1;
+  --blue: #1b4fa0;
+  --blue-wash: #e3eaf6;
+
+  /* state — note --stop is deliberately duller than --red */
+  --ok: #2f6f4e;
+  --warn: #a9761a;
+  --stop: #7e1b08;
+
+  /* photographic backdrops, behind garments only */
+  --b-sand: #e8e2d4;
+  --b-stone: #dcd9cf;
+  --b-blue: #e3eaf6;
+  --b-red: #fbe7e1;
+  --b-sage: #dfe7dc;
+  --b-straw: #ede3c9;
+
+  --ab-f: 'Archivo', system-ui, -apple-system, sans-serif;
+  --ab-f-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --r-card: 20px;
+  --r-band: 28px;
+  --r-input: 8px;
+  --r-pill: 999px;
+
+  /* mobile values; stepped up at 641 and 1025 */
+  --ab-sec: 64px;
+  --ab-pm: 20px;
+  --ab-mw: 1200px;
+  --ab-e: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* Hand Archivo to Dawn's own type variables so the whole store -
+     product, collection, cart - picks it up without touching Dawn's CSS. */
+  --font-body-family: var(--ab-f);
+  --font-heading-family: var(--ab-f);
+}
+
+/* ---------------------------------------------------------- *
+ * Type scale
+ * ---------------------------------------------------------- */
+
+.ab-d1,
+.ab-d2,
+.ab-d3 {
+  font-family: var(--ab-f);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.ab-d1 {
+  font-size: clamp(38px, 11.5vw, 54px);
+  line-height: 0.86;
+  font-variation-settings: 'wdth' 82, 'wght' 800;
+}
+
+.ab-d2 {
+  font-size: clamp(34px, 4.6vw, 54px);
+  line-height: 0.94;
+  font-variation-settings: 'wdth' 82, 'wght' 800;
+}
+
+.ab-d3 {
+  font-size: clamp(24px, 2.6vw, 32px);
+  line-height: 0.98;
+  font-variation-settings: 'wdth' 85, 'wght' 800;
+}
+
+.ab-ttl {
+  font-size: 22px;
+  line-height: 1.25;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+  margin: 0;
+}
+
+.ab-meta {
+  font-size: 14px;
+  color: var(--graphite);
+}
+
+/* Mono is functional only - digits that must stay aligned. Never decorative. */
+.ab-num {
+  font-family: var(--ab-f-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------- *
+ * Shell
+ * ---------------------------------------------------------- */
+
+.ab-section {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--ab-f);
+  font-variation-settings: 'wdth' 100, 'wght' 400;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.ab-section img,
+.ab-section svg {
+  display: block;
+  max-width: 100%;
+}
+
+.ab-section a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ab-section p {
+  max-width: 66ch;
+}
+
+.ab-wrap {
+  max-width: var(--ab-mw);
+  margin: 0 auto;
+  padding: 0 var(--ab-pm);
+}
+
+.ab-sec {
+  padding: var(--ab-sec) 0;
+}
+
+.ab-sec-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 54px; /* heavy condensed caps need the room; 38px read cluttered */
+}
+
+.ab-sec-head p,
+.ab-sec-head .ab-meta {
+  margin: 0;
+  max-width: 44ch;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* ---------------------------------------------------------- *
+ * Buttons - hover darkens the fill. No lift, no scale, no shadow.
+ * ---------------------------------------------------------- */
+
+.ab-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: var(--r-pill);
+  border: 1px solid transparent;
+  font-family: var(--ab-f);
+  font-variation-settings: 'wdth' 100, 'wght' 500;
+  font-size: 15px;
+  text-align: center;
+  transition: background 0.12s var(--ab-e), color 0.12s var(--ab-e);
+}
+
+.ab-btn-p {
+  background: var(--red);
+  color: #fff;
+}
+
+.ab-btn-p:hover {
+  background: var(--red-deep);
+  color: #fff;
+}
+
+.ab-btn-s {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.ab-btn-s:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.ab-btn-i {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.ab-btn-sm {
+  min-height: 42px;
+  padding: 0 16px;
+  font-size: 14px;
+}
+
+.ab-btn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.ab-btn-badge {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 -10px 0 14px;
+  color: #fff;
+  flex: none;
+}
+
+.ab-btn-p .ab-btn-badge {
+  background: var(--ink);
+}
+
+/* ---------------------------------------------------------- *
+ * Surfaces
+ * ---------------------------------------------------------- */
+
+.ab-panel {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+}
+
+.ab-band {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 20px;
+  padding: 38px 20px;
+}
+
+.ab-band .ab-d1,
+.ab-band .ab-d2,
+.ab-band .ab-d3 {
+  color: var(--paper);
+}
+
+.ab-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  font-size: 12px;
+  font-variation-settings: 'wdth' 100, 'wght' 500;
+}
+
+.ab-chip-red {
+  background: var(--red);
+  color: #fff;
+}
+
+/* colour bar - print furniture */
+.ab-bar {
+  display: flex;
+  gap: 4px;
+}
+
+.ab-bar span {
+  width: 40px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------- *
+ * Reveal on scroll. NOT named .d1/.d2/.d3 - those are the display
+ * scale, and the hero subline would inherit an 84px headline style.
+ * ---------------------------------------------------------- */
+
+.ab-rv {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.75s var(--ab-e), transform 0.75s var(--ab-e);
+}
+
+.ab-rv.ab-in {
+  opacity: 1;
+  transform: none;
+}
+
+.ab-rv-1 {
+  transition-delay: 0.08s;
+}
+
+.ab-rv-2 {
+  transition-delay: 0.16s;
+}
+
+.ab-rv-3 {
+  transition-delay: 0.24s;
+}
+
+/* ---------------------------------------------------------- *
+ * Hero
+ * ---------------------------------------------------------- */
+
+.ab-hero {
+  padding: 36px 0;
+}
+
+.ab-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 38px;
+  align-items: center;
+}
+
+.ab-hero .ab-d1 {
+  font-size: clamp(38px, 11.5vw, 54px);
+}
+
+.ab-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15px;
+  color: var(--graphite);
+  margin: 0 0 18px;
+}
+
+.ab-eyebrow i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+  flex: none;
+  animation: ab-pulse 2.4s ease-in-out infinite;
+}
+
+/* The mask exists for the rise; .ab-done restores overflow so
+   descenders are not clipped afterwards. */
+.ab-d1 .ab-ln {
+  display: block;
+  overflow: hidden;
+  padding: 0.06em 0.1em 0.14em 0;
+  margin: -0.06em 0 -0.14em 0;
+}
+
+.ab-d1.ab-done .ab-ln {
+  overflow: visible;
+}
+
+.ab-d1 .ab-ln > span {
+  display: inline-block;
+  animation: ab-rise 0.95s var(--ab-e) both;
+}
+
+.ab-d1 .ab-ln:nth-child(2) > span {
+  animation-delay: 0.12s;
+}
+
+/* One coloured word in a headline, total. */
+.ab-d1 .ab-accent {
+  color: var(--red);
+}
+
+@keyframes ab-rise {
+  from {
+    transform: translateY(108%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes ab-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.55;
+  }
+}
+
+.ab-hero-sub {
+  margin: 22px 0 0;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--graphite);
+  max-width: 36ch;
+}
+
+.ab-hero-cta {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.ab-hero-proof {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--graphite);
+  flex-wrap: wrap;
+}
+
+.ab-avs {
+  display: flex;
+  padding-left: 8px;
+}
+
+.ab-avs span {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--b-sand);
+  border: 2px solid var(--paper);
+  margin-left: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+  color: var(--graphite);
+}
+
+.ab-stars {
+  color: var(--red);
+  letter-spacing: 2px;
+}
+
+.ab-hero-feats {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-top: 34px;
+}
+
+.ab-hero-feat {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 168px;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--graphite);
+}
+
+.ab-hero-feat svg {
+  flex: none;
+  color: var(--ink);
+  margin-top: 1px;
+}
+
+/* The collage sits on a dotted mat sampled from the image's own
+   background, so the two read as one surface. If the image is
+   re-exported, resample and update the inline background-color. */
+.ab-hero-art {
+  position: relative;
+  border-radius: var(--r-band);
+  overflow: hidden;
+  padding: 16px;
+  background-image: radial-gradient(rgba(25, 24, 19, 0.1) 1.1px, transparent 1.1px);
+  background-size: 12px 12px;
+}
+
+.ab-hero-art img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 18px;
+}
+
+/* ---------------------------------------------------------- *
+ * Marquee - on the page ground with hairlines, not a raised strip
+ * ---------------------------------------------------------- */
+
+.ab-marquee {
+  overflow: hidden;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 19px 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%);
+}
+
+.ab-mq-track {
+  display: flex;
+  width: max-content;
+  animation: ab-mq var(--ab-mq-speed, 52s) linear infinite;
+}
+
+.ab-marquee:hover .ab-mq-track {
+  animation-play-state: paused;
+}
+
+.ab-mq-set {
+  display: flex;
+  flex: none;
+}
+
+.ab-mq-set span {
+  display: inline-flex;
+  align-items: center;
+  gap: 30px;
+  padding-right: 30px;
+  font-size: 17px;
+  white-space: nowrap;
+  font-variation-settings: 'wdth' 100, 'wght' 400;
+}
+
+/* separator is a registration mark in press red */
+.ab-mq-set span::after {
+  content: '';
+  width: 13px;
+  height: 13px;
+  flex: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D42E12' stroke-width='1.7'%3E%3Ccircle cx='12' cy='12' r='6.5'/%3E%3Cpath d='M12 .5v23M.5 12h23'/%3E%3C/svg%3E")
+    center/contain no-repeat;
+}
+
+@keyframes ab-mq {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------------------------------------------------------- *
+ * Steps. Base = phone: image centred above the text (≤400 in the
+ * mockup). 401 adds the horizontal layout, 861 the vertical card.
+ * ---------------------------------------------------------- */
+
+.ab-steps-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 38px;
+}
+
+.ab-steps-head p {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 16px;
+}
+
+.ab-steps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+}
+
+/* 24px is deliberate - between --r-card and --r-band */
+.ab-step {
+  position: relative;
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: 24px;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.ab-step.ab-dark {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.ab-step-img {
+  grid-column: 1;
+  grid-row: 1;
+  max-width: 186px;
+  margin: 0 auto 14px;
+}
+
+.ab-step-img img {
+  width: 100%;
+  display: block;
+}
+
+.ab-step-n {
+  grid-column: 1;
+  grid-row: 2;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ab-f-mono);
+  font-size: 10px;
+  margin-bottom: 5px;
+}
+
+.ab-step.ab-dark .ab-step-n {
+  border-color: rgba(238, 234, 224, 0.7);
+  color: var(--paper);
+}
+
+.ab-step h3 {
+  grid-column: 1;
+  grid-row: 3;
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+}
+
+.ab-step p {
+  grid-column: 1;
+  grid-row: 4;
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--graphite);
+}
+
+.ab-step.ab-dark p {
+  color: rgba(238, 234, 224, 0.64);
+}
+
+.ab-steps-cta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+/* ---------------------------------------------------------- *
+ * Photo card with credit badge. The most valuable component on the
+ * site - it proves these are customer designs, not stock.
+ * ---------------------------------------------------------- */
+
+.ab-worn-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.ab-ph {
+  position: relative;
+  margin: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: var(--b-stone);
+}
+
+.ab-ph img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ab-ph-cap {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: nowrap;
+  background: rgba(247, 245, 239, 0.94);
+  border-radius: 9px;
+  padding: 6px 7px;
+}
+
+.ab-ph-cap > div {
+  min-width: 0;
+}
+
+.ab-ph-cap b {
+  display: block;
+  font-size: 10px;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ab-ph-cap span {
+  display: block;
+  font-size: 9px;
+  color: var(--graphite);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* the prefix hides on phones so the name stays on one line */
+.ab-ph-by {
+  display: none;
+  font-style: normal;
+}
+
+.ab-ph-tick {
+  margin-left: auto;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.ab-ph-tick svg {
+  width: 9px;
+  height: 9px;
+}
+
+/* ---------------------------------------------------------- *
+ * Carousels. These scroll at EVERY width, not just mobile. The
+ * negative inline margin bleeds them to the screen edge while the
+ * first card stays on the grid - that is what makes it feel native.
+ * ---------------------------------------------------------- */
+
+.ab-rail {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  margin-inline: calc(var(--ab-pm) * -1);
+  padding-inline: var(--ab-pm);
+  padding-bottom: 6px;
+}
+
+.ab-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.ab-rail > * {
+  scroll-snap-align: start;
+}
+
+.ab-rail-prod > * {
+  flex: 0 0 63%;
+}
+
+.ab-rail-cat > * {
+  flex: 0 0 57%;
+}
+
+.ab-prod {
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+  overflow: hidden;
+  background: var(--paper-raised);
+}
+
+.ab-prod-img {
+  aspect-ratio: 4 / 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.ab-prod-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ab-prod-img .ab-chip {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 1;
+}
+
+.ab-prod-b {
+  padding: 12px 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.ab-prod-b .ab-ttl {
+  font-size: 15px;
+}
+
+.ab-cost {
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.ab-cat-card {
+  border-radius: var(--r-card);
+  padding: 20px;
+  min-height: 176px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid var(--rule);
+}
+
+.ab-cat-card .ab-d3 {
+  font-size: 21px;
+}
+
+.ab-cat-card:hover .ab-d3 {
+  color: var(--red);
+}
+
+.ab-cat-card.ab-dark {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.ab-cat-card.ab-dark .ab-d3 {
+  color: var(--paper);
+}
+
+.ab-cat-card.ab-dark .ab-meta {
+  color: rgba(238, 234, 224, 0.6);
+}
+
+/* ---------------------------------------------------------- *
+ * Testimonials. Base = the swipeable deck (the mockup's ≤768
+ * behaviour); the desktop scatter is added at 769.
+ *
+ * Cards are opaque surfaces. NEVER fade them - you would read the
+ * card behind through the one in front mid-animation.
+ * ---------------------------------------------------------- */
+
+.ab-quotes {
+  display: grid;
+  padding: 18px 0 46px;
+}
+
+.ab-quote {
+  grid-area: 1 / 1;
+  align-self: stretch;
+  border-radius: 20px;
+  padding: 26px 24px;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.32s var(--ab-e);
+  will-change: transform;
+}
+
+/* equal height, attribution pinned - otherwise quote length decides
+   how far each card peeks and the stack looks random */
+.ab-quote .ab-q-who {
+  margin-top: auto;
+}
+
+.ab-quote.ab-dragging {
+  transition: none;
+}
+
+.ab-quote.ab-flying {
+  transition: transform 0.22s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.ab-quote.ab-noanim {
+  transition: none;
+}
+
+.ab-quote[data-pos='0'] {
+  transform: none;
+  z-index: 3;
+}
+
+.ab-quote[data-pos='1'] {
+  transform: rotate(-2.6deg) translateY(17px) scale(0.955);
+  z-index: 2;
+}
+
+.ab-quote[data-pos='2'] {
+  transform: rotate(2.2deg) translateY(34px) scale(0.912);
+  z-index: 1;
+}
+
+.ab-quote[data-pos='0']:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+.ab-q-light {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+}
+
+.ab-q-dark {
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--ink);
+}
+
+.ab-q-stars {
+  color: var(--red);
+  letter-spacing: 3px;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.ab-quote p {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.55;
+}
+
+.ab-q-dark p {
+  color: rgba(238, 234, 224, 0.82);
+}
+
+.ab-q-who {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+}
+
+.ab-q-dark .ab-q-who {
+  border-color: var(--rule-inv);
+}
+
+.ab-q-av {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--b-sand);
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+}
+
+.ab-q-dark .ab-q-av {
+  background: rgba(238, 234, 224, 0.14);
+  color: var(--paper);
+}
+
+.ab-q-who b {
+  display: block;
+  font-size: 14px;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+}
+
+.ab-q-who span {
+  font-size: 12.5px;
+  color: var(--graphite);
+}
+
+.ab-q-dark .ab-q-who span {
+  color: rgba(238, 234, 224, 0.55);
+}
+
+/* dots are the direct-access and keyboard route */
+.ab-q-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.ab-q-dots button {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ab-q-dots button::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--rule);
+  transition: background 0.2s;
+}
+
+.ab-q-dots button.ab-on::before {
+  background: var(--ink);
+}
+
+.ab-q-dots button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -2px;
+  border-radius: 50%;
+}
+
+.ab-q-hint {
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  color: var(--graphite);
+  margin: 10px 0 0;
+  transition: opacity 0.3s;
+}
+
+.ab-quotes.ab-touched ~ .ab-q-hint {
+  opacity: 0;
+}
+
+/* ---------------------------------------------------------- *
+ * Closing band
+ * ---------------------------------------------------------- */
+
+.ab-closer {
+  position: relative;
+  overflow: hidden;
+  padding: 56px 20px;
+  text-align: center;
+}
+
+.ab-closer-dots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(238, 234, 224, 0.14) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+
+.ab-closer-in {
+  position: relative;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.ab-closer-mark {
+  width: 48px;
+  height: auto;
+  fill: var(--red);
+  margin: 0 auto 20px;
+  display: block;
+}
+
+.ab-closer .ab-d1 {
+  font-size: clamp(40px, 5.4vw, 68px);
+  color: var(--paper);
+  margin: 0;
+}
+
+.ab-closer p {
+  margin: 20px auto 0;
+  max-width: 46ch;
+  font-size: 17px;
+  line-height: 1.55;
+  color: rgba(238, 234, 224, 0.66);
+}
+
+.ab-closer .ab-btn {
+  margin-top: 32px;
+}
+
+/* ============================================================
+   401px and up - step cards go horizontal, image left
+   ============================================================ */
+
+@media screen and (min-width: 401px) {
+  .ab-step {
+    grid-template-columns: 124px minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+    column-gap: 15px;
+    align-items: start;
+    padding: 16px;
+  }
+
+  .ab-step-img {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    align-self: center;
+    max-width: none;
+    margin: 0;
+  }
+
+  .ab-step-n {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .ab-step h3 {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 15.5px;
+    line-height: 1.2;
+  }
+
+  .ab-step p {
+    grid-column: 2;
+    grid-row: 3;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+}
+
+/* ============================================================
+   641px and up - spacing steps up, photo captions relax,
+   carousels take fixed-width cards
+   ============================================================ */
+
+@media screen and (min-width: 641px) {
+  :root {
+    --ab-sec: 92px;
+    --ab-pm: 32px;
+  }
+
+  .ab-hero {
+    padding: 52px 0 44px;
+  }
+
+  .ab-hero .ab-d1 {
+    font-size: clamp(52px, 6.6vw, 88px);
+  }
+
+  .ab-hero-sub {
+    font-size: 17px;
+  }
+
+  .ab-btn {
+    min-height: 46px;
+    font-size: 16px;
+    padding: 0 24px;
+  }
+
+  .ab-btn-sm {
+    min-height: 38px;
+    padding: 0 16px;
+    font-size: 14px;
+  }
+
+  .ab-band {
+    padding: 52px 34px;
+    border-radius: var(--r-band);
+  }
+
+  .ab-worn-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .ab-ph {
+    border-radius: 20px;
+  }
+
+  .ab-ph-cap {
+    left: 11px;
+    right: 11px;
+    bottom: 11px;
+    padding: 9px 10px;
+    gap: 10px;
+    border-radius: 13px;
+  }
+
+  .ab-ph-cap b {
+    font-size: 12.5px;
+  }
+
+  .ab-ph-cap span {
+    font-size: 11px;
+  }
+
+  .ab-ph-by {
+    display: inline;
+  }
+
+  .ab-ph-tick {
+    width: 23px;
+    height: 23px;
+  }
+
+  .ab-ph-tick svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .ab-rail {
+    gap: 20px;
+  }
+
+  .ab-rail-prod > *,
+  .ab-rail-cat > * {
+    flex: 0 0 288px;
+  }
+
+  .ab-prod-b {
+    padding: 16px 18px 20px;
+  }
+
+  .ab-cat-card {
+    padding: 28px;
+    min-height: 232px;
+  }
+
+  .ab-cat-card .ab-d3 {
+    font-size: 26px;
+  }
+
+  .ab-step {
+    grid-template-columns: 168px minmax(0, 1fr);
+    column-gap: 22px;
+    padding: 18px;
+  }
+
+  .ab-step-n {
+    width: 32px;
+    height: 32px;
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+
+  .ab-step h3 {
+    font-size: 17px;
+  }
+
+  .ab-step p {
+    font-size: 14px;
+  }
+
+  .ab-q-av {
+    width: 38px;
+    height: 38px;
+  }
+
+  .ab-closer {
+    padding: 104px 40px;
+  }
+
+  .ab-closer-mark {
+    width: 62px;
+    margin-bottom: 26px;
+  }
+}
+
+/* ============================================================
+   769px and up - testimonials become the desktop scatter
+   ============================================================ */
+
+@media screen and (min-width: 769px) {
+  .ab-quotes {
+    display: flex;
+    align-items: flex-start;
+    padding: 28px 0 12px;
+  }
+
+  .ab-quote {
+    flex: 1;
+    grid-area: auto;
+    cursor: default;
+    display: block;
+    transition: transform 0.2s var(--ab-e);
+    transform: none;
+  }
+
+  .ab-quote:nth-child(1) {
+    transform: rotate(-2deg);
+    z-index: 1;
+  }
+
+  .ab-quote:nth-child(2) {
+    transform: rotate(1.5deg);
+    margin: 36px -18px 0;
+    z-index: 3;
+  }
+
+  .ab-quote:nth-child(3) {
+    transform: rotate(-1deg);
+    z-index: 2;
+  }
+
+  .ab-quote:hover {
+    transform: rotate(0);
+  }
+
+  .ab-q-dots,
+  .ab-q-hint {
+    display: none;
+  }
+}
+
+/* ============================================================
+   861px and up - step cards return to the vertical card,
+   three across
+   ============================================================ */
+
+@media screen and (min-width: 861px) {
+  .ab-steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ab-step {
+    display: flex;
+    flex-direction: column;
+    padding: 22px;
+  }
+
+  .ab-step-img {
+    margin: 0 0 16px;
+    max-width: none;
+  }
+
+  .ab-step-n {
+    position: absolute;
+    top: 26px;
+    left: 26px;
+    z-index: 2;
+    width: 46px;
+    height: 46px;
+    font-size: 13px;
+    margin-bottom: 0;
+  }
+
+  .ab-step h3 {
+    font-size: 20px;
+    margin: 0 0 8px;
+  }
+
+  .ab-step p {
+    font-size: 15px;
+  }
+}
+
+/* ============================================================
+   1025px and up - full desktop
+   ============================================================ */
+
+@media screen and (min-width: 1025px) {
+  :root {
+    --ab-sec: 124px;
+    --ab-pm: 40px;
+  }
+
+  .ab-hero {
+    padding: 60px 0 54px;
+  }
+
+  /* Near-even split is load-bearing: at 0.9/1.1 the headline wrapped
+     to three lines. Verify "DESIGN IT," still fits on one line after
+     any change here. */
+  .ab-hero-grid {
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+    gap: 48px;
+  }
+
+  .ab-band {
+    padding: 72px 56px;
+  }
+}
+
+/* ============================================================
+   Reduced motion - all of it, in one block.
+   (A missing brace here once silently swallowed every rule after it.)
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-rv {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .ab-d1 .ab-ln > span {
+    animation: none;
+  }
+
+  .ab-eyebrow i {
+    animation: none;
+  }
+
+  .ab-mq-track {
+    animation: none;
+  }
+
+  .ab-quote {
+    transition: none;
+  }
+}

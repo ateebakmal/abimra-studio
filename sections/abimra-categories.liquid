@@ -1,0 +1,142 @@
+
+{%- comment -%}
+  A horizontal rail that scrolls at EVERY width, not just mobile. Above
+  1280 the cards fit without scrolling; below that they scroll and the
+  next card peeks at the edge. That peek is the affordance - no arrows,
+  no dots.
+
+  The negative inline margin bleeds the rail to the screen edge while
+  the first card stays on the grid. Don't remove it.
+{%- endcomment -%}
+
+{%- liquid
+  assign cards = section.blocks | where: 'type', 'category'
+-%}
+
+<div class="ab-section">
+  <section class="ab-sec">
+    <div class="ab-wrap">
+      <div class="ab-sec-head ab-rv">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="ab-d2">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.body != blank -%}
+          <p class="ab-meta">{{ section.settings.body | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- if cards.size > 0 -%}
+        <div class="ab-rail ab-rail-cat ab-rv ab-rv-1">
+          {%- for block in cards -%}
+            {%- liquid
+              assign target = block.settings.link
+              if block.settings.collection != blank
+                assign target = block.settings.collection.url
+              endif
+
+              assign label = block.settings.heading
+              if label == blank and block.settings.collection != blank
+                assign label = block.settings.collection.title
+              endif
+            -%}
+            <a
+              class="ab-cat-card{% if block.settings.invert %} ab-dark{% endif %}"
+              href="{{ target | default: '#' }}"
+              {% unless block.settings.invert %}
+                style="background: {{ block.settings.background }};"
+              {% endunless %}
+              {{ block.shopify_attributes }}
+            >
+              <h3 class="ab-d3">{{ label | escape | newline_to_br }}</h3>
+              {%- if block.settings.caption != blank -%}
+                <span class="ab-meta">{{ block.settings.caption | escape }}</span>
+              {%- endif -%}
+            </a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "ABIMRA categories",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Customise apparel"
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection",
+          "info": "Its title and link are used unless you override them below."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading override"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link override"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption",
+          "default": "From £24.99"
+        },
+        {
+          "type": "color",
+          "id": "background",
+          "label": "Background",
+          "default": "#E8E2D4",
+          "info": "Use one of the photographic backdrops: sand #E8E2D4, sage #DFE7DC, blue #E3EAF6, straw #EDE3C9."
+        },
+        {
+          "type": "checkbox",
+          "id": "invert",
+          "label": "Invert this card",
+          "default": false,
+          "info": "Dark card. Use on the last one as a catch-all."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "ABIMRA categories",
+      "blocks": [
+        { "type": "category", "settings": { "heading": "T-shirts", "caption": "From £24.99", "background": "#E8E2D4" } },
+        { "type": "category", "settings": { "heading": "Hoodies", "caption": "From £44.99", "background": "#DFE7DC" } },
+        {
+          "type": "category",
+          "settings": { "heading": "Sweatshirts", "caption": "From £39.99", "background": "#E3EAF6" }
+        },
+        {
+          "type": "category",
+          "settings": { "heading": "See\neverything", "caption": "Caps, totes and more", "invert": true }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

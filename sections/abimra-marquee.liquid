@@ -1,0 +1,90 @@
+
+{%- comment -%}
+  Content is capabilities, not slogans - what the tool does, dispatch
+  speed, that group orders exist.
+
+  The track holds the items twice; the keyframe translates -50%, so the
+  loop is seamless. Both copies must stay identical.
+{%- endcomment -%}
+
+{%- liquid
+  assign items = section.blocks | where: 'type', 'item'
+-%}
+
+{%- if items.size > 0 -%}
+  <div class="ab-section">
+    <div
+      class="ab-marquee"
+      style="--ab-mq-speed: {{ section.settings.speed }}s;"
+      aria-label="{{ section.settings.aria_label | escape }}"
+    >
+      <div class="ab-mq-track">
+        {%- for pass in (1..2) -%}
+          <div class="ab-mq-set" {% if pass == 2 %}aria-hidden="true"{% endif %}>
+            {%- for block in items -%}
+              <span {% if pass == 1 %}{{ block.shopify_attributes }}{% endif %}>
+                {{- block.settings.text | escape -}}
+              </span>
+            {%- endfor -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "ABIMRA marquee",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 20,
+      "max": 90,
+      "step": 2,
+      "unit": "s",
+      "label": "Loop duration",
+      "default": 52,
+      "info": "Higher is slower. Pauses on hover."
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Accessible label",
+      "default": "What we do"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Printed in our own studio",
+          "info": "A capability, not a slogan."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "ABIMRA marquee",
+      "blocks": [
+        { "type": "item", "settings": { "text": "Tees, hoodies and sweatshirts" } },
+        { "type": "item", "settings": { "text": "Upload artwork or add text" } },
+        { "type": "item", "settings": { "text": "Front, back, chest or sleeve" } },
+        { "type": "item", "settings": { "text": "Background removed for you" } },
+        { "type": "item", "settings": { "text": "Live resolution check" } },
+        { "type": "item", "settings": { "text": "Printed in our own studio" } },
+        { "type": "item", "settings": { "text": "2–4 day dispatch" } },
+        { "type": "item", "settings": { "text": "One shirt or fifty" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

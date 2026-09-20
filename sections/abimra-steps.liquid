@@ -1,0 +1,177 @@
+
+{%- liquid
+  assign steps = section.blocks | where: 'type', 'step'
+-%}
+
+<div class="ab-section">
+  <section class="ab-sec">
+    <div class="ab-wrap">
+      <div class="ab-steps-head ab-rv">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="ab-d2">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.body != blank -%}
+          <p class="ab-meta" style="max-width: 320px; margin: 8px 0 0;">{{ section.settings.body | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- if steps.size > 0 -%}
+        <div class="ab-steps ab-rv ab-rv-1">
+          {%- for block in steps -%}
+            <div
+              class="ab-step{% if block.settings.invert %} ab-dark{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              <span class="ab-step-n ab-num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+
+              <div class="ab-step-img">
+                {%- if block.settings.image != blank -%}
+                  {{
+                    block.settings.image
+                    | image_url: width: 600
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '186, 248, 372, 496, 600',
+                      sizes: '(min-width: 861px) 30vw, (min-width: 401px) 168px, 186px',
+                      alt: block.settings.image.alt | default: block.settings.heading
+                  }}
+                {%- else -%}
+                  {{ 'image' | placeholder_svg_tag: 'ab-placeholder' }}
+                {%- endif -%}
+              </div>
+
+              {%- if block.settings.heading != blank -%}
+                <h3>{{ block.settings.heading | escape }}</h3>
+              {%- endif -%}
+              {%- if block.settings.body != blank -%}
+                <p>{{ block.settings.body | escape }}</p>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.cta_label != blank or section.settings.cta_note != blank -%}
+        <div class="ab-steps-cta ab-rv ab-rv-2">
+          {%- if section.settings.cta_label != blank -%}
+            <a class="ab-btn ab-btn-p" href="{{ section.settings.cta_link | default: '#' }}">
+              {{- section.settings.cta_label | escape -}}
+              <span class="ab-btn-badge" aria-hidden="true">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+              </span>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.cta_note != blank -%}
+            <span class="ab-meta">{{ section.settings.cta_note | escape }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "ABIMRA steps",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Designed by you, printed by us",
+      "info": "Keep it on one line. Don't break it manually."
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body",
+      "default": "Upload your artwork, add your text, choose your garment. See it on the real thing before you order."
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button",
+      "default": "Start designing"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "text",
+      "id": "cta_note",
+      "label": "Note beside button",
+      "default": "No account needed to try it."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Illustration",
+          "info": "Choose vector-art-step-1, -2 or -3 from your Files."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Upload your artwork"
+        },
+        {
+          "type": "textarea",
+          "id": "body",
+          "label": "Body",
+          "default": "Drop in a photo or a logo. We check the resolution live as you scale it."
+        },
+        {
+          "type": "checkbox",
+          "id": "invert",
+          "label": "Invert this card",
+          "default": false,
+          "info": "Dark card. Use on one step only - usually the middle."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "ABIMRA steps",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "heading": "Upload your artwork",
+            "body": "Drop in a photo or a logo. We check the resolution live as you scale it."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "heading": "Add your text",
+            "body": "Pick a typeface, set the colour, place it exactly where you want it.",
+            "invert": true
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "heading": "See it before you buy",
+            "body": "A live preview on the exact garment and colour you picked."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
