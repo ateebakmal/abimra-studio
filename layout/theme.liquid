@@ -15,9 +15,9 @@
       <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
 
       {%- comment -%}
-        [ABIMRA] Archivo is variable with a real width axis, which the Shopify
+        [ABMIRA] Archivo is variable with a real width axis, which the Shopify
         font picker cannot give us - the display scale needs wdth 82 and the
-        interface wdth 100 from one file. Loaded once here; assets/abimra.css
+        interface wdth 100 from one file. Loaded once here; assets/abmira.css
         hands it to Dawn's --font-body-family / --font-heading-family so the
         whole store picks it up. IBM Plex Mono is functional only: figures that
         must stay aligned as a value changes.
@@ -29,20 +29,20 @@
         href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap"
       >
 
-      {{ 'abimra.css' | asset_url | stylesheet_tag }}
-      <script src="{{ 'abimra.js' | asset_url }}" defer="defer"></script>
+      {{ 'abmira.css' | asset_url | stylesheet_tag }}
+      <script src="{{ 'abmira.js' | asset_url }}" defer="defer"></script>
 
       {%- comment -%}
-        [ABIMRA] Only three tokens are exposed to the theme editor. The guide
+        [ABMIRA] Only three tokens are exposed to the theme editor. The guide
         is explicit that everything else stays fixed or the two-ink system
-        drifts into a generic palette. This block must come after abimra.css
+        drifts into a generic palette. This block must come after abmira.css
         so it wins - both selectors are :root, so source order decides.
       {%- endcomment -%}
       {%- style -%}
         :root {
-          --paper: {{ settings.abimra_paper }};
-          --ink: {{ settings.abimra_ink }};
-          --red: {{ settings.abimra_red }};
+          --paper: {{ settings.abmira_paper }};
+          --ink: {{ settings.abmira_ink }};
+          --red: {{ settings.abmira_red }};
         }
       {%- endstyle -%}
     {%- endunless -%}

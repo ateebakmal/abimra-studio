@@ -1,7 +1,7 @@
 /*
-  ABIMRA Studio — homepage behaviour.
-  Ported from design-guides/abimra-mockup.html, with the class names
-  namespaced to `ab-` (see assets/abimra.css for why).
+  ABMIRA Studio — homepage behaviour.
+  Ported from design-guides/abmira-mockup.html, with the class names
+  namespaced to `ab-` (see assets/abmira.css for why).
 
   Three things live here:
     1. Reveal-on-scroll for everything below the hero.
@@ -250,6 +250,105 @@
   }
 
   /* ------------------------------------------------------------------ *
+   * 4. Mobile drawer
+   *
+   * Only reachable below 861px, where the CSS displays it. Focus is
+   * trapped while open and returned to the trigger on close, and the page
+   * behind is locked so a scroll gesture inside the panel cannot chain
+   * out to the document.
+   * ------------------------------------------------------------------ */
+
+  var FOCUSABLE =
+    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+  function initDrawer(root) {
+    var drawer = (root || document).querySelector('[data-abmira-drawer]');
+    if (!drawer || drawer.dataset.abmiraReady === 'true') return;
+    drawer.dataset.abmiraReady = 'true';
+
+    var opener = document.querySelector('[data-abmira-drawer-open]');
+    var panel = drawer.querySelector('.ab-drawer-panel');
+    if (!opener || !panel) return;
+
+    function isOpen() {
+      return drawer.classList.contains('ab-open');
+    }
+
+    function open() {
+      drawer.classList.add('ab-open');
+      document.body.classList.add('ab-drawer-open');
+      opener.setAttribute('aria-expanded', 'true');
+      var first = panel.querySelector(FOCUSABLE);
+      if (first) first.focus();
+    }
+
+    function close(returnFocus) {
+      if (!isOpen()) return;
+      drawer.classList.remove('ab-open');
+      document.body.classList.remove('ab-drawer-open');
+      opener.setAttribute('aria-expanded', 'false');
+      if (returnFocus !== false) opener.focus();
+    }
+
+    opener.addEventListener('click', open);
+
+    Array.prototype.slice.call(drawer.querySelectorAll('[data-abmira-drawer-close]')).forEach(
+      function (el) {
+        el.addEventListener('click', function () {
+          close();
+        });
+      }
+    );
+
+    // A link inside the drawer navigates; drop the scroll lock so a
+    // same-page anchor does not leave the body frozen.
+    Array.prototype.slice.call(drawer.querySelectorAll('a[href]')).forEach(function (a) {
+      a.addEventListener('click', function () {
+        close(false);
+      });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (!isOpen()) return;
+
+      if (e.key === 'Escape') {
+        close();
+        return;
+      }
+
+      if (e.key !== 'Tab') return;
+
+      var items = Array.prototype.slice.call(panel.querySelectorAll(FOCUSABLE)).filter(function (el) {
+        return el.offsetParent !== null;
+      });
+      if (!items.length) return;
+
+      var first = items[0];
+      var lastItem = items[items.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        lastItem.focus();
+      } else if (!e.shiftKey && document.activeElement === lastItem) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
+
+    // Above 861px the drawer is display:none. If the window is widened
+    // while it is open, close it so the body lock cannot be stranded.
+    var wide = window.matchMedia('(min-width: 861px)');
+    var onWide = function (e) {
+      if (e.matches) close(false);
+    };
+    if (wide.addEventListener) {
+      wide.addEventListener('change', onWide);
+    } else if (wide.addListener) {
+      wide.addListener(onWide);
+    }
+  }
+
+  /* ------------------------------------------------------------------ *
    * Boot
    * ------------------------------------------------------------------ */
 
@@ -257,6 +356,7 @@
     initReveals(root);
     initHeadline(root);
     initDecks(root);
+    initDrawer(document);
   }
 
   if (document.readyState === 'loading') {

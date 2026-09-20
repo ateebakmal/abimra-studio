@@ -1,0 +1,134 @@
+{%- comment -%}
+  ABMIRA footer.
+
+  Three link columns beside a brand column, each driven by a Shopify
+  navigation menu so the links are editable in Online Store > Navigation.
+  Two columns on phones, four from 1025px.
+
+  The colour bar under the blurb is print furniture - a strip of swatches
+  standing in for a press colour bar. The guide allows two such devices
+  per page; the marquee's registration mark is the other one.
+{%- endcomment -%}
+
+{%- liquid
+  assign columns = section.blocks | where: 'type', 'column'
+-%}
+
+<div class="ab-foot">
+  <div class="ab-wrap">
+    <div class="ab-foot-grid">
+      <div>
+        <a href="{{ routes.root_url }}" class="ab-logo">
+          {{- section.settings.logo_text | default: shop.name | escape -}}
+        </a>
+
+        {%- if section.settings.blurb != blank -%}
+          <p class="ab-foot-blurb">{{ section.settings.blurb | escape | newline_to_br }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.show_colour_bar -%}
+          <div class="ab-bar" style="margin-top: 22px;" aria-hidden="true">
+            <span style="background: var(--red);"></span>
+            <span style="background: var(--blue);"></span>
+            <span style="background: var(--paper);"></span>
+            <span style="background: var(--graphite);"></span>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- for block in columns -%}
+        <div {{ block.shopify_attributes }}>
+          {%- if block.settings.heading != blank -%}
+            <h5>{{ block.settings.heading | escape }}</h5>
+          {%- endif -%}
+          {%- if block.settings.menu != blank -%}
+            <ul>
+              {%- for link in block.settings.menu.links -%}
+                <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <div class="ab-foot-bot">
+      <span>
+        &copy; {{ 'now' | date: '%Y' }}
+        {{ section.settings.logo_text | default: shop.name | escape }}
+        {{ section.settings.copyright_suffix | escape }}
+      </span>
+      {%- if section.settings.legal_text != blank -%}
+        <span>{{ section.settings.legal_text | escape }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Abmira footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo text",
+      "default": "Abmira",
+      "info": "Leave empty to use the store name."
+    },
+    {
+      "type": "textarea",
+      "id": "blurb",
+      "label": "Blurb",
+      "default": "Wear it. Make it yours.\nDesigned and printed in the United Kingdom."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_colour_bar",
+      "label": "Show colour bar",
+      "default": true,
+      "info": "Print furniture. The guide allows two such devices per page."
+    },
+    {
+      "type": "header",
+      "content": "Bottom line"
+    },
+    {
+      "type": "text",
+      "id": "copyright_suffix",
+      "label": "After the year",
+      "default": "Studio"
+    },
+    {
+      "type": "text",
+      "id": "legal_text",
+      "label": "Legal line",
+      "default": "Privacy · Terms · Accessibility"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Link column",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shop"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "info": "Create these in Online Store > Navigation."
+        }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "groups": ["footer"]
+  }
+}
+{% endschema %}

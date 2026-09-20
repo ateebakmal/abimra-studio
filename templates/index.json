@@ -1,7 +1,7 @@
 {
   "sections": {
     "hero": {
-      "type": "abimra-hero",
+      "type": "abmira-hero",
       "blocks": {
         "f1": {
           "type": "feature",
@@ -41,7 +41,7 @@
       }
     },
     "marquee": {
-      "type": "abimra-marquee",
+      "type": "abmira-marquee",
       "blocks": {
         "m1": { "type": "item", "settings": { "text": "Tees, hoodies and sweatshirts" } },
         "m2": { "type": "item", "settings": { "text": "Upload artwork or add text" } },
@@ -59,7 +59,7 @@
       }
     },
     "steps": {
-      "type": "abimra-steps",
+      "type": "abmira-steps",
       "blocks": {
         "s1": {
           "type": "step",
@@ -98,7 +98,7 @@
       }
     },
     "designed_worn": {
-      "type": "abimra-designed-worn",
+      "type": "abmira-designed-worn",
       "blocks": {
         "p1": {
           "type": "photo",
@@ -135,7 +135,7 @@
       }
     },
     "categories": {
-      "type": "abimra-categories",
+      "type": "abmira-categories",
       "blocks": {
         "c1": {
           "type": "category",
@@ -179,7 +179,7 @@
       }
     },
     "originals": {
-      "type": "abimra-originals",
+      "type": "abmira-originals",
       "settings": {
         "heading": "Studio Originals",
         "products_to_show": 6,
@@ -188,7 +188,7 @@
       }
     },
     "testimonials": {
-      "type": "abimra-testimonials",
+      "type": "abmira-testimonials",
       "blocks": {
         "q1": {
           "type": "quote",
@@ -232,7 +232,7 @@
       }
     },
     "closer": {
-      "type": "abimra-closer",
+      "type": "abmira-closer",
       "settings": {
         "show_mark": true,
         "heading": "What will\nyou make?",

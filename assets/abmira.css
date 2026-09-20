@@ -1,6 +1,6 @@
 /* ============================================================
-   ABIMRA Studio — design system
-   Ported from design-guides/abimra-tokens.css + abimra-mockup.html.
+   ABMIRA Studio — design system
+   Ported from design-guides/abmira-tokens.css + abmira-mockup.html.
 
    TWO DELIBERATE DEPARTURES FROM THE SOURCE FILES:
 
@@ -1433,6 +1433,315 @@
   }
 
   .ab-quote {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   Header, mobile drawer, footer
+
+   Appended as a self-contained block with its own min-width
+   queries, so it can be read and changed without unpicking the
+   homepage cascade above.
+
+   The guide specifies the nav at top:44px to clear the mockup's
+   own page-switcher bar; the theme uses top:0, as it instructs.
+   ============================================================ */
+
+.ab-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+}
+
+.ab-nav-in {
+  max-width: var(--ab-mw);
+  margin: 0 auto;
+  padding: 0 var(--ab-pm);
+  height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ab-logo {
+  font-size: 20px;
+  letter-spacing: 0.16em;
+  font-variation-settings: 'wdth' 92, 'wght' 800;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ab-nav-links {
+  display: none;
+  gap: 28px;
+  font-size: 15px;
+  font-variation-settings: 'wdth' 100, 'wght' 500;
+}
+
+.ab-nav-links a {
+  transition: color 0.12s var(--ab-e);
+}
+
+.ab-nav-links a:hover {
+  color: var(--red);
+}
+
+.ab-nav-r {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ab-nav-cta {
+  display: none;
+}
+
+/* hamburger - hidden once the inline links appear */
+.ab-burger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  margin-left: -10px;
+  border-radius: var(--r-pill);
+  color: var(--ink);
+  flex: none;
+}
+
+.ab-burger:focus-visible,
+.ab-nav a:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------- *
+ * Drawer. Hidden from the accessibility tree and from pointer
+ * events when closed, so nothing behind it can be tabbed to.
+ * ---------------------------------------------------------- */
+
+.ab-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.ab-drawer.ab-open {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.ab-drawer-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(25, 24, 19, 0.44);
+  opacity: 0;
+  transition: opacity 0.2s var(--ab-e);
+}
+
+.ab-drawer.ab-open .ab-drawer-scrim {
+  opacity: 1;
+}
+
+.ab-drawer-panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: min(84vw, 340px);
+  background: var(--paper);
+  border-right: 1px solid var(--rule);
+  transform: translateX(-100%);
+  transition: transform 0.2s var(--ab-e);
+  display: flex;
+  flex-direction: column;
+  padding: 18px var(--ab-pm) 24px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.ab-drawer.ab-open .ab-drawer-panel {
+  transform: none;
+}
+
+.ab-drawer-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 56px;
+  margin-bottom: 8px;
+}
+
+.ab-drawer-close {
+  width: 42px;
+  height: 42px;
+  margin-right: -10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-pill);
+  color: var(--ink);
+}
+
+.ab-drawer-close:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.ab-drawer-links {
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+}
+
+.ab-drawer-links a {
+  padding: 14px 0;
+  font-size: 19px;
+  font-variation-settings: 'wdth' 100, 'wght' 500;
+  border-bottom: 1px solid var(--rule);
+}
+
+.ab-drawer-links a:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.ab-drawer-foot {
+  margin-top: auto;
+  padding-top: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ab-drawer-foot .ab-btn {
+  width: 100%;
+}
+
+/* stop the page scrolling behind an open drawer */
+body.ab-drawer-open {
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------------- *
+ * Footer
+ * ---------------------------------------------------------- */
+
+.ab-foot {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 52px 0 26px;
+  margin-top: var(--ab-sec);
+  font-family: var(--ab-f);
+  font-variation-settings: 'wdth' 100, 'wght' 400;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.ab-foot a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ab-foot a:hover {
+  color: var(--paper);
+  text-decoration: underline;
+}
+
+.ab-foot a:focus-visible {
+  outline: 2px solid var(--paper);
+  outline-offset: 2px;
+}
+
+.ab-foot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.ab-foot .ab-logo {
+  color: var(--paper);
+  display: inline-block;
+}
+
+.ab-foot-blurb {
+  margin: 16px 0 0;
+  font-size: 14px;
+  color: rgba(238, 234, 224, 0.6);
+  max-width: 34ch;
+}
+
+.ab-foot h5 {
+  margin: 0 0 16px;
+  font-size: 14px;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+}
+
+.ab-foot ul {
+  padding: 0;
+  margin: 0;
+}
+
+.ab-foot li {
+  list-style: none;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: rgba(238, 234, 224, 0.6);
+}
+
+.ab-foot-bot {
+  margin-top: 44px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule-inv);
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: rgba(238, 234, 224, 0.45);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media screen and (min-width: 641px) {
+  .ab-nav-cta {
+    display: inline-flex;
+  }
+}
+
+@media screen and (min-width: 861px) {
+  .ab-burger {
+    display: none;
+  }
+
+  .ab-nav-links {
+    display: flex;
+  }
+
+  .ab-drawer {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .ab-foot {
+    padding: 64px 0 40px;
+  }
+
+  .ab-foot-grid {
+    grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+    gap: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-drawer-scrim,
+  .ab-drawer-panel {
     transition: none;
   }
 }

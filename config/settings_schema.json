@@ -8,29 +8,29 @@
     "theme_support_url": "https://support.shopify.com/"
   },
   {
-    "name": "ABIMRA",
+    "name": "ABMIRA",
     "settings": [
       {
         "type": "paragraph",
-        "content": "Only these three are exposed. The rest of the Press Room palette is fixed in assets/abimra.css - changing more of it breaks the two-ink system."
+        "content": "Only these three are exposed. The rest of the Press Room palette is fixed in assets/abmira.css - changing more of it breaks the two-ink system."
       },
       {
         "type": "color",
-        "id": "abimra_paper",
+        "id": "abmira_paper",
         "label": "Paper",
         "default": "#EEEAE0",
         "info": "Page ground. Newsprint, not cream."
       },
       {
         "type": "color",
-        "id": "abimra_ink",
+        "id": "abmira_ink",
         "label": "Ink",
         "default": "#191813",
         "info": "Text and inverted bands. Warm near-black, never pure #000."
       },
       {
         "type": "color",
-        "id": "abimra_red",
+        "id": "abmira_red",
         "label": "Press red",
         "default": "#D42E12",
         "info": "Ink one. A brand colour meaning \"click this\" - never an error colour."

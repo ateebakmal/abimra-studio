@@ -1,0 +1,153 @@
+{%- comment -%}
+  ABMIRA header.
+
+  Sticky at top:0 - the guide's top:44px is only to clear the mockup's own
+  page-switcher bar.
+
+  The inline links hide below 861px and the drawer takes over, matching the
+  breakpoint the rest of the system uses. The drawer markup is always
+  rendered but is display:none above 861, so there is never a second copy
+  of the navigation in the accessibility tree.
+
+  Menu content comes from a Shopify navigation menu, so it is editable in
+  Online Store > Navigation rather than hard-coded.
+{%- endcomment -%}
+
+{%- liquid
+  assign menu = section.settings.menu
+  assign cart_count = cart.item_count
+-%}
+
+<div class="ab-section">
+  <nav class="ab-nav" aria-label="Main navigation">
+    <div class="ab-nav-in">
+      <button
+        type="button"
+        class="ab-burger"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="AbmiraDrawer"
+        data-abmira-drawer-open
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+
+      <a href="{{ routes.root_url }}" class="ab-logo">
+        {{- section.settings.logo_text | default: shop.name | escape -}}
+      </a>
+
+      {%- if menu != blank -%}
+        <div class="ab-nav-links">
+          {%- for link in menu.links -%}
+            <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>
+              {{- link.title | escape -}}
+            </a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      <div class="ab-nav-r">
+        <a href="{{ routes.cart_url }}" class="ab-meta">
+          {{- section.settings.cart_label | default: 'Bag' | escape }} ({{ cart_count }})
+        </a>
+        {%- if section.settings.cta_label != blank -%}
+          <a
+            class="ab-btn ab-btn-p ab-btn-sm ab-nav-cta"
+            href="{{ section.settings.cta_link | default: routes.root_url }}"
+          >
+            {{- section.settings.cta_label | escape -}}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </nav>
+
+  {%- comment -%} Drawer: only reachable below 861px, where it is displayed. {%- endcomment -%}
+  <div class="ab-drawer" id="AbmiraDrawer" data-abmira-drawer>
+    <div class="ab-drawer-scrim" data-abmira-drawer-close></div>
+
+    <div class="ab-drawer-panel" role="dialog" aria-modal="true" aria-label="Menu">
+      <div class="ab-drawer-top">
+        <span class="ab-logo">{{ section.settings.logo_text | default: shop.name | escape }}</span>
+        <button
+          type="button"
+          class="ab-drawer-close"
+          aria-label="Close menu"
+          data-abmira-drawer-close
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+
+      {%- if menu != blank -%}
+        <div class="ab-drawer-links">
+          {%- for link in menu.links -%}
+            <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>
+              {{- link.title | escape -}}
+            </a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      <div class="ab-drawer-foot">
+        {%- if section.settings.cta_label != blank -%}
+          <a
+            class="ab-btn ab-btn-p"
+            href="{{ section.settings.cta_link | default: routes.root_url }}"
+          >
+            {{- section.settings.cta_label | escape -}}
+          </a>
+        {%- endif -%}
+        <a href="{{ routes.cart_url }}" class="ab-meta">
+          {{- section.settings.cart_label | default: 'Bag' | escape }} ({{ cart_count }})
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Abmira header",
+  "settings": [
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo text",
+      "default": "Abmira",
+      "info": "Set in condensed caps with wide letter-spacing. Leave empty to use the store name."
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "cart_label",
+      "label": "Cart label",
+      "default": "Bag"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button",
+      "default": "Design your own",
+      "info": "Hidden below 641px to keep the bar from crowding; still present in the drawer."
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  }
+}
+{% endschema %}
