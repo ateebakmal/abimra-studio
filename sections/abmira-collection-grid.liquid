@@ -23,6 +23,18 @@
 {%- liquid
   assign tiles = section.blocks | where: 'type', 'collection'
 
+  # Shopify has no "pick several collections" setting, so exclusions are
+  # blocks. Each one holds a collection picker; its handle joins a list the
+  # automatic pass skips. Unlimited, and it uses the native picker rather
+  # than asking anyone to type handles.
+  assign excluded = ''
+  for block in section.blocks
+    if block.type == 'exclude' and block.settings.collection != blank
+      assign excluded = excluded | append: ',' | append: block.settings.collection.handle
+    endif
+  endfor
+  assign excluded = excluded | split: ','
+
   # Photographic backdrops. Behind garments only, never on UI.
   assign backdrops = '#E8E2D4,#DFE7DC,#EDE3C9,#E3EAF6,#DCD9CF,#FBE7E1' | split: ','
   # Silhouettes stay on ink and graphite. Red is a brand colour and blue is
@@ -63,11 +75,17 @@
               if block.settings.garment == 'hood'
                 assign symbol = '#ab-hood'
               endif
+
+              assign image = collection.image
+              if image == blank and section.settings.use_product_image
+                assign image = collection.products.first.featured_image
+              endif
             -%}
             {% render 'abmira-collection-tile',
               url: collection.url,
               title: title,
               count: count,
+              image: image,
               bg: block.settings.bg,
               symbol: symbol,
               garment_color: block.settings.garment_color,
@@ -91,6 +109,9 @@
               if section.settings.hide_empty and collection.all_products_count == 0
                 assign skip = true
               endif
+              if excluded contains collection.handle
+                assign skip = true
+              endif
               if shown >= section.settings.limit
                 assign skip = true
               endif
@@ -106,11 +127,19 @@
                 endif
                 assign shown = shown | plus: 1
                 assign index = index | plus: 1
+
+                # The collection's own image, then its first product's, then
+                # nothing - which falls through to the silhouette variant.
+                assign image = collection.image
+                if image == blank and section.settings.use_product_image
+                  assign image = collection.products.first.featured_image
+                endif
               -%}
               {% render 'abmira-collection-tile',
                 url: collection.url,
                 title: collection.title,
                 count: collection.all_products_count,
+                image: image,
                 bg: backdrops[b],
                 symbol: symbol,
                 garment_color: inks[i]
@@ -170,10 +199,32 @@
       "id": "hide_empty",
       "label": "Hide collections with no products",
       "default": true,
-      "info": "Automatic mode only."
+      "info": "Automatic mode only. Turn off to see collections you are still filling."
+    },
+    {
+      "type": "checkbox",
+      "id": "use_product_image",
+      "label": "Fall back to the first product's image",
+      "default": true,
+      "info": "Used when a collection has no image of its own. With neither, the tile shows a garment silhouette."
     }
   ],
   "blocks": [
+    {
+      "type": "exclude",
+      "name": "Hidden collection",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Pick a collection to keep it off this page. Only applies in automatic mode."
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection to hide"
+        }
+      ]
+    },
     {
       "type": "collection",
       "name": "Collection",

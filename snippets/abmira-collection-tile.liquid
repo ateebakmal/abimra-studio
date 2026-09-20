@@ -5,25 +5,48 @@
   the automatic listing and the hand-picked blocks - so the markup can only
   drift in one place.
 
+  Two appearances, decided by whether an image was resolved:
+  - with an image: it fills the tile under a top-weighted scrim, caption in
+    paper
+  - without: the flat backdrop colour and a garment silhouette bleeding off
+    the corner, caption in ink
+
+  A collection the merchant has not photographed therefore still reads as a
+  designed tile rather than a gap.
+
   Accepts:
   - url:           {String}  link target, '#' when there is no collection yet
   - title:         {String}  tile label
   - count:         {Number}  product count, or blank to hide the line
+  - image:         {Object}  image drop, or blank for the silhouette variant
   - bg:            {String}  tile background colour
   - symbol:        {String}  '#ab-tee' or '#ab-hood'
   - garment_color: {String}  silhouette colour
   - attributes:    {String}  block.shopify_attributes, when it came from a block
 
   Usage:
-  {% render 'abmira-collection-tile', url: c.url, title: c.title, ... %}
+  {% render 'abmira-collection-tile', url: c.url, title: c.title, image: c.image %}
 {% endcomment %}
 
 <a
-  class="ab-coll-tile"
+  class="ab-coll-tile{% if image != blank %} ab-has-img{% endif %}"
   href="{{ url | default: '#' }}"
-  style="background: {{ bg }};"
+  {% if image == blank %}style="background: {{ bg | default: '#E8E2D4' }};"{% endif %}
   {{ attributes }}
 >
+  {%- if image != blank -%}
+    {{
+      image
+      | image_url: width: 700
+      | image_tag:
+        widths: '210, 320, 480, 700',
+        sizes: '(min-width: 641px) 25vw, 92vw',
+        loading: 'lazy',
+        alt: image.alt | default: title
+    }}
+    <span class="ab-coll-tile-scrim" aria-hidden="true"></span>
+  {%- endif -%}
+
   {%- if title != blank -%}
     <h3 class="ab-d3">{{ title | escape }}</h3>
   {%- endif -%}
@@ -32,13 +55,15 @@
     <span class="ab-meta">{{ count }} designs</span>
   {%- endif -%}
 
-  <svg
-    class="ab-coll-garment"
-    viewBox="0 0 300 340"
-    style="--g: {{ garment_color | default: '#191813' }};"
-    aria-hidden="true"
-    focusable="false"
-  >
-    <use href="{{ symbol | default: '#ab-tee' }}"/>
-  </svg>
+  {%- if image == blank -%}
+    <svg
+      class="ab-coll-garment"
+      viewBox="0 0 300 340"
+      style="--g: {{ garment_color | default: '#191813' }};"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <use href="{{ symbol | default: '#ab-tee' }}"/>
+    </svg>
+  {%- endif -%}
 </a>

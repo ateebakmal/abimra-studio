@@ -1916,3 +1916,68 @@ body.ab-drawer-open {
     transform: none;
   }
 }
+
+/* ---------------------------------------------------------- *
+ * Collection tile - image variant
+ *
+ * A tile shows the collection's own image when one exists. With no
+ * image it keeps the flat backdrop and garment silhouette, so a
+ * collection the merchant has not photographed still reads as a
+ * designed tile rather than a gap.
+ * ---------------------------------------------------------- */
+
+.ab-coll-tile.ab-has-img {
+  border-color: transparent;
+}
+
+.ab-coll-tile > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s var(--ab-e);
+}
+
+.ab-section .ab-coll-tile > img[width][height] {
+  height: 100%;
+}
+
+.ab-coll-tile.ab-has-img:hover > img {
+  transform: scale(1.03);
+}
+
+/* Top-weighted, because the tile caption sits at the top - the
+   featured cards scrim from the bottom, where theirs sits. */
+.ab-coll-tile-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(25, 24, 19, 0.74) 0%,
+    rgba(25, 24, 19, 0.28) 46%,
+    rgba(25, 24, 19, 0.06) 72%
+  );
+}
+
+.ab-coll-tile.ab-has-img .ab-d3 {
+  color: var(--paper);
+}
+
+.ab-coll-tile.ab-has-img .ab-meta {
+  color: rgba(238, 234, 224, 0.72);
+}
+
+.ab-coll-tile.ab-has-img:hover .ab-d3 {
+  color: var(--paper);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-coll-tile > img,
+  .ab-coll-tile.ab-has-img:hover > img {
+    transition: none;
+    transform: none;
+  }
+}
