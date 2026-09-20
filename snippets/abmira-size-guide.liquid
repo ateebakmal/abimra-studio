@@ -1,0 +1,33 @@
+{% comment %}
+  Abmira size guide — a details/summary accordion, collapsed by default.
+
+  Accepts:
+  - heading: {String}
+  - text:    {String}
+  - image:   {Object} size chart; a placeholder shows when unset
+
+  Usage: {% render 'abmira-size-guide', heading: h, text: t, image: i %}
+{% endcomment %}
+
+<details class="ab-guide">
+  <summary>
+    {{ heading | default: 'Size guide' | escape }}
+    <span class="ab-guide-sign" aria-hidden="true">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </span>
+  </summary>
+  <div class="ab-guide-body">
+    {%- if text != blank -%}
+      <p>{{ text | escape }}</p>
+    {%- endif -%}
+    {%- if image != blank -%}
+      {{
+        image
+        | image_url: width: 900
+        | image_tag: widths: '400, 600, 900', loading: 'lazy', alt: image.alt | default: heading
+      }}
+    {%- else -%}
+      {{ 'detailed-apparel-1' | placeholder_svg_tag: 'ab-placeholder' }}
+    {%- endif -%}
+  </div>
+</details>

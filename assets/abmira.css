@@ -2208,3 +2208,301 @@ body.ab-drawer-open {
 .ab-coll-count {
   white-space: nowrap;
 }
+
+/* ============================================================
+   Product page
+
+   A restyle of Dawn's markup, not a replacement. The variant
+   picker's fieldsets, radio inputs and data-option-value-id
+   attributes are load-bearing: pt-product-options.js reads them,
+   and both Customify and SB Product Designer hook <media-gallery>.
+   Changing the structure would break the no-preselect flow, the
+   colour filter and the apps at once, so everything here is
+   presentation only.
+   ============================================================ */
+
+.product__title h1,
+.product__title h2 {
+  font-family: var(--ab-f);
+  font-size: clamp(30px, 3.6vw, 44px);
+  line-height: 0.96;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  font-variation-settings: 'wdth' 82, 'wght' 800;
+  color: var(--ink);
+  margin: 0;
+}
+
+.product .price,
+.product .price__container {
+  font-family: var(--ab-f);
+}
+
+.product .price .price-item {
+  font-size: 26px;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+  color: var(--ink);
+}
+
+.product .product__tax,
+.product .product__sku,
+.product .product__inventory {
+  font-size: 13px;
+  color: var(--graphite);
+}
+
+/* ---------------------------------------------------------- *
+ * Variant picker - labels, pills and swatches
+ * ---------------------------------------------------------- */
+
+.product .product-form__input .form__label,
+.product .product-form__input legend.form__label {
+  font-family: var(--ab-f);
+  font-size: 13px;
+  color: var(--graphite);
+  font-variation-settings: 'wdth' 100, 'wght' 500;
+  margin-bottom: 10px;
+}
+
+.product .product-form__input--pill input[type='radio'] + label {
+  font-family: var(--ab-f);
+  font-size: 14px;
+  min-width: 52px;
+  min-height: 42px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-pill);
+  background: var(--paper-raised);
+  color: var(--ink);
+  margin: 0 8px 8px 0;
+  transition: border-color 0.12s var(--ab-e), background 0.12s var(--ab-e), color 0.12s var(--ab-e);
+}
+
+.product .product-form__input--pill input[type='radio'] + label:hover {
+  border-color: var(--ink);
+}
+
+.product .product-form__input--pill input[type='radio']:checked + label {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+/* Unavailable stays legible - struck through rather than hidden, so the
+   shopper can see the size exists and is gone. */
+.product .product-form__input--pill input[type='radio'].disabled + label {
+  color: var(--graphite);
+  opacity: 0.55;
+  text-decoration: line-through;
+}
+
+.product .product-form__input--pill input[type='radio']:focus-visible + label,
+.product .swatch-input__input:focus-visible + .swatch-input__label {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.product .swatch-input__label {
+  border-radius: 50%;
+  margin: 0 10px 8px 0;
+}
+
+.product .swatch-input__input:checked + .swatch-input__label {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* ---------------------------------------------------------- *
+ * Buttons. Add to cart is the one primary; the dynamic checkout
+ * sits beside it as the secondary, which is the reference's pair.
+ * ---------------------------------------------------------- */
+
+@media screen and (min-width: 641px) {
+  .product .product-form__buttons {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .product .product-form__buttons > * {
+    flex: 1 1 0;
+    margin: 0;
+  }
+}
+
+.product .product-form__submit {
+  font-family: var(--ab-f);
+  font-size: 16px;
+  font-variation-settings: 'wdth' 100, 'wght' 500;
+  min-height: 50px;
+  border-radius: var(--r-pill);
+  background: var(--red);
+  color: #fff;
+  border: 1px solid transparent;
+  box-shadow: none;
+  transition: background 0.12s var(--ab-e);
+}
+
+.product .product-form__submit:not([disabled]):hover {
+  background: var(--red-deep);
+}
+
+.product .product-form__submit[disabled] {
+  background: var(--paper-raised);
+  border-color: var(--rule);
+  color: var(--graphite);
+}
+
+.product .shopify-payment-button__button--unbranded {
+  font-family: var(--ab-f);
+  min-height: 50px;
+  border-radius: var(--r-pill);
+  background: transparent;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.product .shopify-payment-button__button--unbranded:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ---------------------------------------------------------- *
+ * Quantity and notes
+ * ---------------------------------------------------------- */
+
+.product .quantity {
+  border: 1px solid var(--rule);
+  border-radius: var(--r-pill);
+  background: var(--paper-raised);
+  overflow: hidden;
+  min-height: 44px;
+  width: 116px;
+}
+
+.product .quantity:after {
+  box-shadow: none;
+}
+
+.product .quantity__input,
+.product .quantity__button {
+  font-family: var(--ab-f);
+  color: var(--ink);
+}
+
+.product .product__description {
+  color: var(--graphite);
+  font-size: 15px;
+}
+
+/* ---------------------------------------------------------- *
+ * Gallery ground - the reference sets the garment on paper rather
+ * than white
+ * ---------------------------------------------------------- */
+
+.product .product__media,
+.product .product__media-item .global-media-settings {
+  border-radius: var(--r-card);
+  border-color: var(--rule);
+  background: var(--paper-raised);
+}
+
+/* ---------------------------------------------------------- *
+ * Trust list and size guide
+ * ---------------------------------------------------------- */
+
+.ab-trust {
+  list-style: none;
+  padding: 0;
+  margin: 22px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ab-trust li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--graphite);
+}
+
+.ab-trust svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--ok);
+}
+
+.ab-guide {
+  margin-top: 26px;
+  border-top: 1px solid var(--rule);
+}
+
+.ab-guide summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 0;
+  cursor: pointer;
+  list-style: none;
+  font-size: 15px;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+}
+
+.ab-guide summary::-webkit-details-marker {
+  display: none;
+}
+
+.ab-guide summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.ab-guide .ab-guide-sign {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  color: var(--graphite);
+  transition: transform 0.2s var(--ab-e);
+}
+
+.ab-guide[open] .ab-guide-sign {
+  transform: rotate(45deg);
+}
+
+.ab-guide-body {
+  padding-bottom: 22px;
+}
+
+.ab-guide-body img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-card);
+  border: 1px solid var(--rule);
+}
+
+.ab-guide-body p {
+  margin: 0 0 14px;
+  font-size: 14px;
+  color: var(--graphite);
+}
+
+/* product page breadcrumb */
+.ab-pdp-crumbs {
+  margin-bottom: 20px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-guide .ab-guide-sign {
+    transition: none;
+  }
+}

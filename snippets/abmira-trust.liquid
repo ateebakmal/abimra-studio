@@ -1,0 +1,26 @@
+{% comment %}
+  Abmira trust list — the reassurance that sits under the buy buttons.
+
+  One line of text per item; each gets a tick. Kept as a snippet so
+  sections/main-product.liquid does not grow any further.
+
+  Accepts:
+  - items: {String} newline-separated lines
+
+  Usage: {% render 'abmira-trust', items: block.settings.items %}
+{% endcomment %}
+
+{%- assign lines = items | newline_to_br | split: '<br />' -%}
+{%- if lines.size > 0 -%}
+  <ul class="ab-trust">
+    {%- for line in lines -%}
+      {%- assign text = line | strip -%}
+      {%- if text != blank -%}
+        <li>
+          <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><use href="#ab-tick"/></svg>
+          <span>{{ text | escape }}</span>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

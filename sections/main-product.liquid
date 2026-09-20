@@ -153,6 +153,18 @@
 
   <product-component view-event-payload="{{ product | standard_event_data: 'view', context: 'page' | escape }}">
     <div class="page-width">
+      {%- comment -%} [abmira] Breadcrumb. Uses collection when the shopper arrived through one. {%- endcomment -%}
+      {%- if section.settings.show_breadcrumb -%}
+        <nav class="ab-crumbs ab-pdp-crumbs" aria-label="Breadcrumb">
+          <a href="{{ routes.root_url }}">Home</a>
+          <span aria-hidden="true">/</span>
+          {%- if collection != blank -%}
+            <a href="{{ collection.url }}">{{ collection.title | escape }}</a>
+            <span aria-hidden="true">/</span>
+          {%- endif -%}
+          <span aria-current="page">{{ product.title | escape }}</span>
+        </nav>
+      {%- endif -%}
       <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
         <div class="grid__item product__media-wrapper">
           {% render 'product-media-gallery', variant_images: variant_images %}
@@ -564,6 +576,22 @@
                       {{ block.settings.text | default: block.settings.page.title | escape }}
                     </button>
                   </modal-opener>
+                {%- comment -%} [abmira] Reassurance under the buy buttons. {%- endcomment -%}
+                {%- when 'abmira_trust' -%}
+                  <div {{ block.shopify_attributes }}>
+                    {% render 'abmira-trust', items: block.settings.items %}
+                  </div>
+
+                {%- comment -%} [abmira] Size guide, collapsed by default. {%- endcomment -%}
+                {%- when 'abmira_size_guide' -%}
+                  <div {{ block.shopify_attributes }}>
+                    {% render 'abmira-size-guide',
+                      heading: block.settings.heading,
+                      text: block.settings.text,
+                      image: block.settings.image
+                    %}
+                  </div>
+
                 {%- when 'share' -%}
                   {% liquid
                     assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin
@@ -2238,9 +2266,54 @@
           "info": "t:sections.main-product.blocks.icon_with_text.settings.heading.info"
         }
       ]
+    },
+    {
+      "type": "abmira_trust",
+      "name": "Abmira trust list",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "items",
+          "label": "Lines",
+          "default": "Printed to order — never mass produced\nPremium 240gsm cotton garment\nHigh-detail DTF print, washes without cracking\nDesigned and printed in the United Kingdom",
+          "info": "One per line. Each gets a tick."
+        }
+      ]
+    },
+    {
+      "type": "abmira_size_guide",
+      "name": "Abmira size guide",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Size guide"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Measurements are garment, not body. If you are between sizes, take the larger one."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Size chart image",
+          "info": "A placeholder shows until you set one."
+        }
+      ]
     }
   ],
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Show breadcrumb",
+      "default": true
+    },
     {
       "type": "header",
       "content": "Personalised product behaviour"

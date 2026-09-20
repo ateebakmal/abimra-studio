@@ -61,6 +61,19 @@
           "settings": {
             "share_label": "Share"
           }
+        },
+        "abmira_trust": {
+          "type": "abmira_trust",
+          "settings": {
+            "items": "Printed to order — never mass produced\nPremium 240gsm cotton garment\nHigh-detail DTF print, washes without cracking\nDesigned and printed in the United Kingdom"
+          }
+        },
+        "abmira_size_guide": {
+          "type": "abmira_size_guide",
+          "settings": {
+            "heading": "Size guide",
+            "text": "Measurements are garment, not body. If you are between sizes, take the larger one."
+          }
         }
       },
       "block_order": [
@@ -71,8 +84,10 @@
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
+        "abmira_trust",
         "description",
-        "share"
+        "share",
+        "abmira_size_guide"
       ],
       "settings": {
         "pt_no_preselect": true,
@@ -90,7 +105,8 @@
         "hide_variants": false,
         "enable_video_looping": false,
         "padding_top": 36,
-        "padding_bottom": 12
+        "padding_bottom": 12,
+        "show_breadcrumb": true
       }
     },
     "disclosures": {
