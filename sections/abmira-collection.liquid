@@ -1,0 +1,148 @@
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-facets.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'facets.js' | asset_url }}" defer="defer"></script>
+
+{%- comment -%}
+  Abmira collection / catalogue.
+
+  Drives /collections/<handle> and /collections/all, so the catalogue and
+  every collection are one design.
+
+  The filtering and sorting UI is Dawn's own facets snippet, rendered with
+  the same arguments its product grid uses. It is 946 lines of form
+  handling, URL state and drawer behaviour - rebuilding it to change how it
+  looks would be trading working code for risk. It is restyled in
+  assets/abmira.css instead, which is why Dawn's facets stylesheet is still
+  loaded above: our rules sit on top of it.
+
+  Products render through snippets/abmira-product-card.liquid, shared with
+  the homepage rail and search.
+{%- endcomment -%}
+
+{%- liquid
+  assign show_filters = false
+  if section.settings.enable_filtering or section.settings.enable_sorting
+    assign show_filters = true
+  endif
+-%}
+
+<div class="ab-section">
+  <section class="ab-sec ab-coll-page">
+    <div class="ab-wrap">
+      <div class="ab-coll-head">
+        <h1 class="ab-d2">{{ collection.title | escape }}</h1>
+        {%- if section.settings.show_description and collection.description != blank -%}
+          <div class="ab-coll-desc">{{ collection.description }}</div>
+        {%- endif -%}
+      </div>
+
+      {%- paginate collection.products by section.settings.products_per_page -%}
+        {%- if show_filters -%}
+          <div class="ab-facets" id="main-collection-filters" data-id="{{ section.id }}">
+            {% render 'facets',
+              results: collection,
+              enable_filtering: section.settings.enable_filtering,
+              enable_sorting: section.settings.enable_sorting,
+              filter_type: section.settings.filter_type,
+              paginate: paginate
+            %}
+          </div>
+        {%- endif -%}
+
+        {%- if collection.products.size > 0 -%}
+          <ul class="ab-prod-grid" role="list">
+            {%- for product in collection.products -%}
+              {%- liquid
+                assign lazy = true
+                if forloop.index <= 4
+                  assign lazy = false
+                endif
+              -%}
+              <li>
+                {% render 'abmira-product-card',
+                  card_product: product,
+                  lazy: lazy,
+                  color_option: section.settings.color_option_name
+                %}
+              </li>
+            {%- endfor -%}
+          </ul>
+
+          {%- if paginate.pages > 1 -%}
+            {% render 'pagination', paginate: paginate %}
+          {%- endif -%}
+        {%- else -%}
+          <p class="ab-coll-empty">
+            {{ 'sections.collection_template.empty' | t }}
+          </p>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Abmira collection",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show collection description",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "label": "Products per page",
+      "default": 24
+    },
+    {
+      "type": "text",
+      "id": "color_option_name",
+      "label": "Colour option name",
+      "default": "Color",
+      "info": "Products with more than one value for this option show colour swatches on their card."
+    },
+    {
+      "type": "header",
+      "content": "Filtering and sorting"
+    },
+    {
+      "type": "paragraph",
+      "content": "The filters themselves come from the free Shopify Search & Discovery app, not the theme."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "Enable filtering",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "filter_type",
+      "label": "Filter layout",
+      "options": [
+        { "value": "horizontal", "label": "Horizontal" },
+        { "value": "vertical", "label": "Vertical" },
+        { "value": "drawer", "label": "Drawer" }
+      ],
+      "default": "horizontal"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "Enable sorting",
+      "default": true
+    }
+  ],
+  "enabled_on": {
+    "templates": ["collection"]
+  }
+}
+{% endschema %}
