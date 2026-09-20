@@ -1,0 +1,148 @@
+{% render 'abmira-symbols' %}
+
+{%- comment -%}
+  Abmira — collection grid ("Shop by theme").
+
+  Repeatable blocks, no maximum. auto-fill with no fixed column count, so
+  removing a tile reflows the grid with no gap and adding one needs no code.
+
+  The silhouettes reuse #ab-tee / #ab-hood from snippets/abmira-symbols.liquid
+  rather than a second symbol sheet - two sheets on one page would mean
+  duplicate ids. They are coloured through the --g custom property on the
+  parent <svg>, and are decorative, so aria-hidden.
+
+  A tile renders with no collection selected: it falls back to the title
+  override and links nowhere. That lets the merchant lay the grid out before
+  the collections behind it exist.
+{%- endcomment -%}
+
+{%- liquid
+  assign tiles = section.blocks | where: 'type', 'collection'
+-%}
+
+<div class="ab-section">
+  <section class="ab-sec">
+    <div class="ab-wrap">
+      <div class="ab-sec-head">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="ab-d2">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.intro != blank -%}
+          <p>{{ section.settings.intro | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- if tiles.size > 0 -%}
+        <div class="ab-coll-grid">
+          {%- for block in tiles -%}
+            {%- liquid
+              assign collection = block.settings.collection
+
+              assign title = block.settings.title_override
+              if title == blank
+                assign title = collection.title
+              endif
+
+              assign symbol = '#ab-tee'
+              if block.settings.garment == 'hood'
+                assign symbol = '#ab-hood'
+              endif
+            -%}
+            <a
+              class="ab-coll-tile"
+              href="{{ collection.url | default: '#' }}"
+              style="background: {{ block.settings.bg }};"
+              {{ block.shopify_attributes }}
+            >
+              {%- if title != blank -%}
+                <h3 class="ab-d3">{{ title | escape }}</h3>
+              {%- endif -%}
+
+              {%- if collection != blank -%}
+                <span class="ab-meta">{{ collection.all_products_count }} designs</span>
+              {%- endif -%}
+
+              <svg
+                class="ab-coll-garment"
+                viewBox="0 0 300 340"
+                style="--g: {{ block.settings.garment_color }};"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <use href="{{ symbol }}"/>
+              </svg>
+            </a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Abmira shop by theme",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop by theme"
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro",
+      "default": "The same garments, grouped by what people actually search for. A place to start if you're not sure."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "title_override",
+          "label": "Title override",
+          "info": "Leave blank to use the collection title. Set this to lay out a tile before its collection exists."
+        },
+        {
+          "type": "color",
+          "id": "bg",
+          "label": "Background",
+          "default": "#E8E2D4",
+          "info": "Use a photographic backdrop: sand #E8E2D4, stone #DCD9CF, blue #E3EAF6, red #FBE7E1, sage #DFE7DC, straw #EDE3C9."
+        },
+        {
+          "type": "select",
+          "id": "garment",
+          "label": "Silhouette",
+          "options": [
+            { "value": "tee", "label": "T-shirt" },
+            { "value": "hood", "label": "Hoodie" }
+          ],
+          "default": "tee"
+        },
+        {
+          "type": "color",
+          "id": "garment_color",
+          "label": "Silhouette colour",
+          "default": "#191813"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Abmira shop by theme"
+    }
+  ]
+}
+{% endschema %}
