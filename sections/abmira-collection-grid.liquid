@@ -35,6 +35,13 @@
   endfor
   assign excluded = excluded | split: ','
 
+  # Where the opt-in flag lives. Collections cannot be tagged - tags exist on
+  # products, customers and orders only - so a metafield is the way to mark
+  # one. Namespace and key are settings so this works with whatever the
+  # merchant named their definition.
+  assign mf_ns = section.settings.metafield_namespace | default: 'custom'
+  assign mf_key = section.settings.metafield_key | default: 'show_in_grid'
+
   # Photographic backdrops. Behind garments only, never on UI.
   assign backdrops = '#E8E2D4,#DFE7DC,#EDE3C9,#E3EAF6,#DCD9CF,#FBE7E1' | split: ','
   # Silhouettes stay on ink and graphite. Red is a brand colour and blue is
@@ -112,6 +119,12 @@
               if excluded contains collection.handle
                 assign skip = true
               endif
+              if section.settings.source == 'metafield'
+                assign marked = collection.metafields[mf_ns][mf_key].value
+                unless marked
+                  assign skip = true
+                endunless
+              endif
               if shown >= section.settings.limit
                 assign skip = true
               endif
@@ -175,7 +188,7 @@
     },
     {
       "type": "paragraph",
-      "content": "Every collection in the store appears here on its own - nothing to add when you create one. To keep one off this page, use Add block below and choose 'Hide a collection'."
+      "content": "Three ways to choose what appears: every collection automatically, only those ticked on their own admin page, or only blocks added below. The first two pick up new collections without anyone touching this page."
     },
     {
       "type": "select",
@@ -183,10 +196,25 @@
       "label": "Source",
       "options": [
         { "value": "auto", "label": "All collections, automatically" },
+        { "value": "metafield", "label": "Only collections marked in the admin" },
         { "value": "manual", "label": "Only the ones I pick below" }
       ],
       "default": "auto",
-      "info": "Automatic means a new collection appears here as soon as it is created, with no change needed on this page."
+      "info": "Automatic and marked-in-the-admin both pick up new collections on their own. Only the last one needs a block adding here."
+    },
+    {
+      "type": "text",
+      "id": "metafield_namespace",
+      "label": "Metafield namespace",
+      "default": "custom",
+      "info": "For 'marked in the admin'. Shopify uses 'custom' unless you chose otherwise."
+    },
+    {
+      "type": "text",
+      "id": "metafield_key",
+      "label": "Metafield key",
+      "default": "show_in_grid",
+      "info": "Create it once at Settings > Custom data > Collections, as a true/false field. Each collection then gets a checkbox on its own admin page."
     },
     {
       "type": "range",
