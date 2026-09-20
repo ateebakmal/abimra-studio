@@ -35,10 +35,54 @@
       "settings": {
         "heading": "Shop by theme",
         "intro": "The same garments, grouped by what people actually search for. A place to start if you're not sure.",
-        "source": "auto",
+        "source": "manual",
         "limit": 12,
         "hide_empty": true
-      }
+      },
+      "blocks": {
+        "t1": {
+          "type": "collection",
+          "settings": {
+            "collection": "design-your-own",
+            "bg": "#E8E2D4",
+            "garment": "tee",
+            "garment_color": "#191813"
+          }
+        },
+        "t2": {
+          "type": "collection",
+          "settings": {
+            "collection": "hoodies",
+            "bg": "#DFE7DC",
+            "garment": "tee",
+            "garment_color": "#5F5B52"
+          }
+        },
+        "t3": {
+          "type": "collection",
+          "settings": {
+            "collection": "studio-originals",
+            "bg": "#EDE3C9",
+            "garment": "hood",
+            "garment_color": "#191813"
+          }
+        },
+        "t4": {
+          "type": "collection",
+          "settings": {
+            "collection": "t-shirts",
+            "bg": "#E3EAF6",
+            "garment": "tee",
+            "garment_color": "#5F5B52"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ]
     },
     "closer": {
       "type": "abmira-closer",
