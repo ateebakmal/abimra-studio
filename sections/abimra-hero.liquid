@@ -22,9 +22,14 @@
             <span class="ab-ln"
               ><span>
                 {%- if section.settings.accent_word != blank -%}
-                  <span class="ab-accent">{{ section.settings.accent_word | escape }}</span>
+                  {%- comment -%}
+                    {{ ' ' }} emits a literal space. A plain space here would be
+                    eaten by the surrounding {%- -%} whitespace stripping, which
+                    is how "Design it," first rendered as "Designit,".
+                  {%- endcomment -%}
+                  <span class="ab-accent">{{ section.settings.accent_word | escape }}</span>{{ ' ' }}
                 {%- endif -%}
-                {{ section.settings.headline_line_1 | escape }}</span
+                {{- section.settings.headline_line_1 | escape -}}</span
               ></span
             >
             {%- if section.settings.headline_line_2 != blank -%}
