@@ -35,9 +35,11 @@
       "settings": {
         "heading": "Shop by theme",
         "intro": "The same garments, grouped by what people actually search for. A place to start if you're not sure.",
-        "source": "manual",
+        "source": "metafield",
         "limit": 12,
-        "hide_empty": true
+        "hide_empty": true,
+        "metafield_namespace": "custom",
+        "metafield_key": "show_in_grid"
       },
       "blocks": {
         "t1": {
