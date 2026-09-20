@@ -2040,8 +2040,27 @@ body.ab-drawer-open {
   margin-top: auto;
 }
 
-.ab-prod-img {
-  background: var(--b-stone);
+/* backdrop comes from the card, cycling by position */
+.ab-prod-grid .ab-prod-img svg {
+  width: 55%;
+  height: auto;
+}
+
+.ab-prod-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.ab-prod-b {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.ab-prod-b .ab-meta {
+  font-size: 13px;
 }
 
 /* Sold out is a status, not a call to action - ink, never --red. */
@@ -2064,37 +2083,6 @@ body.ab-drawer-open {
   color: var(--red);
 }
 
-/* ---------------------------------------------------------- *
- * Colour swatches
- * ---------------------------------------------------------- */
-
-.ab-prod-swatches {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 8px;
-}
-
-.ab-sw {
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background-size: cover;
-  background-position: center;
-  /* an inset ring rather than a border, so a white swatch is still
-     visible on paper without changing its size */
-  box-shadow: inset 0 0 0 1px rgba(25, 24, 19, 0.22);
-}
-
-.ab-sw-out {
-  opacity: 0.35;
-}
-
-.ab-sw-more {
-  font-size: 11px;
-  color: var(--graphite);
-  font-variation-settings: 'wdth' 100, 'wght' 500;
-}
 
 /* ---------------------------------------------------------- *
  * Dawn's facets, restyled
@@ -2193,4 +2181,30 @@ body.ab-drawer-open {
 
 .ab-coll-page .pagination__item--current {
   color: var(--red);
+}
+
+/* breadcrumb + right-aligned count on the collection header */
+.ab-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--graphite);
+  margin-bottom: 18px;
+}
+
+.ab-crumbs a:hover {
+  color: var(--red);
+}
+
+.ab-coll-page .ab-coll-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.ab-coll-count {
+  white-space: nowrap;
 }

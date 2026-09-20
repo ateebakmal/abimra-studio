@@ -1,27 +1,36 @@
 {% comment %}
   Abmira product card.
 
-  Used by the collection grid, the catalogue and search, so every product
-  listing on the site is the same object. The homepage rail uses the same
-  .ab-prod markup inline.
+  Shared by the collection grid, the catalogue, search and the homepage
+  rail, so a product looks the same everywhere it appears.
 
-  Colour swatches appear only when the product actually has a colour option
-  with more than one value - a single-colour product gets nothing rather
-  than a lone dot, and a product with no colour option is unaffected.
+  The image sits on a photographic backdrop that cycles by position, so a
+  row never reads as one flat block. Body is a title/price row with a meta
+  line beneath: garment type, then the colour count.
+
+  The colour count is text rather than swatch dots. Dots answer "which
+  colours"; at card size that is unreadable, and the question a shopper is
+  actually asking here is "is there more than one".
 
   Accepts:
   - card_product:  {Object}  product
+  - index:         {Number}  position, used to pick the backdrop
   - lazy:          {Boolean} lazy-load the image
   - color_option:  {String}  name of the colour option, default 'Color'
-  - max_swatches:  {Number}  how many dots before "+n", default 5
+  - new_tag:       {String}  tag that marks a product as new, default 'new'
 
   Usage:
-  {% render 'abmira-product-card', card_product: product, lazy: true %}
+  {% render 'abmira-product-card', card_product: product, index: forloop.index0 %}
 {% endcomment %}
 
 {%- liquid
   assign wanted = color_option | default: 'Color' | downcase | strip
-  assign max_swatches = max_swatches | default: 5
+  assign new_tag = new_tag | default: 'new'
+  assign index = index | default: 0
+
+  assign backdrops = '#E8E2D4,#DFE7DC,#EDE3C9,#E3EAF6,#DCD9CF,#FBE7E1' | split: ','
+  assign b = index | modulo: backdrops.size
+  assign backdrop = backdrops[b]
 
   assign colors = null
   for opt in card_product.options_with_values
@@ -32,6 +41,21 @@
     endif
   endfor
 
+  # "Oversized tee · 4 colours". Either half is dropped when absent, so a
+  # product with no type set still reads cleanly.
+  assign meta = ''
+  if card_product.type != blank
+    assign meta = card_product.type
+  endif
+  if colors != blank and colors.values.size > 1
+    assign count_label = colors.values.size | append: ' colours'
+    if meta != blank
+      assign meta = meta | append: ' · ' | append: count_label
+    else
+      assign meta = count_label
+    endif
+  endif
+
   assign loading = 'lazy'
   unless lazy
     assign loading = 'eager'
@@ -39,7 +63,7 @@
 -%}
 
 <article class="ab-prod">
-  <a class="ab-prod-img" href="{{ card_product.url }}" tabindex="-1" aria-hidden="true">
+  <a class="ab-prod-img" href="{{ card_product.url }}" style="background: {{ backdrop }};" tabindex="-1" aria-hidden="true">
     {%- if card_product.featured_media != blank -%}
       {{
         card_product.featured_media
@@ -51,54 +75,33 @@
           alt: card_product.featured_media.alt | default: card_product.title
       }}
     {%- else -%}
-      {{ 'product-apparel-1' | placeholder_svg_tag: 'ab-placeholder' }}
+      <svg viewBox="0 0 300 340" width="150" style="--g: #191813;" aria-hidden="true">
+        <use href="#ab-tee"/>
+      </svg>
     {%- endif -%}
 
-    {%- unless card_product.available -%}
+    {%- if card_product.available == false -%}
       <span class="ab-chip ab-chip-ink">{{ 'products.product.sold_out' | t }}</span>
-    {%- endunless -%}
+    {%- elsif card_product.tags contains new_tag -%}
+      <span class="ab-chip ab-chip-red">New</span>
+    {%- endif -%}
   </a>
 
   <div class="ab-prod-b">
-    <div>
+    <div class="ab-prod-row">
       <h3 class="ab-ttl"><a href="{{ card_product.url }}">{{ card_product.title | escape }}</a></h3>
-
-      {%- if colors != blank and colors.values.size > 1 -%}
-        <div class="ab-prod-swatches" aria-label="{{ colors.values.size }} colours">
-          {%- for value in colors.values limit: max_swatches -%}
-            {%- liquid
-              assign fill = value.swatch.color
-              if value.swatch.image
-                assign fill = null
-              endif
-            -%}
-            <span
-              class="ab-sw{% unless value.available %} ab-sw-out{% endunless %}"
-              title="{{ value | escape }}"
-              {% if value.swatch.image %}
-                style="background-image: url({{ value.swatch.image | image_url: width: 40 }});"
-              {% elsif fill %}
-                style="background: {{ fill }};"
-              {% endif %}
-            ></span>
-          {%- endfor -%}
-          {%- if colors.values.size > max_swatches -%}
-            {%- assign extra = colors.values.size | minus: max_swatches -%}
-            <span class="ab-sw-more">+{{ extra }}</span>
-          {%- endif -%}
-        </div>
-      {%- elsif card_product.has_only_default_variant == false -%}
-        <span class="ab-meta">{{ card_product.options_with_values.first.values.first | escape }}</span>
-      {%- endif -%}
+      <span class="ab-cost">
+        {%- if card_product.compare_at_price > card_product.price -%}
+          <s>{{ card_product.compare_at_price | money }}</s>
+          <span class="ab-cost-sale">{{ card_product.price | money }}</span>
+        {%- else -%}
+          {{ card_product.price | money }}
+        {%- endif -%}
+      </span>
     </div>
 
-    <span class="ab-cost">
-      {%- if card_product.compare_at_price > card_product.price -%}
-        <s>{{ card_product.compare_at_price | money }}</s>
-        <span class="ab-cost-sale">{{ card_product.price | money }}</span>
-      {%- else -%}
-        {{ card_product.price | money }}
-      {%- endif -%}
-    </span>
+    {%- if meta != blank -%}
+      <span class="ab-meta">{{ meta | escape }}</span>
+    {%- endif -%}
   </div>
 </article>

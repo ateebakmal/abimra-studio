@@ -1,4 +1,3 @@
-{{ 'component-card.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 {{ 'component-facets.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'facets.js' | asset_url }}" defer="defer"></script>
@@ -30,10 +29,25 @@
 <div class="ab-section">
   <section class="ab-sec ab-coll-page">
     <div class="ab-wrap">
+      {%- if section.settings.show_breadcrumb -%}
+        <nav class="ab-crumbs" aria-label="Breadcrumb">
+          <a href="{{ routes.root_url }}">Home</a>
+          <span aria-hidden="true">/</span>
+          <a href="{{ routes.collections_url }}">Collections</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{{ collection.title | escape }}</span>
+        </nav>
+      {%- endif -%}
+
       <div class="ab-coll-head">
-        <h1 class="ab-d2">{{ collection.title | escape }}</h1>
-        {%- if section.settings.show_description and collection.description != blank -%}
-          <div class="ab-coll-desc">{{ collection.description }}</div>
+        <div>
+          <h1 class="ab-d2">{{ collection.title | escape }}</h1>
+          {%- if section.settings.show_description and collection.description != blank -%}
+            <div class="ab-coll-desc">{{ collection.description }}</div>
+          {%- endif -%}
+        </div>
+        {%- if collection.products_count > 0 -%}
+          <span class="ab-meta ab-coll-count">{{ collection.products_count }} designs</span>
         {%- endif -%}
       </div>
 
@@ -62,6 +76,7 @@
               <li>
                 {% render 'abmira-product-card',
                   card_product: product,
+                  index: forloop.index0,
                   lazy: lazy,
                   color_option: section.settings.color_option_name
                 %}
@@ -87,6 +102,12 @@
   "name": "Abmira collection",
   "tag": "section",
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Show breadcrumb",
+      "default": true
+    },
     {
       "type": "checkbox",
       "id": "show_description",

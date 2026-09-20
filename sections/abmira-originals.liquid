@@ -33,42 +33,11 @@
       <div class="ab-rail ab-rail-prod ab-rv ab-rv-1">
         {%- if products.size > 0 -%}
           {%- for product in products limit: count -%}
-            {%- liquid
-              assign backdrop = backdrops[forloop.index0] | default: backdrops[0]
-              assign idx = forloop.index0 | modulo: backdrops.size
-              assign backdrop = backdrops[idx]
-            -%}
-            <article class="ab-prod">
-              <a href="{{ product.url }}" class="ab-prod-img" style="background: {{ backdrop }};">
-                {%- if section.settings.show_badge and product.tags contains 'customizable' -%}
-                  <span class="ab-chip ab-chip-red">{{ section.settings.badge_label | escape }}</span>
-                {%- endif -%}
-                {%- if product.featured_media != blank -%}
-                  {{
-                    product.featured_media
-                    | image_url: width: 700
-                    | image_tag:
-                      loading: 'lazy',
-                      widths: '288, 432, 576, 700',
-                      sizes: '(min-width: 641px) 288px, 63vw',
-                      alt: product.featured_media.alt | default: product.title
-                  }}
-                {%- else -%}
-                  <svg viewBox="0 0 300 340" width="150" style="--g: #191813;" aria-hidden="true">
-                    <use href="#ab-tee"/>
-                  </svg>
-                {%- endif -%}
-              </a>
-              <div class="ab-prod-b">
-                <div>
-                  <h3 class="ab-ttl"><a href="{{ product.url }}">{{ product.title | escape }}</a></h3>
-                  {%- if product.has_only_default_variant == false -%}
-                    <span class="ab-meta">{{ product.options_with_values.first.values.first | escape }}</span>
-                  {%- endif -%}
-                </div>
-                <span class="ab-cost">{{ product.price | money }}</span>
-              </div>
-            </article>
+            {% render 'abmira-product-card',
+              card_product: product,
+              index: forloop.index0,
+              lazy: true
+            %}
           {%- endfor -%}
         {%- else -%}
           {%- comment -%} Editor placeholder so the rail is visible before a collection is picked. {%- endcomment -%}
@@ -84,8 +53,11 @@
                 </svg>
               </div>
               <div class="ab-prod-b">
-                <div><h3 class="ab-ttl">Product title</h3><span class="ab-meta">Colour</span></div>
-                <span class="ab-cost">{{ 2999 | money }}</span>
+                <div class="ab-prod-row">
+                  <h3 class="ab-ttl">Product title</h3>
+                  <span class="ab-cost">{{ 2999 | money }}</span>
+                </div>
+                <span class="ab-meta">Choose a collection</span>
               </div>
             </article>
           {%- endfor -%}
