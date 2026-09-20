@@ -2255,6 +2255,11 @@ body.ab-drawer-open {
  * Variant picker - labels, pills and swatches
  * ---------------------------------------------------------- */
 
+.product .product-form__input {
+  margin: 0 0 22px;
+  max-width: none;
+}
+
 .product .product-form__input .form__label,
 .product .product-form__input legend.form__label {
   font-family: var(--ab-f);
@@ -2267,14 +2272,15 @@ body.ab-drawer-open {
 .product .product-form__input--pill input[type='radio'] + label {
   font-family: var(--ab-f);
   font-size: 14px;
-  min-width: 52px;
-  min-height: 42px;
+  min-width: 54px;
+  min-height: 44px;
   padding: 0 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--rule);
-  border-radius: var(--r-pill);
+  /* rounded rectangle, not a pill - the pill shape is reserved for actions */
+  border-radius: var(--r-input);
   background: var(--paper-raised);
   color: var(--ink);
   margin: 0 8px 8px 0;
@@ -2307,7 +2313,8 @@ body.ab-drawer-open {
 
 .product .swatch-input__label {
   border-radius: 50%;
-  margin: 0 10px 8px 0;
+  margin: 0 12px 8px 0;
+  --swatch-input--size: 30px;
 }
 
 .product .swatch-input__input:checked + .swatch-input__label {
@@ -2505,4 +2512,21 @@ body.ab-drawer-open {
   .ab-guide .ab-guide-sign {
     transition: none;
   }
+}
+
+
+/* The product page is Dawn's markup on Dawn's colour scheme, which now
+   carries the Abmira palette. These keep the pieces that set their own
+   ground in step with it. */
+.product .product__info-container > * + * {
+  margin-top: 0;
+}
+
+.product .product__info-container .ab-trust {
+  margin-top: 24px;
+}
+
+.product .product__accordion,
+.product .product__info-container .quantity__rules {
+  background: transparent;
 }

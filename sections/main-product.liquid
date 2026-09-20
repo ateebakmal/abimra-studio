@@ -117,6 +117,9 @@
     <script src="{{ 'theme-editor.js' | asset_url }}" defer="defer"></script>
   {%- endif -%}
 
+  {%- comment -%} [abmira] #ab-tick is used by the trust list below. {%- endcomment -%}
+  {% render 'abmira-symbols' %}
+
   {%- assign first_3d_model = product.media | where: 'media_type', 'model' | first -%}
   {%- if first_3d_model -%}
     {{ 'component-product-model.css' | asset_url | stylesheet_tag }}
