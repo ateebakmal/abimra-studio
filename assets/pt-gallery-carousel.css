@@ -53,6 +53,19 @@
     margin-left: 0;
     margin-bottom: 0;
     width: 100%;
+    /* Dawn insets the snapport 1.5rem from the left so a peeking slide
+       clears the gutter. The slides here snap CENTRE, and an inset on one
+       side moves the centre of the snapport half that distance right - so
+       every slide parked 7.5px off, showing a sliver of the one before it
+       and hiding the same amount of its own right edge. */
+    scroll-padding-left: 0;
+    scroll-padding-right: 0;
+  }
+
+  /* No thumbnail strip on a phone, so without this the gallery ends at the
+     photo and the title starts immediately under it. */
+  .pt-carousel--thumbs {
+    margin-bottom: 2.4rem;
   }
 
   .pt-carousel slider-component:not(.thumbnail-slider--no-slide) {
