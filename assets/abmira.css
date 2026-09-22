@@ -2112,14 +2112,37 @@ body.ab-drawer-open {
   color: var(--ink);
 }
 
-/* pill-shaped triggers, hairline not shadow */
+/* Dawn spaces the triggers with margin-right on each <details> plus a
+   margin-bottom on the summary inside it. That predates the pill: the
+   margins sit outside the border, so they read as a gap on one line and
+   as nothing once the row wraps. Both are dropped for a gap on the flex
+   row, which spaces a wrapped second line the same as the first. */
+.ab-facets .facets__wrapper {
+  gap: 10px 12px;
+}
+
+.ab-facets .facets__disclosure {
+  margin-right: 0;
+}
+
+/* Pill-shaped triggers, hairline not shadow.
+   The right padding is wider than the left to clear the caret, which is
+   absolutely positioned rather than part of the text flow. */
 .ab-facets .facets__disclosure .facets__summary,
 .ab-facets .disclosure-has-popup > summary {
+  margin-bottom: 0;
+  padding: 9px 38px 9px 16px;
   border: 1px solid var(--rule);
   border-radius: var(--r-pill);
-  padding: 8px 16px;
   background: var(--paper-raised);
-  transition: border-color 0.12s var(--ab-e);
+  transition: border-color 0.12s var(--ab-e), background-color 0.12s var(--ab-e), color 0.12s var(--ab-e);
+}
+
+/* Dawn pins the caret to right:0 - fine on a borderless summary, but it
+   lands on the border of a pill Dawn never expected to exist. */
+.ab-facets .facets__summary .icon-caret {
+  right: 15px;
+  transition: transform 0.16s var(--ab-e);
 }
 
 .ab-facets .facets__disclosure .facets__summary:hover,
@@ -2127,18 +2150,167 @@ body.ab-drawer-open {
   border-color: var(--ink);
 }
 
+/* Dawn underlines the label on hover. The pill already answers that. */
+.ab-facets .facets__summary:hover .facets__summary-label {
+  text-decoration: none;
+}
+
+/* Open pill inverts, so it reads as attached to the panel below it. The
+   caret is fill="currentColor", so it follows the text to paper. */
+.ab-facets .facets__disclosure[open] > .facets__summary {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.ab-facets .facets__disclosure[open] > .facets__summary .icon-caret {
+  transform: rotate(180deg);
+}
+
+/* ---- the open panel ---- */
+
 .ab-facets .facets__display,
 .ab-facets .facets__display-vertical {
+  min-width: 280px;
+  margin-top: 8px;
   border: 1px solid var(--rule);
   border-radius: var(--r-card);
   background: var(--paper-raised);
   box-shadow: none;
+  /* rows run edge to edge, so without this they square off the corners */
+  overflow: hidden;
 }
 
-.ab-facets .facets__item label,
-.ab-facets .facets__label {
-  font-size: 14px;
+/* "3 selected" on the left, Reset on the right. */
+.ab-facets .facets__header {
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper-raised);
+  font-family: var(--ab-f);
+  font-size: 13px;
+  color: var(--graphite);
+  align-items: center;
 }
+
+.ab-facets .facets__list {
+  padding: 6px 0;
+}
+
+.ab-facets .facets__item {
+  padding: 0 6px;
+}
+
+/* Whole row is the hit target, not just the label text. */
+.ab-facets .facet-checkbox {
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: var(--r-input);
+  font-family: var(--ab-f);
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color 0.12s var(--ab-e);
+}
+
+.ab-facets .facet-checkbox:hover {
+  background: var(--paper);
+}
+
+.ab-facets .facet-checkbox.disabled {
+  color: var(--graphite);
+  opacity: 0.45;
+  cursor: default;
+}
+
+.ab-facets .facet-checkbox.disabled:hover {
+  background: none;
+}
+
+/* Dawn draws the box as an inline <svg> with a separately positioned tick
+   layered over it. Only the box is restyled; the tick keeps Dawn's own
+   absolute placement, so it stays registered to the box. */
+.ab-facets .facet-checkbox > svg:first-of-type {
+  width: 16px;
+  height: 16px;
+  margin-right: 0;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--paper-raised);
+}
+
+.ab-facets .facet-checkbox > input[type='checkbox']:checked ~ svg:first-of-type {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.ab-facets .facet-checkbox .svg-wrapper {
+  left: 13px;
+  top: 50%;
+  margin-top: -4px;
+  color: var(--paper);
+}
+
+.ab-facets .facet-checkbox__text-label {
+  font-variation-settings: 'wdth' 100, 'wght' 500;
+}
+
+/* The count is Dawn's own "(12)" text node after the label. */
+.ab-facets .facet-checkbox__text {
+  color: var(--graphite);
+}
+
+.ab-facets .facets-layout-list .facets__label:hover .facet-checkbox__text-label,
+.ab-facets .facets-layout-list input:focus ~ .facet-checkbox__text-label {
+  text-decoration: none;
+}
+
+/* ---- price range ---- */
+
+.ab-facets .facets__price {
+  gap: 12px;
+  padding: 16px 18px;
+  align-items: center;
+}
+
+.ab-facets .facets__price .field {
+  margin: 0;
+}
+
+.ab-facets .facets__price .field + .field-currency {
+  margin-left: 0;
+}
+
+.ab-facets .facets__price .field-currency {
+  margin-right: 0;
+  font-family: var(--ab-f);
+  font-size: 14px;
+  color: var(--graphite);
+}
+
+.ab-facets .facets__price .field__input {
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-input);
+  background: var(--paper-raised);
+  font-family: var(--ab-f);
+  font-size: 14px;
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.ab-facets .facets__price .field::after,
+.ab-facets .facets__price .field__input:focus::after {
+  display: none;
+}
+
+.ab-facets .facets__price .field__input:focus {
+  border-color: var(--ink);
+  outline: none;
+}
+
+/* ---- active filter chips and buttons ---- */
 
 .ab-facets .active-facets__button,
 .ab-facets .facets__button {
