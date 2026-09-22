@@ -25,10 +25,25 @@
     assign pt_featured = nil
   endif
 
-  # [custom] "Carousel" gallery layout: one image at a time with arrows and dots.
+  # [custom] Two carousel layouts, one mechanism. Both show a single image at
+  # a time with arrows over it; they differ only in how position is indicated.
+  # "carousel" uses dots, "thumbnail_carousel" keeps Dawn's own thumbnail
+  # strip. pt_thumbs therefore rides alongside pt_carousel rather than
+  # replacing it, because the slider behaviour is identical either way.
   assign pt_carousel = false
+  assign pt_thumbs = false
   if section.settings.gallery_layout == 'carousel'
     assign pt_carousel = true
+  endif
+  if section.settings.gallery_layout == 'thumbnail_carousel'
+    assign pt_carousel = true
+    assign pt_thumbs = true
+  endif
+
+  # Only the dots carousel suppresses the thumbnail strip.
+  assign pt_hide_thumbs = false
+  if pt_carousel and pt_thumbs == false
+    assign pt_hide_thumbs = true
   endif
 
   if section.settings.hide_variants and variant_images.size == product.media.size
@@ -65,7 +80,7 @@
   id="MediaGallery-{{ section.id }}"
   role="region"
   {% comment %} [custom] pt-carousel switches on the carousel styling. {% endcomment %}
-  class="{% if section.settings.enable_sticky_info %}product__column-sticky{% endif %}{% if pt_carousel %} pt-carousel{% endif %}"
+  class="{% if section.settings.enable_sticky_info %}product__column-sticky{% endif %}{% if pt_carousel %} pt-carousel{% endif %}{% if pt_thumbs %} pt-carousel--thumbs{% endif %}"
   aria-label="{{ 'products.product.media.gallery_viewer' | t }}"
   data-desktop-layout="{{ section.settings.gallery_layout }}"
 >
@@ -177,10 +192,12 @@
           </span>
         </button>
       </div>
-      <pt-gallery-dots
-        class="pt-carousel__dots slider-counter slider-counter--dots quick-add-hidden"
-        data-dot-label="{{ 'products.product.media.load_image' | t: index: '[index]' | escape }}"
-      ></pt-gallery-dots>
+      {%- unless pt_thumbs -%}
+        <pt-gallery-dots
+          class="pt-carousel__dots slider-counter slider-counter--dots quick-add-hidden"
+          data-dot-label="{{ 'products.product.media.load_image' | t: index: '[index]' | escape }}"
+        ></pt-gallery-dots>
+      {%- endunless -%}
     {%- else -%}
       <div class="slider-buttons quick-add-hidden{% if hide_mobile_slider %} small-hide{% endif %}">
         <button
@@ -234,8 +251,8 @@
       assign is_not_limited_to_single_item = true
     endif
   -%}
-  {% comment %} [custom] The carousel uses dots instead of a thumbnail strip. {% endcomment %}
-  {%- unless pt_carousel -%}
+  {% comment %} [custom] The dots carousel replaces this strip; the thumbnail carousel keeps it. {% endcomment %}
+  {%- unless pt_hide_thumbs -%}
   {%- if is_not_limited_to_single_item
     and media_count > 1
     and section.settings.gallery_layout contains 'thumbnail'

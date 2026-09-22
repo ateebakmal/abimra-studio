@@ -100,10 +100,16 @@
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
   {% comment %} [custom] No-preselect, deselect and colour-filtered gallery behaviour. {% endcomment %}
   <script src="{{ 'pt-product-options.js' | asset_url }}" defer="defer"></script>
-  {%- if section.settings.gallery_layout == 'carousel' -%}
-    {% comment %} [custom] One-image-at-a-time gallery with arrows and dots. {% endcomment %}
+  {%- if section.settings.gallery_layout == 'carousel' or section.settings.gallery_layout == 'thumbnail_carousel' -%}
+    {% comment %} [custom] One image at a time, arrows over the image. {% endcomment %}
     {{ 'pt-gallery-carousel.css' | asset_url | stylesheet_tag }}
-    <script src="{{ 'pt-gallery-carousel.js' | asset_url }}" defer="defer"></script>
+    {%- if section.settings.gallery_layout == 'carousel' -%}
+      {% comment %}
+        The dots are built in JS. The thumbnail carousel indicates position
+        with Dawn's own strip, so it needs none of this.
+      {% endcomment %}
+      <script src="{{ 'pt-gallery-carousel.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
   {%- endif -%}
   {%- if product.quantity_price_breaks_configured? -%}
     <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
@@ -2416,6 +2422,10 @@
         {
           "value": "thumbnail",
           "label": "t:sections.main-product.settings.gallery_layout.options__3.label"
+        },
+        {
+          "value": "thumbnail_carousel",
+          "label": "Carousel (one image, arrows and thumbnails)"
         },
         {
           "value": "carousel",
