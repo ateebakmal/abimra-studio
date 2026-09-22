@@ -223,14 +223,20 @@
       </div>
 
       {% comment %}
-        Position readout for touch, where there are no arrows to press. The
-        class names are Dawn's on purpose: SliderComponent finds and updates
-        .slider-counter--current / --total on its own, so this needs no script.
+        Position readout for touch, where there are no arrows to press.
+
+        It deliberately does NOT use Dawn's .slider-counter class names.
+        SliderComponent would then own it, and what it writes there is its
+        page count - slides minus slidesPerPage plus one - which answers
+        "how many scroll positions", not "how many images". Those agree
+        only while slidesPerPage is exactly 1, and a rounding error of a
+        single pixel in the slide width drops it to 0 and turns four
+        images into five. assets/abmira.js fills this from the slides.
       {% endcomment %}
       <div class="pt-carousel__count quick-add-hidden" aria-hidden="true">
-        <span class="slider-counter--current">1</span>
+        <span data-pt-count-current>1</span>
         <span> / </span>
-        <span class="slider-counter--total">{{ media_count }}</span>
+        <span data-pt-count-total>{{ media_count }}</span>
       </div>
       {%- unless pt_thumbs -%}
         <pt-gallery-dots

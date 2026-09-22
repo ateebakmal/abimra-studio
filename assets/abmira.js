@@ -469,6 +469,45 @@
   }
 
   /* ------------------------------------------------------------------ *
+   * 6. Carousel position readout
+   *
+   * Counted from the slides rather than left to SliderComponent, which
+   * reports pages: slides - slidesPerPage + 1. That is the number of
+   * scroll positions, not the number of images, and the two agree only
+   * while slidesPerPage is exactly 1. Let the slide come out a pixel
+   * wider than its track and the floor() drops it to 0, at which point
+   * four images are reported as five.
+   * ------------------------------------------------------------------ */
+
+  function initCarouselCount(root) {
+    var galleries = (root || document).querySelectorAll('.pt-carousel');
+
+    Array.prototype.forEach.call(galleries, function (gallery) {
+      var track = gallery.querySelector('[id^="Slider-Gallery"]');
+      var current = gallery.querySelector('[data-pt-count-current]');
+      var total = gallery.querySelector('[data-pt-count-total]');
+      if (!track || !current || !total) return;
+
+      function update() {
+        var slides = track.querySelectorAll('[id^="Slide-"]');
+        if (!slides.length) return;
+        total.textContent = slides.length;
+
+        var step = slides[0].offsetWidth;
+        if (!step) return;
+        var index = Math.round(track.scrollLeft / step) + 1;
+        current.textContent = Math.min(Math.max(index, 1), slides.length);
+      }
+
+      track.addEventListener('scroll', update, { passive: true });
+      // Dawn re-renders the gallery on a variant change, so the count is
+      // read again rather than trusted from load.
+      window.addEventListener('resize', update);
+      update();
+    });
+  }
+
+  /* ------------------------------------------------------------------ *
    * Boot
    * ------------------------------------------------------------------ */
 
@@ -479,6 +518,7 @@
     initDrawer(document);
     initSizeChart();
     initCarouselSwipe();
+    initCarouselCount(root);
   }
 
   if (document.readyState === 'loading') {
