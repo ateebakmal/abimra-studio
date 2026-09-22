@@ -40,6 +40,17 @@
     assign pt_thumbs = true
   endif
 
+  # Dawn hoists the selected variant's image to the front of the list so it
+  # sits at the top of a stacked column. In a carousel that is destructive:
+  # it rewrites the running order, so "next" walks a sequence that matches
+  # neither the thumbnails nor the order set in the admin. A carousel renders
+  # in media order and marks the variant's image active instead; Dawn's own
+  # media-gallery.js then scrolls it into view.
+  assign pt_hoist = pt_featured
+  if pt_carousel
+    assign pt_hoist = nil
+  endif
+
   # Only the dots carousel suppresses the thumbnail strip.
   assign pt_hide_thumbs = false
   if pt_carousel and pt_thumbs == false
@@ -94,8 +105,8 @@
       class="product__media-list contains-media grid grid--peek list-unstyled slider slider--mobile{% if pt_carousel %} slider--everywhere{% endif %}"
       role="list"
     >
-      {%- if pt_featured != null -%}
-        {%- assign featured_media = pt_featured -%}
+      {%- if pt_hoist != null -%}
+        {%- assign featured_media = pt_hoist -%}
         <li
           id="Slide-{{ section.id }}-{{ featured_media.id }}"
           class="product__media-item grid__item slider__slide is-active{% if single_media_visible %} product__media-item--single{% endif %}{% if featured_media.media_type != 'image' %} product__media-item--full{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
@@ -129,10 +140,21 @@
           {% continue %}
         {% endif %}
 
-        {%- unless media.id == pt_featured.id -%}
+        {%- unless media.id == pt_hoist.id -%}
+          {%- liquid
+            # Without the hoist the active slide is wherever the variant's
+            # image already sits, so it has to be found rather than assumed.
+            assign pt_active = false
+            if pt_hoist == nil and pt_featured != nil and media.id == pt_featured.id
+              assign pt_active = true
+            endif
+            if pt_featured == nil and forloop.index == 1
+              assign pt_active = true
+            endif
+          -%}
           <li
             id="Slide-{{ section.id }}-{{ media.id }}"
-            class="product__media-item grid__item slider__slide{% if single_media_visible %} product__media-item--single{% endif %}{% if pt_featured == nil and forloop.index == 1 %} is-active{% endif %}{% if media.media_type != 'image' %} product__media-item--full{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+            class="product__media-item grid__item slider__slide{% if single_media_visible %} product__media-item--single{% endif %}{% if pt_active %} is-active{% endif %}{% if media.media_type != 'image' %} product__media-item--full{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
             data-media-id="{{ section.id }}-{{ media.id }}"
             {% comment %} [custom] Colour this media belongs to, read by pt-product-options.js. {% endcomment %}
             data-pt-alt="{{ media.alt | default: '' | strip | downcase | escape }}"
@@ -176,9 +198,9 @@
           aria-label="{{ 'general.slider.previous_slide' | t }}"
           aria-controls="Slider-Gallery-{{ section.id }}"
         >
-          <span class="svg-wrapper">
-            {{- 'icon-caret.svg' | inline_asset_content -}}
-          </span>
+          <svg class="pt-carousel__arrow-icon" viewBox="0 0 34 12" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true" focusable="false">
+            <path d="M33 6H1m0 0 5.5-5M1 6l5.5 5"/>
+          </svg>
         </button>
         <button
           type="button"
@@ -187,10 +209,21 @@
           aria-label="{{ 'general.slider.next_slide' | t }}"
           aria-controls="Slider-Gallery-{{ section.id }}"
         >
-          <span class="svg-wrapper">
-            {{- 'icon-caret.svg' | inline_asset_content -}}
-          </span>
+          <svg class="pt-carousel__arrow-icon" viewBox="0 0 34 12" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true" focusable="false">
+            <path d="M1 6h32m0 0-5.5-5M33 6l-5.5 5"/>
+          </svg>
         </button>
+      </div>
+
+      {% comment %}
+        Position readout for touch, where there are no arrows to press. The
+        class names are Dawn's on purpose: SliderComponent finds and updates
+        .slider-counter--current / --total on its own, so this needs no script.
+      {% endcomment %}
+      <div class="pt-carousel__count quick-add-hidden" aria-hidden="true">
+        <span class="slider-counter--current">1</span>
+        <span> / </span>
+        <span class="slider-counter--total">{{ media_count }}</span>
       </div>
       {%- unless pt_thumbs -%}
         <pt-gallery-dots
@@ -331,7 +364,7 @@
           </li>
         {%- endif -%}
         {%- for media in product.media -%}
-          {%- unless media.id == pt_featured.id -%}
+          {%- unless media.id == pt_hoist.id -%}
             {%- liquid
               capture media_index
                 if media.media_type == 'model'

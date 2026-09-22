@@ -233,3 +233,73 @@
     flex: 0 0 6.4rem;
   }
 }
+
+/* ---------------------------------------------------------------- *
+ * Thumbnail carousel: minimal arrows, counter on touch
+ * ---------------------------------------------------------------- */
+
+/* A long rule with a small head, sitting at the very edge of the image.
+   No disc, no shadow - the thumbnails below already say where you are, so
+   the arrows only have to be findable, not loud. */
+.pt-carousel--thumbs .pt-carousel__arrows .slider-button {
+  width: 4.2rem;
+  height: 4.2rem;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: rgb(var(--color-foreground));
+  opacity: 0.55;
+  transition: opacity 0.16s ease;
+}
+
+.pt-carousel--thumbs .pt-carousel__arrows .slider-button:not([disabled]):hover {
+  background: none;
+  opacity: 1;
+}
+
+.pt-carousel--thumbs .pt-carousel__arrows .slider-button--prev {
+  left: 0.8rem;
+}
+
+.pt-carousel--thumbs .pt-carousel__arrows .slider-button--next {
+  right: 0.8rem;
+}
+
+.pt-carousel__arrow-icon {
+  width: 3.4rem;
+  height: 1.2rem;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ---- position readout ---- */
+
+.pt-carousel__count {
+  display: none;
+  position: absolute;
+  left: 50%;
+  bottom: 1.4rem;
+  transform: translateX(-50%);
+  z-index: 2;
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  background: rgba(var(--color-foreground), 0.62);
+  color: rgb(var(--color-background));
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+
+@media screen and (max-width: 749px) {
+  /* Touch swipes; it does not hunt for a 42px arrow over the artwork. The
+     counter replaces them so there is still something saying how many
+     images there are and which one this is. */
+  .pt-carousel--thumbs .pt-carousel__arrows {
+    display: none;
+  }
+
+  .pt-carousel--thumbs .pt-carousel__count {
+    display: block;
+  }
+}

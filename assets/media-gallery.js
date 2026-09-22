@@ -40,7 +40,12 @@ if (!customElements.get('media-gallery')) {
         });
         activeMedia?.classList?.add('is-active');
 
-        if (prepend) {
+        // [custom] Prepending puts the variant's image at the top of a stacked
+        // column, which is what Dawn wants there. A carousel is a running
+        // order, so moving a slide to the front makes "next" walk a sequence
+        // that matches neither the thumbnails nor the admin. The scrollTo
+        // below already brings the right image into view without reordering.
+        if (prepend && !this.classList.contains('pt-carousel')) {
           activeMedia.parentElement.firstChild !== activeMedia && activeMedia.parentElement.prepend(activeMedia);
 
           if (this.elements.thumbnails) {
