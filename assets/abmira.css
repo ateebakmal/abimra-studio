@@ -105,8 +105,10 @@
 }
 
 .ab-ttl {
+  font-family: var(--ab-f);
   font-size: 22px;
   line-height: 1.25;
+  font-weight: 600;
   font-variation-settings: 'wdth' 100, 'wght' 600;
   margin: 0;
 }
@@ -857,9 +859,12 @@
 }
 
 .ab-cost {
+  font-family: var(--ab-f);
+  font-weight: 600;
   font-variation-settings: 'wdth' 100, 'wght' 600;
   font-size: 15px;
   white-space: nowrap;
+  color: var(--ink);
 }
 
 .ab-cat-card {
@@ -891,7 +896,6 @@
   width: auto;
   height: auto;
   object-fit: contain;
-  mix-blend-mode: multiply;
 }
 
 /* A garment photo on its own backdrop needs less dead space above it than
@@ -900,9 +904,6 @@
   justify-content: flex-start;
 }
 
-.ab-cat-card.ab-dark .ab-cat-img img {
-  mix-blend-mode: normal;
-}
 
 .ab-cat-card:hover .ab-d3 {
   color: var(--red);
@@ -2131,6 +2132,11 @@ body.ab-drawer-open {
 .ab-chip-ink {
   background: var(--ink);
   color: var(--paper);
+}
+
+.ab-prod-b .ab-ttl,
+.ab-prod-b .ab-ttl a {
+  color: var(--ink);
 }
 
 .ab-prod-b .ab-ttl a:hover {
