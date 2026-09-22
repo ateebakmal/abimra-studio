@@ -25,7 +25,11 @@
           }
         }
       },
-      "block_order": ["f1", "f2", "f3"],
+      "block_order": [
+        "f1",
+        "f2",
+        "f3"
+      ],
       "settings": {
         "eyebrow": "Printed to order. Delivered across the UK.",
         "accent_word": "Design",
@@ -43,16 +47,65 @@
     "marquee": {
       "type": "abmira-marquee",
       "blocks": {
-        "m1": { "type": "item", "settings": { "text": "Tees, hoodies and sweatshirts" } },
-        "m2": { "type": "item", "settings": { "text": "Upload artwork or add text" } },
-        "m3": { "type": "item", "settings": { "text": "Front, back, chest or sleeve" } },
-        "m4": { "type": "item", "settings": { "text": "Background removed for you" } },
-        "m5": { "type": "item", "settings": { "text": "Live resolution check" } },
-        "m6": { "type": "item", "settings": { "text": "Printed in our own studio" } },
-        "m7": { "type": "item", "settings": { "text": "2–4 day dispatch" } },
-        "m8": { "type": "item", "settings": { "text": "One shirt or fifty" } }
+        "m1": {
+          "type": "item",
+          "settings": {
+            "text": "Tees, hoodies and sweatshirts"
+          }
+        },
+        "m2": {
+          "type": "item",
+          "settings": {
+            "text": "Upload artwork or add text"
+          }
+        },
+        "m3": {
+          "type": "item",
+          "settings": {
+            "text": "Front, back, chest or sleeve"
+          }
+        },
+        "m4": {
+          "type": "item",
+          "settings": {
+            "text": "Background removed for you"
+          }
+        },
+        "m5": {
+          "type": "item",
+          "settings": {
+            "text": "Live resolution check"
+          }
+        },
+        "m6": {
+          "type": "item",
+          "settings": {
+            "text": "Printed in our own studio"
+          }
+        },
+        "m7": {
+          "type": "item",
+          "settings": {
+            "text": "2–4 day dispatch"
+          }
+        },
+        "m8": {
+          "type": "item",
+          "settings": {
+            "text": "One shirt or fifty"
+          }
+        }
       },
-      "block_order": ["m1", "m2", "m3", "m4", "m5", "m6", "m7", "m8"],
+      "block_order": [
+        "m1",
+        "m2",
+        "m3",
+        "m4",
+        "m5",
+        "m6",
+        "m7",
+        "m8"
+      ],
       "settings": {
         "speed": 52,
         "aria_label": "What we do"
@@ -89,7 +142,11 @@
           }
         }
       },
-      "block_order": ["s1", "s2", "s3"],
+      "block_order": [
+        "s1",
+        "s2",
+        "s3"
+      ],
       "settings": {
         "heading": "Designed by you, printed by us",
         "body": "Upload your artwork, add your text, choose your garment. See it on the real thing before you order.",
@@ -128,7 +185,11 @@
           }
         }
       },
-      "block_order": ["p1", "p2", "p3"],
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ],
       "settings": {
         "heading": "Designed and worn",
         "body": "Real orders from real people. Tag us when yours lands and we'll add it here."
@@ -163,19 +224,18 @@
             "background": "#E3EAF6",
             "invert": false
           }
-        },
-        "c4": {
-          "type": "category",
-          "settings": {
-            "heading": "See\neverything",
-            "caption": "Caps, totes and more",
-            "invert": true
-          }
         }
       },
-      "block_order": ["c1", "c2", "c3", "c4"],
+      "block_order": [
+        "c1",
+        "c2",
+        "c3"
+      ],
       "settings": {
-        "heading": "Customise apparel"
+        "heading": "Customise apparel",
+        "source": "manual",
+        "collection": "design-your-own",
+        "link_label": "View all"
       }
     },
     "originals": {
@@ -184,7 +244,9 @@
         "heading": "Studio Originals",
         "products_to_show": 6,
         "show_badge": true,
-        "badge_label": "Design your own"
+        "badge_label": "Design your own",
+        "collection": "studio-originals",
+        "link_label": "View all"
       }
     },
     "testimonials": {
@@ -224,7 +286,11 @@
           }
         }
       },
-      "block_order": ["q1", "q2", "q3"],
+      "block_order": [
+        "q1",
+        "q2",
+        "q3"
+      ],
       "settings": {
         "heading": "Worn and reviewed",
         "link_label": "Read all reviews",

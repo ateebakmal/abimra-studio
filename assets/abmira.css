@@ -186,6 +186,20 @@
   margin-bottom: 54px; /* heavy condensed caps need the room; 38px read cluttered */
 }
 
+.ab-sec-head-t {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* Only .ab-head-row turns the stack into a row, and only once there is
+   width for it. Below that the button sits under the heading. */
+.ab-head-row .ab-btn {
+  flex: none;
+}
+
 .ab-sec-head p,
 .ab-sec-head .ab-meta {
   margin: 0;
@@ -862,6 +876,34 @@
   font-size: 21px;
 }
 
+.ab-cat-img {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  margin: 14px 0;
+}
+
+.ab-cat-img img {
+  max-width: 100%;
+  max-height: 148px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+/* A garment photo on its own backdrop needs less dead space above it than
+   a card that is only type. */
+.ab-cat-card.ab-has-img {
+  justify-content: flex-start;
+}
+
+.ab-cat-card.ab-dark .ab-cat-img img {
+  mix-blend-mode: normal;
+}
+
 .ab-cat-card:hover .ab-d3 {
   color: var(--red);
 }
@@ -1245,6 +1287,13 @@
     height: 12px;
   }
 
+  .ab-sec-head.ab-head-row {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
   .ab-rail {
     gap: 20px;
   }
@@ -1252,6 +1301,10 @@
   .ab-rail-prod > *,
   .ab-rail-cat > * {
     flex: 0 0 288px;
+  }
+
+  .ab-cat-img img {
+    max-height: 176px;
   }
 
   .ab-prod-b {

@@ -1,0 +1,56 @@
+{% comment %}
+  Renders one "Customise apparel" card.
+
+  Shared by both render paths in sections/abmira-categories.liquid - the
+  hand-picked blocks and the automatic pass over a collection - so the
+  markup cannot drift between them.
+
+  Two appearances, decided by whether an image was resolved:
+  - with an image: the garment sits between the heading and the caption on
+    the card's own backdrop
+  - without: heading top, caption bottom, flat colour between
+
+  Accepts:
+  - url:         {String}  link target, '#' when there is nothing to point at
+  - title:       {String}  card label, newlines become line breaks
+  - caption:     {String}  small line at the bottom, or blank to hide it
+  - image:       {Object}  image drop, or blank for the flat variant
+  - background:  {String}  card background colour
+  - invert:      {Boolean} dark card, ignores background
+  - attributes:  {String}  block.shopify_attributes, when it came from a block
+
+  Usage:
+  {% render 'abmira-category-card', url: p.url, title: p.title, image: p.featured_media %}
+{% endcomment %}
+
+<a
+  class="ab-cat-card{% if invert %} ab-dark{% endif %}{% if image != blank %} ab-has-img{% endif %}"
+  href="{{ url | default: '#' }}"
+  {% unless invert %}
+    style="background: {{ background | default: '#E8E2D4' }};"
+  {% endunless %}
+  {{ attributes }}
+>
+  {%- if title != blank -%}
+    <h3 class="ab-d3">{{ title | escape | newline_to_br }}</h3>
+  {%- endif -%}
+
+  {%- if image != blank -%}
+    {% comment %} The heading already names the garment, so the image is decorative. {% endcomment %}
+    <span class="ab-cat-img" aria-hidden="true">
+      {{
+        image
+        | image_url: width: 600
+        | image_tag:
+          widths: '200, 300, 460, 600',
+          sizes: '(min-width: 641px) 288px, 57vw',
+          loading: 'lazy',
+          alt: ''
+      }}
+    </span>
+  {%- endif -%}
+
+  {%- if caption != blank -%}
+    <span class="ab-meta">{{ caption | escape }}</span>
+  {%- endif -%}
+</a>

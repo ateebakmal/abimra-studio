@@ -66,12 +66,15 @@
 <div class="ab-section">
   <section class="ab-sec">
     <div class="ab-wrap">
-      <div class="ab-sec-head ab-rv">
-        {%- if section.settings.heading != blank -%}
-          <h2 class="ab-d2">{{ section.settings.heading | escape }}</h2>
-        {%- endif -%}
+      <div class="ab-sec-head ab-head-row ab-rv">
+        <div class="ab-sec-head-t">
+          {%- if section.settings.heading != blank -%}
+            <h2 class="ab-d2">{{ section.settings.heading | escape }}</h2>
+          {%- endif -%}
+        </div>
+
         {%- if section.settings.link_label != blank -%}
-          <a class="ab-meta" href="{{ link_url | default: '#' }}">
+          <a class="ab-btn ab-btn-s ab-btn-sm" href="{{ link_url | default: '#' }}">
             {{- section.settings.link_label | escape -}}
           </a>
         {%- endif -%}
@@ -179,18 +182,19 @@
     },
     {
       "type": "header",
-      "content": "Link beside the heading"
+      "content": "View all button"
     },
     {
       "type": "text",
       "id": "link_label",
-      "label": "Link text",
-      "info": "Leave empty to hide."
+      "label": "Button text",
+      "default": "View all",
+      "info": "Leave empty to hide the button."
     },
     {
       "type": "url",
       "id": "link_url",
-      "label": "Link target",
+      "label": "Button target",
       "info": "Defaults to the collection above."
     },
     {
