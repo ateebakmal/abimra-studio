@@ -2726,6 +2726,118 @@ body.ab-drawer-open {
   padding-bottom: 22px;
 }
 
+/* The contained chart. A size chart is wide and dense and the product
+   column is narrow, so it is capped here and opened full size in the
+   dialog below rather than shown at whatever height it happens to be. */
+.ab-sg-fig {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+  background: var(--paper-raised);
+  cursor: zoom-in;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.12s var(--ab-e);
+}
+
+.ab-sg-fig:hover {
+  border-color: var(--ink);
+}
+
+.ab-sg-fig:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.ab-sg-fig > img,
+.ab-sg-fig > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 260px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+/* Shopify's placeholder SVG carries a viewBox and no intrinsic size, so
+   without this it takes whatever height its aspect ratio asks for. */
+.ab-sg-ph {
+  background: var(--paper);
+}
+
+.ab-sg-zoom {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  pointer-events: none;
+}
+
+/* ---- the full-size overlay ----
+   <dialog> in the top layer: centring, the tinted backdrop, Escape and
+   the focus trap are native. Only the skin is ours. */
+.ab-sg-modal {
+  width: min(920px, 92vw);
+  max-width: none;
+  max-height: 92vh;
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: visible;
+  color: var(--ink);
+}
+
+.ab-sg-modal::backdrop {
+  background: rgba(25, 24, 19, 0.72);
+}
+
+.ab-sg-panel {
+  position: relative;
+  max-height: 92vh;
+  overflow: auto;
+  padding: 12px;
+  border-radius: var(--r-card);
+  background: var(--paper-raised);
+}
+
+.ab-sg-panel > img,
+.ab-sg-panel > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+.ab-sg-close {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+}
+
+.ab-sg-close:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
 .ab-guide-body img {
   width: 100%;
   height: auto;

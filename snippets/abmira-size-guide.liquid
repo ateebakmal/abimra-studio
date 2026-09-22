@@ -1,17 +1,40 @@
 {% comment %}
   Abmira size guide — a details/summary accordion, collapsed by default.
 
+  The chart is contained inside the accordion rather than shown at its own
+  size: a size chart is a wide, dense image and the product column is
+  narrow, so at full width it either dwarfs the column or is unreadable.
+  The contained version is a button; opening it gives the full image.
+
+  The overlay is a native <dialog>. showModal() puts it in the top layer,
+  which means the centred panel, the tinted ::backdrop, Escape to close,
+  the focus trap and inert page behind are all browser behaviour rather
+  than code we own. assets/abmira.js only wires the buttons and adds the
+  one thing <dialog> does not do on its own - closing on a backdrop click.
+
   Accepts:
   - heading: {String}
   - text:    {String}
   - image:   {Object} size chart; a placeholder shows when unset
+  - id:      {String} unique suffix, so two guides on one page cannot
+             collide on the dialog id
 
-  Usage: {% render 'abmira-size-guide', heading: h, text: t, image: i %}
+  Usage: {% render 'abmira-size-guide', heading: h, text: t, image: i, id: block.id %}
 {% endcomment %}
+
+{%- liquid
+  assign label = heading | default: 'Size guide'
+  assign uid = id | default: 'default'
+  assign chart_id = 'AbSizeChart-' | append: uid
+  assign alt = label
+  if image != blank and image.alt != blank
+    assign alt = image.alt
+  endif
+-%}
 
 <details class="ab-guide">
   <summary>
-    {{ heading | default: 'Size guide' | escape }}
+    {{ label | escape }}
     <span class="ab-guide-sign" aria-hidden="true">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
     </span>
@@ -20,14 +43,53 @@
     {%- if text != blank -%}
       <p>{{ text | escape }}</p>
     {%- endif -%}
+
+    <button
+      type="button"
+      class="ab-sg-fig"
+      data-ab-sg-open
+      aria-controls="{{ chart_id }}"
+      aria-haspopup="dialog"
+    >
+      {%- if image != blank -%}
+        {{
+          image
+          | image_url: width: 900
+          | image_tag: widths: '320, 480, 700, 900', sizes: '(min-width: 990px) 440px, 92vw', loading: 'lazy', alt: ''
+        }}
+      {%- else -%}
+        {{ 'detailed-apparel-1' | placeholder_svg_tag: 'ab-sg-ph' }}
+      {%- endif -%}
+
+      <span class="ab-sg-zoom" aria-hidden="true">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2M11 8v6M8 11h6"/>
+        </svg>
+      </span>
+      <span class="visually-hidden">View the full {{ label | escape | downcase }}</span>
+    </button>
+  </div>
+</details>
+
+{% comment %}
+  Outside the <details> on purpose. A closed accordion is display:none, and
+  a dialog inside a display:none ancestor cannot be shown.
+{% endcomment %}
+<dialog class="ab-sg-modal" id="{{ chart_id }}" aria-label="{{ label | escape }}">
+  <div class="ab-sg-panel">
+    <button type="button" class="ab-sg-close" data-ab-sg-close>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      <span class="visually-hidden">{{ 'accessibility.close' | t }}</span>
+    </button>
+
     {%- if image != blank -%}
       {{
         image
-        | image_url: width: 900
-        | image_tag: widths: '400, 600, 900', loading: 'lazy', alt: image.alt | default: heading
+        | image_url: width: 1600
+        | image_tag: widths: '600, 900, 1200, 1600', sizes: '(min-width: 1000px) 920px, 92vw', loading: 'lazy', alt: alt
       }}
     {%- else -%}
-      {{ 'detailed-apparel-1' | placeholder_svg_tag: 'ab-placeholder' }}
+      {{ 'detailed-apparel-1' | placeholder_svg_tag: 'ab-sg-ph' }}
     {%- endif -%}
   </div>
-</details>
+</dialog>

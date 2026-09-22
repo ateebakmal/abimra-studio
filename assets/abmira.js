@@ -349,6 +349,59 @@
   }
 
   /* ------------------------------------------------------------------ *
+   * 4. Size chart overlay
+   *
+   * <dialog> does nearly all of this. showModal() puts the panel in the
+   * top layer, which is what gives the centring, the tinted ::backdrop,
+   * Escape to close, the focus trap and the inert page behind - none of
+   * which we have to write or maintain.
+   *
+   * Two things are left over: wiring the buttons, and closing on a click
+   * outside the panel, which <dialog> deliberately does not do.
+   *
+   * Delegated from document and bound once, because boot() runs again for
+   * every section the theme editor re-renders.
+   * ------------------------------------------------------------------ */
+
+  var sizeChartBound = false;
+
+  function initSizeChart() {
+    if (sizeChartBound || !document.body) return;
+    sizeChartBound = true;
+
+    document.addEventListener('click', function (event) {
+      var target = event.target;
+      if (!target || !target.closest) return;
+
+      var opener = target.closest('[data-ab-sg-open]');
+      if (opener) {
+        var chart = document.getElementById(opener.getAttribute('aria-controls'));
+        // Without showModal there is no backdrop and no focus trap, so
+        // leave the contained chart as the answer rather than opening
+        // something worse than it.
+        if (chart && typeof chart.showModal === 'function') {
+          event.preventDefault();
+          chart.showModal();
+        }
+        return;
+      }
+
+      var closer = target.closest('[data-ab-sg-close]');
+      if (closer) {
+        var owner = closer.closest('dialog');
+        if (owner) owner.close();
+        return;
+      }
+
+      // A click on the tinted area is reported against the dialog itself,
+      // because the panel covers everything inside it.
+      if (target.tagName === 'DIALOG' && target.classList.contains('ab-sg-modal')) {
+        target.close();
+      }
+    });
+  }
+
+  /* ------------------------------------------------------------------ *
    * Boot
    * ------------------------------------------------------------------ */
 
@@ -357,6 +410,7 @@
     initHeadline(root);
     initDecks(root);
     initDrawer(document);
+    initSizeChart();
   }
 
   if (document.readyState === 'loading') {
