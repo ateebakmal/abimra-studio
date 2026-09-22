@@ -1,8 +1,16 @@
 {% render 'abmira-symbols' %}
 
 {%- comment -%}
-  Real products from a collection, in the same scroll-at-every-width
-  rail as the categories.
+  Real products in the same scroll-at-every-width rail as the categories.
+
+  Two sources. A collection fills the rail on its own, so new products
+  appear without anyone opening the theme editor. Hand-picked blocks put
+  the merchant in charge of which products show and in what order, which
+  is what a curated row like Studio Originals usually wants.
+
+  Both paths render snippets/abmira-product-card.liquid, shared with the
+  collection grid, the catalogue and search, so a product looks the same
+  everywhere it appears.
 
   Backdrops rotate through the photographic set so a row of cards does
   not read as one flat block. They sit behind the garment only - never
@@ -11,9 +19,48 @@
 
 {%- liquid
   assign collection = section.settings.collection
-  assign products = collection.products
   assign count = section.settings.products_to_show
+  assign picks = section.blocks | where: 'type', 'product'
   assign backdrops = '#E8E2D4,#DFE7DC,#EDE3C9,#E3EAF6,#DCD9CF,#FBE7E1' | split: ','
+
+  assign manual = false
+  if section.settings.source == 'manual'
+    assign manual = true
+  endif
+
+  # Blank label switches the badge off inside the card snippet, so there is
+  # one flag to read rather than two.
+  assign badge = ''
+  if section.settings.show_badge
+    assign badge = section.settings.badge_label
+  endif
+  assign badge_tag = section.settings.badge_tag | default: 'customizable'
+
+  # A block with no product chosen yet must not count towards "has anything
+  # to show", or an empty rail hides the placeholder that explains itself.
+  assign chosen = 0
+  for block in picks
+    if block.settings.product != blank
+      assign chosen = chosen | plus: 1
+    endif
+  endfor
+
+  assign has_items = false
+  if manual
+    if chosen > 0
+      assign has_items = true
+    endif
+  else
+    if collection.products.size > 0
+      assign has_items = true
+    endif
+  endif
+
+  # The heading link follows whatever the rail is showing.
+  assign link_url = section.settings.link_url
+  if link_url == blank
+    assign link_url = collection.url
+  endif
 -%}
 
 <div class="ab-section">
@@ -24,27 +71,48 @@
           <h2 class="ab-d2">{{ section.settings.heading | escape }}</h2>
         {%- endif -%}
         {%- if section.settings.link_label != blank -%}
-          <a class="ab-meta" href="{{ collection.url | default: '#' }}">
+          <a class="ab-meta" href="{{ link_url | default: '#' }}">
             {{- section.settings.link_label | escape -}}
           </a>
         {%- endif -%}
       </div>
 
       <div class="ab-rail ab-rail-prod ab-rv ab-rv-1">
-        {%- if products.size > 0 -%}
-          {%- for product in products limit: count -%}
-            {% render 'abmira-product-card',
-              card_product: product,
-              index: forloop.index0,
-              lazy: true
-            %}
-          {%- endfor -%}
+        {%- if has_items -%}
+          {%- if manual -%}
+            {%- for block in picks -%}
+              {%- if block.settings.product != blank -%}
+                {% render 'abmira-product-card',
+                  card_product: block.settings.product,
+                  index: forloop.index0,
+                  lazy: true,
+                  badge_label: badge,
+                  badge_tag: badge_tag,
+                  attributes: block.shopify_attributes
+                %}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- else -%}
+            {%- for product in collection.products limit: count -%}
+              {% render 'abmira-product-card',
+                card_product: product,
+                index: forloop.index0,
+                lazy: true,
+                badge_label: badge,
+                badge_tag: badge_tag
+              %}
+            {%- endfor -%}
+          {%- endif -%}
         {%- else -%}
-          {%- comment -%} Editor placeholder so the rail is visible before a collection is picked. {%- endcomment -%}
+          {%- comment %} Editor placeholder, so the rail is visible before anything is chosen. {% endcomment -%}
           {%- for i in (1..4) -%}
             {%- liquid
               assign idx = forloop.index0 | modulo: backdrops.size
               assign backdrop = backdrops[idx]
+              assign hint = 'Choose a collection'
+              if manual
+                assign hint = 'Add a product block'
+              endif
             -%}
             <article class="ab-prod">
               <div class="ab-prod-img" style="background: {{ backdrop }};">
@@ -57,7 +125,7 @@
                   <h3 class="ab-ttl">Product title</h3>
                   <span class="ab-cost">{{ 2999 | money }}</span>
                 </div>
-                <span class="ab-meta">Choose a collection</span>
+                <span class="ab-meta">{{ hint }}</span>
               </div>
             </article>
           {%- endfor -%}
@@ -71,12 +139,28 @@
 {
   "name": "Abmira product rail",
   "tag": "section",
+  "max_blocks": 12,
   "settings": [
     {
       "type": "text",
       "id": "heading",
       "label": "Heading",
       "default": "Studio Originals"
+    },
+    {
+      "type": "header",
+      "content": "Which products"
+    },
+    {
+      "type": "select",
+      "id": "source",
+      "label": "Source",
+      "options": [
+        { "value": "collection", "label": "Everything in a collection" },
+        { "value": "manual", "label": "Only the products I pick below" }
+      ],
+      "default": "collection",
+      "info": "A collection keeps itself up to date as you add products. Picking products lets you control which ones show and in what order."
     },
     {
       "type": "collection",
@@ -90,13 +174,24 @@
       "max": 12,
       "step": 1,
       "label": "Products to show",
-      "default": 6
+      "default": 6,
+      "info": "Collection mode only. Picked products all show."
+    },
+    {
+      "type": "header",
+      "content": "Link beside the heading"
     },
     {
       "type": "text",
       "id": "link_label",
-      "label": "Link beside heading",
+      "label": "Link text",
       "info": "Leave empty to hide."
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link target",
+      "info": "Defaults to the collection above."
     },
     {
       "type": "header",
@@ -106,14 +201,33 @@
       "type": "checkbox",
       "id": "show_badge",
       "label": "Show badge on customisable products",
-      "default": true,
-      "info": "Shown on products tagged \"customizable\"."
+      "default": true
     },
     {
       "type": "text",
       "id": "badge_label",
       "label": "Badge text",
       "default": "Design your own"
+    },
+    {
+      "type": "text",
+      "id": "badge_tag",
+      "label": "Tag to look for",
+      "default": "customizable",
+      "info": "The badge shows on products carrying this tag. Sold out always wins over it."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        }
+      ]
     }
   ],
   "presets": [

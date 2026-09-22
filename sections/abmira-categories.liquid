@@ -29,12 +29,21 @@
         <div class="ab-rail ab-rail-cat ab-rv ab-rv-1">
           {%- for block in cards -%}
             {%- liquid
+              # Most specific wins: an explicit link, then a product, then a
+              # collection. A card with none of the three still renders, so a
+              # row can be laid out before its collections exist.
               assign target = block.settings.link
-              if block.settings.collection != blank
+              if target == blank and block.settings.product != blank
+                assign target = block.settings.product.url
+              endif
+              if target == blank and block.settings.collection != blank
                 assign target = block.settings.collection.url
               endif
 
               assign label = block.settings.heading
+              if label == blank and block.settings.product != blank
+                assign label = block.settings.product.title
+              endif
               if label == blank and block.settings.collection != blank
                 assign label = block.settings.collection.title
               endif
@@ -83,10 +92,20 @@
       "limit": 8,
       "settings": [
         {
+          "type": "paragraph",
+          "content": "Point the card at a collection or at a single product. If you set both, the product wins. Leave both empty and set a link below to send it anywhere."
+        },
+        {
           "type": "collection",
           "id": "collection",
           "label": "Collection",
           "info": "Its title and link are used unless you override them below."
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product",
+          "info": "Use this for a card that opens one garment in the designer."
         },
         {
           "type": "text",
@@ -102,7 +121,8 @@
           "type": "text",
           "id": "caption",
           "label": "Caption",
-          "default": "From £24.99"
+          "default": "From £24.99",
+          "info": "Plain text - it is not read from the product, so update it if your prices change. Leave empty to hide the line."
         },
         {
           "type": "color",

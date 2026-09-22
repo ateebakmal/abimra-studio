@@ -18,6 +18,9 @@
   - lazy:          {Boolean} lazy-load the image
   - color_option:  {String}  name of the colour option, default 'Color'
   - new_tag:       {String}  tag that marks a product as new, default 'new'
+  - badge_label:   {String}  chip shown on products carrying badge_tag; blank for none
+  - badge_tag:     {String}  tag the badge looks for, default 'customizable'
+  - attributes:    {String}  block.shopify_attributes, when it came from a block
 
   Usage:
   {% render 'abmira-product-card', card_product: product, index: forloop.index0 %}
@@ -26,6 +29,7 @@
 {%- liquid
   assign wanted = color_option | default: 'Color' | downcase | strip
   assign new_tag = new_tag | default: 'new'
+  assign badge_tag = badge_tag | default: 'customizable'
   assign index = index | default: 0
 
   assign backdrops = '#E8E2D4,#DFE7DC,#EDE3C9,#E3EAF6,#DCD9CF,#FBE7E1' | split: ','
@@ -62,7 +66,7 @@
   endunless
 -%}
 
-<article class="ab-prod">
+<article class="ab-prod" {{ attributes }}>
   <a class="ab-prod-img" href="{{ card_product.url }}" style="background: {{ backdrop }};" tabindex="-1" aria-hidden="true">
     {%- if card_product.featured_media != blank -%}
       {{
@@ -82,6 +86,8 @@
 
     {%- if card_product.available == false -%}
       <span class="ab-chip ab-chip-ink">{{ 'products.product.sold_out' | t }}</span>
+    {%- elsif badge_label != blank and card_product.tags contains badge_tag -%}
+      <span class="ab-chip ab-chip-red">{{ badge_label | escape }}</span>
     {%- elsif card_product.tags contains new_tag -%}
       <span class="ab-chip ab-chip-red">New</span>
     {%- endif -%}
