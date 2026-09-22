@@ -303,3 +303,19 @@
     display: block;
   }
 }
+
+/* ---------------------------------------------------------------- *
+ * Put the arrows back on desktop
+ *
+ * Dawn hides slider buttons inside .slider-mobile-gutter above 750px and
+ * re-enables them for exactly one layout, .product--thumbnail_slider -
+ * the only stock layout with desktop arrows. Every carousel here needs
+ * the same exemption. The selector carries one class more than Dawn's so
+ * it wins on specificity rather than on file order.
+ * ---------------------------------------------------------------- */
+
+@media screen and (min-width: 750px) {
+  .product__media-wrapper .slider-mobile-gutter .pt-carousel__arrows .slider-button {
+    display: flex;
+  }
+}

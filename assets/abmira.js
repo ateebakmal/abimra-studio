@@ -402,6 +402,73 @@
   }
 
   /* ------------------------------------------------------------------ *
+   * 5. Carousel swipe vs. tap
+   *
+   * Dawn covers every product slide with .product__media-toggle::after to
+   * open the image modal. In a stacked gallery those pixels only ever get
+   * tapped. In a carousel they are also the pixels you drag to change
+   * image - and a drag ends in a click, so a swipe opens the lightbox
+   * instead of moving the gallery.
+   *
+   * A pointer that travelled more than a few pixels was a swipe, so its
+   * click is swallowed. A real tap never moves, and still zooms.
+   * ------------------------------------------------------------------ */
+
+  var swipeBound = false;
+
+  function initCarouselSwipe() {
+    if (swipeBound || !document.body) return;
+    swipeBound = true;
+
+    var startX = 0;
+    var startY = 0;
+    var tracking = false;
+    var moved = false;
+
+    document.addEventListener(
+      'pointerdown',
+      function (event) {
+        if (!event.target.closest || !event.target.closest('.pt-carousel')) return;
+        startX = event.clientX;
+        startY = event.clientY;
+        tracking = true;
+        moved = false;
+      },
+      true
+    );
+
+    document.addEventListener(
+      'pointermove',
+      function (event) {
+        if (!tracking || moved) return;
+        if (Math.abs(event.clientX - startX) > 8 || Math.abs(event.clientY - startY) > 8) moved = true;
+      },
+      true
+    );
+
+    document.addEventListener(
+      'pointerup',
+      function () {
+        tracking = false;
+      },
+      true
+    );
+
+    // Capture phase, so this runs before Dawn's own opener handler.
+    document.addEventListener(
+      'click',
+      function (event) {
+        if (!moved) return;
+        moved = false;
+        if (!event.target.closest || !event.target.closest('.pt-carousel .product__media-toggle')) return;
+        event.preventDefault();
+        event.stopPropagation();
+      },
+      true
+    );
+  }
+
+  /* ------------------------------------------------------------------ *
    * Boot
    * ------------------------------------------------------------------ */
 
@@ -411,6 +478,7 @@
     initDecks(root);
     initDrawer(document);
     initSizeChart();
+    initCarouselSwipe();
   }
 
   if (document.readyState === 'loading') {
