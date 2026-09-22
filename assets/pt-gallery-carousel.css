@@ -34,6 +34,11 @@
   flex: 0 0 100%;
   margin-bottom: 0;
   scroll-snap-align: center;
+  /* .grid--peek pads each item on the LEFT only, to show a sliver of the
+     next one. A one-up carousel has no peek, and a one-sided pad is what
+     was pushing the garment off centre. */
+  padding-left: 0;
+  justify-content: center;
 }
 
 .pt-carousel .product__media-list.slider {

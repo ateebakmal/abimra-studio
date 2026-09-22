@@ -28,13 +28,6 @@
             "liquid_code_product": ""
           }
         },
-        "vendor": {
-          "type": "text",
-          "settings": {
-            "text": "{{ product.vendor }}",
-            "text_style": "uppercase"
-          }
-        },
         "title": {
           "type": "title",
           "settings": {}
@@ -87,7 +80,6 @@
       },
       "block_order": [
         "customify_customize_area_section_dDY6dC",
-        "vendor",
         "title",
         "price",
         "variant_picker",

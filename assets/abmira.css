@@ -2470,6 +2470,7 @@ body.ab-drawer-open {
   line-height: 0.96;
   letter-spacing: -0.02em;
   text-transform: uppercase;
+  font-weight: 800;
   font-variation-settings: 'wdth' 82, 'wght' 800;
   color: var(--ink);
   margin: 0;
@@ -2481,9 +2482,27 @@ body.ab-drawer-open {
 }
 
 .product .price .price-item {
-  font-size: 26px;
+  font-size: clamp(20px, 2.2vw, 24px);
+  line-height: 1.2;
+  letter-spacing: 0;
+  font-weight: 600;
   font-variation-settings: 'wdth' 100, 'wght' 600;
   color: var(--ink);
+}
+
+.product .price {
+  margin-top: 14px;
+}
+
+/* Sale prices keep the system's red; the struck original goes quiet. */
+.product .price--on-sale .price-item--sale {
+  color: var(--red);
+}
+
+.product .price s.price-item--regular {
+  color: var(--graphite);
+  font-weight: 400;
+  font-variation-settings: 'wdth' 100, 'wght' 400;
 }
 
 .product .product__tax,
