@@ -10,7 +10,7 @@
 
 <div class="ab-section">
   <section class="ab-wrap" style="padding-top: var(--ab-sec); padding-bottom: 0;">
-    <div class="ab-band ab-closer ab-rv">
+    <div class="ab-band ab-closer ab-rv{% if section.settings.align == 'left' %} ab-closer-left{% endif %}">
       <div class="ab-closer-dots" aria-hidden="true"></div>
       <div class="ab-closer-in">
         {%- if section.settings.show_mark -%}
@@ -42,6 +42,16 @@
   "name": "Abmira closing band",
   "tag": "section",
   "settings": [
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Alignment",
+      "options": [
+        { "value": "center", "label": "Centred" },
+        { "value": "left", "label": "Left" }
+      ],
+      "default": "center"
+    },
     {
       "type": "checkbox",
       "id": "show_mark",

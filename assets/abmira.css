@@ -3174,3 +3174,296 @@ body.ab-drawer-open {
     font-size: 17px;
   }
 }
+
+/* ---- closing band, left-aligned variant ---- */
+
+.ab-closer-left {
+  text-align: left;
+}
+
+.ab-closer-left .ab-closer-in {
+  margin-left: 0;
+  margin-right: 0;
+  max-width: 640px;
+}
+
+.ab-closer-left .ab-closer-mark {
+  margin-left: 0;
+}
+
+.ab-closer-left p {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* ============================================================
+   Contact
+   ============================================================ */
+
+.ab-contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.ab-contact-card {
+  padding: 22px 20px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+  background: var(--paper-raised);
+}
+
+.ab-contact-side {
+  display: grid;
+  gap: 16px;
+}
+
+.ab-contact-h {
+  margin: 0 0 4px;
+  font-family: var(--ab-f);
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 600;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+  color: var(--ink);
+}
+
+/* ---- the form ---- */
+
+/* auto-fit, so a row of two collapses to one on a narrow screen without a
+   second breakpoint, and a row holding a single field fills the width. */
+.ab-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 14px;
+}
+
+.ab-field {
+  margin-bottom: 16px;
+  min-width: 0;
+}
+
+.ab-field label {
+  display: block;
+  margin-bottom: 7px;
+  font-family: var(--ab-f);
+  font-size: 13px;
+  font-weight: 600;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+  color: var(--ink);
+}
+
+.ab-field label i {
+  font-style: normal;
+  font-weight: 400;
+  font-variation-settings: 'wdth' 100, 'wght' 400;
+  color: var(--graphite);
+}
+
+.ab-field input,
+.ab-field textarea,
+.ab-select select {
+  display: block;
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-input);
+  background: var(--paper);
+  font-family: var(--ab-f);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ab-field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.ab-field input::placeholder,
+.ab-field textarea::placeholder {
+  color: var(--graphite);
+  opacity: 0.7;
+}
+
+.ab-field input:focus,
+.ab-field textarea:focus,
+.ab-select select:focus {
+  border-color: var(--ink);
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.ab-field input[aria-invalid='true'] {
+  border-color: var(--red);
+}
+
+/* The caret is drawn rather than left to the OS, which renders it
+   differently on every platform. */
+.ab-select {
+  position: relative;
+}
+
+.ab-select select {
+  padding-right: 38px;
+  cursor: pointer;
+}
+
+.ab-select svg {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  width: 10px;
+  height: 6px;
+  margin-top: -3px;
+  color: var(--graphite);
+  pointer-events: none;
+}
+
+.ab-form-attach {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border: 1px dashed var(--rule);
+  border-radius: var(--r-input);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--graphite);
+}
+
+.ab-form-attach p {
+  margin: 0;
+}
+
+.ab-form-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+}
+
+.ab-form-foot small {
+  flex: 1 1 200px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--graphite);
+}
+
+.ab-form-foot small p {
+  margin: 0;
+}
+
+.ab-form-ok,
+.ab-form-bad {
+  margin: 0 0 18px;
+  padding: 13px 15px;
+  border-radius: var(--r-input);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ab-form-ok {
+  border: 1px solid var(--ok);
+  color: var(--ok);
+  background: none;
+}
+
+.ab-form-bad {
+  border: 1px solid var(--red);
+  color: var(--red-deep);
+  background: var(--red-wash);
+}
+
+/* ---- side details ---- */
+
+.ab-detail-list {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+}
+
+.ab-detail-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 14px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.ab-detail-list li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.ab-detail-list li:last-child {
+  padding-bottom: 0;
+}
+
+.ab-detail-ico {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  color: var(--graphite);
+}
+
+.ab-detail-ico svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.ab-detail-t {
+  display: block;
+  font-family: var(--ab-f);
+  font-size: 14.5px;
+  font-weight: 600;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+a.ab-detail-t:hover {
+  color: var(--red);
+}
+
+.ab-detail-s {
+  display: block;
+  margin-top: 3px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--graphite);
+}
+
+.ab-contact-note {
+  margin-top: 12px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--graphite);
+}
+
+.ab-contact-note p {
+  margin: 0 0 10px;
+}
+
+.ab-contact-note p:last-child {
+  margin-bottom: 0;
+}
+
+@media screen and (min-width: 641px) {
+  .ab-contact-card {
+    padding: 28px 26px;
+  }
+}
+
+@media screen and (min-width: 861px) {
+  /* The form leads, so it takes the wider track. */
+  .ab-contact-grid {
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    gap: 22px;
+  }
+}

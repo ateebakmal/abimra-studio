@@ -1,34 +1,84 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "main": {
-      "type": "main-page",
+    "intro": {
+      "type": "abmira-page-intro",
       "settings": {
-        "padding_top": 36,
-        "padding_bottom": 36
+        "eyebrow": "We read every message",
+        "heading": "Talk to us.",
+        "intro": "A real person replies, usually within one working day. If something's wrong with a print, send a photo and we'll sort it."
       }
     },
-    "form": {
-      "type": "contact-form",
+    "contact": {
+      "type": "abmira-contact",
+      "blocks": {
+        "email": {
+          "type": "detail",
+          "settings": {
+            "icon": "mail",
+            "title": "hello@abmira.studio",
+            "text": "Best for order questions and artwork help.",
+            "link": "mailto:hello@abmira.studio"
+          }
+        },
+        "phone": {
+          "type": "detail",
+          "settings": {
+            "icon": "phone",
+            "title": "0161 496 0271",
+            "text": "Mon–Fri, 9am–5pm. Closed bank holidays.",
+            "link": "tel:+441614960271"
+          }
+        },
+        "reply": {
+          "type": "detail",
+          "settings": {
+            "icon": "clock",
+            "title": "One working day",
+            "text": "Typical reply time. Faulty prints get pushed to the front.",
+            "link": ""
+          }
+        },
+        "studio": {
+          "type": "note",
+          "settings": {
+            "heading": "The studio",
+            "body": "<p>ABMIRA Studio Ltd<br/>Unit 4, Hatton Works<br/>1 Example Street<br/>Manchester M1 1AA<br/>United Kingdom</p><p>Visits by appointment — we print here, so it's not a shop. Email first and we'll find a time.</p>"
+          }
+        }
+      },
+      "block_order": ["email", "phone", "reply", "studio"],
       "settings": {
-        "heading": "",
-        "heading_size": "h1",
-        "color_scheme": "scheme-1",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "anchor": "contact",
+        "label_name": "Your name",
+        "ph_name": "Sarah Whitfield",
+        "label_email": "Email",
+        "ph_email": "sarah@example.com",
+        "label_subject": "What's this about?",
+        "subjects": "An order I've placed\nA problem with a print\nHelp with the designer\nGroup or team order\nSomething else",
+        "show_order": true,
+        "label_order": "Order number",
+        "ph_order": "#1026",
+        "optional_word": "— optional",
+        "label_message": "Message",
+        "ph_message": "Tell us what happened. If it's a print problem, a photo helps more than a description.",
+        "attach_note": "<p>Got a photo? Email it to hello@abmira.studio with your order number and we'll match it to this message.</p>",
+        "submit": "Send message",
+        "small_print": "<p>We'll only use your details to answer this message.</p>",
+        "success": "Thanks — that's with us. You'll hear back within one working day.",
+        "side_heading": "Reach us directly"
+      }
+    },
+    "teams": {
+      "type": "abmira-closer",
+      "settings": {
+        "align": "left",
+        "show_mark": false,
+        "heading": "Ordering for a\nteam or event?",
+        "body": "Twelve shirts or two hundred, same names or all different. Tell us what you need and we'll quote it properly.",
+        "cta_label": "Group & team orders",
+        "cta_link": "#contact"
       }
     }
   },
-  "order": [
-    "main",
-    "form"
-  ]
+  "order": ["intro", "contact", "teams"]
 }
