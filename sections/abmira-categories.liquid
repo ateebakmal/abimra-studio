@@ -122,17 +122,26 @@
                   assign image = block_collection.products.first.featured_media
                 endif
 
-                assign ground = blank
+                # The cascade, least specific first.
+                #
+                # Theme default is the store-wide setting, not "whatever
+                # this card happens to hold". Falling back to the block
+                # colour here - which is what this did at first - means
+                # Theme default can never actually reach the theme, since
+                # a colour picker always answers with something.
+                assign b = forloop.index0 | modulo: backdrops.size
+                assign ground = backdrops[b]
+                if settings.abmira_card_backdrop_mode == 'single'
+                  assign ground = settings.abmira_card_backdrop | default: '#E8E2D4'
+                endif
+
                 if bg_mode == 'cycle'
-                  assign b = forloop.index0 | modulo: backdrops.size
                   assign ground = backdrops[b]
                 elsif bg_mode == 'single'
                   assign ground = section.settings.backdrop_color
                 endif
+
                 if block.settings.use_bg
-                  assign ground = block.settings.background
-                endif
-                if ground == blank
                   assign ground = block.settings.background
                 endif
               -%}
