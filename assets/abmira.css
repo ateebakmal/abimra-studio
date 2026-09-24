@@ -2648,7 +2648,7 @@ body.ab-drawer-open {
 .product .product__media-item .global-media-settings {
   border-radius: var(--r-card);
   border-color: var(--rule);
-  background: var(--paper-raised);
+  background: var(--ab-media-bg, var(--paper-raised));
 }
 
 /* ---------------------------------------------------------- *
@@ -3488,4 +3488,19 @@ a.ab-detail-t:hover {
     grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
     gap: 22px;
   }
+}
+
+/* ---- contact shadow ----
+   One declaration, three surfaces. The value is built in layout/theme.liquid
+   from the theme setting, and is the literal keyword none at zero so the
+   browser does no compositing work when the shadow is switched off.
+
+   It is a filter, not a box-shadow: drop-shadow follows the image's alpha,
+   so on a cut-out PNG it traces the garment. box-shadow would draw a
+   rectangle round the picture. On a photo WITH a background it does exactly
+   that, which is the honest signal that the photo needs cutting out. */
+.ab-prod-img img,
+.ab-cat-img img,
+.product .product__media img {
+  filter: var(--ab-shadow, none);
 }

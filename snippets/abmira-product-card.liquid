@@ -36,6 +36,13 @@
   assign b = index | modulo: backdrops.size
   assign backdrop = backdrops[b]
 
+  # Theme setting, so the whole store changes together rather than section
+  # by section. Cycling is the default because a row of identical grounds
+  # reads as one flat block.
+  if settings.abmira_card_backdrop_mode == 'single'
+    assign backdrop = settings.abmira_card_backdrop | default: '#E8E2D4'
+  endif
+
   assign colors = null
   for opt in card_product.options_with_values
     assign opt_name = opt.name | downcase | strip

@@ -125,6 +125,10 @@
             {%- for product in collection.products limit: count -%}
               {%- liquid
                 assign b = forloop.index0 | modulo: backdrops.size
+                assign ground = backdrops[b]
+                if settings.abmira_card_backdrop_mode == 'single'
+                  assign ground = settings.abmira_card_backdrop | default: '#E8E2D4'
+                endif
 
                 # "From" only where the price actually varies, so a garment on
                 # one price does not claim a range it has not got.
@@ -140,7 +144,7 @@
                 title: product.title,
                 caption: caption,
                 image: product.featured_media,
-                background: backdrops[b]
+                background: ground
               %}
             {%- endfor -%}
           {%- endif -%}

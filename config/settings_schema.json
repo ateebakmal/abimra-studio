@@ -34,6 +34,55 @@
         "label": "Press red",
         "default": "#D42E12",
         "info": "Ink one. A brand colour meaning \"click this\" - never an error colour."
+      },
+      {
+        "type": "header",
+        "content": "Garments on backdrops"
+      },
+      {
+        "type": "paragraph",
+        "content": "For product photos shot on a transparent background. The shadow follows the garment's own outline, not the edge of the picture, so it only looks right on a cut-out PNG."
+      },
+      {
+        "type": "range",
+        "id": "abmira_shadow",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "label": "Contact shadow",
+        "default": 45,
+        "info": "How firmly the garment sits on the backdrop. 0 removes it entirely."
+      },
+      {
+        "type": "select",
+        "id": "abmira_card_backdrop_mode",
+        "label": "Card backdrops",
+        "options": [
+          {
+            "value": "cycle",
+            "label": "Cycle the palette"
+          },
+          {
+            "value": "single",
+            "label": "One colour"
+          }
+        ],
+        "default": "cycle",
+        "info": "Cycling gives each card in a row a different ground so the row does not read as one flat block."
+      },
+      {
+        "type": "color",
+        "id": "abmira_card_backdrop",
+        "label": "Card backdrop",
+        "default": "#E8E2D4",
+        "info": "Used when cards are set to one colour. A hand-picked card with its own colour still wins."
+      },
+      {
+        "type": "color",
+        "id": "abmira_media_backdrop",
+        "label": "Product page backdrop",
+        "default": "#F7F5EF",
+        "info": "Behind the gallery image on a product page."
       }
     ]
   },
