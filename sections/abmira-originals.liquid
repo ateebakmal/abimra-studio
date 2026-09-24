@@ -36,6 +36,12 @@
   endif
   assign badge_tag = section.settings.badge_tag | default: 'customizable'
 
+  # Backdrop cascade. Leaving card_bg blank hands the decision back to the
+  # card snippet, which falls through to the theme setting - that is what
+  # "Theme default" means. A mode here overrides the theme; a colour on an
+  # individual card overrides both.
+  assign bg_mode = section.settings.backdrop_mode | default: 'theme'
+
   # A block with no product chosen yet must not count towards "has anything
   # to show", or an empty rail hides the placeholder that explains itself.
   assign chosen = 0
@@ -63,6 +69,14 @@
   endif
 -%}
 
+{%- if section.settings.shadow_mode == 'custom' -%}
+  {%- style -%}
+    #shopify-section-{{ section.id }} {
+      --ab-shadow: {% render 'abmira-shadow', strength: section.settings.shadow %};
+    }
+  {%- endstyle -%}
+{%- endif -%}
+
 <div class="ab-section">
   <section class="ab-sec">
     <div class="ab-wrap">
@@ -85,24 +99,47 @@
           {%- if manual -%}
             {%- for block in picks -%}
               {%- if block.settings.product != blank -%}
+                {%- liquid
+                  assign card_bg = blank
+                  if bg_mode == 'cycle'
+                    assign b = forloop.index0 | modulo: backdrops.size
+                    assign card_bg = backdrops[b]
+                  elsif bg_mode == 'single'
+                    assign card_bg = section.settings.backdrop_color
+                  endif
+                  if block.settings.use_bg
+                    assign card_bg = block.settings.background
+                  endif
+                -%}
                 {% render 'abmira-product-card',
                   card_product: block.settings.product,
                   index: forloop.index0,
                   lazy: true,
                   badge_label: badge,
                   badge_tag: badge_tag,
+                  background: card_bg,
                   attributes: block.shopify_attributes
                 %}
               {%- endif -%}
             {%- endfor -%}
           {%- else -%}
             {%- for product in collection.products limit: count -%}
+              {%- liquid
+                assign card_bg = blank
+                if bg_mode == 'cycle'
+                  assign b = forloop.index0 | modulo: backdrops.size
+                  assign card_bg = backdrops[b]
+                elsif bg_mode == 'single'
+                  assign card_bg = section.settings.backdrop_color
+                endif
+              -%}
               {% render 'abmira-product-card',
                 card_product: product,
                 index: forloop.index0,
                 lazy: true,
                 badge_label: badge,
-                badge_tag: badge_tag
+                badge_tag: badge_tag,
+                background: card_bg
               %}
             {%- endfor -%}
           {%- endif -%}
@@ -199,6 +236,51 @@
     },
     {
       "type": "header",
+      "content": "Backdrops and shadow"
+    },
+    {
+      "type": "paragraph",
+      "content": "Theme default follows Theme settings > ABMIRA. Anything set here overrides it for this section only, and a card with its own colour overrides both."
+    },
+    {
+      "type": "select",
+      "id": "backdrop_mode",
+      "label": "Backdrop",
+      "options": [
+        { "value": "theme", "label": "Theme default" },
+        { "value": "cycle", "label": "Cycle the palette" },
+        { "value": "single", "label": "One colour" }
+      ],
+      "default": "theme"
+    },
+    {
+      "type": "color",
+      "id": "backdrop_color",
+      "label": "Backdrop colour",
+      "default": "#E8E2D4",
+      "info": "Used when the backdrop is set to one colour."
+    },
+    {
+      "type": "select",
+      "id": "shadow_mode",
+      "label": "Contact shadow",
+      "options": [
+        { "value": "theme", "label": "Theme default" },
+        { "value": "custom", "label": "Set it here" }
+      ],
+      "default": "theme"
+    },
+    {
+      "type": "range",
+      "id": "shadow",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "label": "Shadow strength",
+      "default": 45
+    },
+    {
+      "type": "header",
       "content": "Badge"
     },
     {
@@ -230,6 +312,19 @@
           "type": "product",
           "id": "product",
           "label": "Product"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_bg",
+          "label": "Give this card its own backdrop",
+          "default": false
+        },
+        {
+          "type": "color",
+          "id": "background",
+          "label": "Backdrop",
+          "default": "#E8E2D4",
+          "info": "Photographic backdrops: sand #E8E2D4, sage #DFE7DC, straw #EDE3C9, blue #E3EAF6, stone #DCD9CF, red #FBE7E1."
         }
       ]
     }

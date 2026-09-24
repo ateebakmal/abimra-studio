@@ -33,6 +33,10 @@
     assign manual = false
   endif
 
+  # Backdrop cascade: theme setting, then this section, then the colour on
+  # an individual card.
+  assign bg_mode = section.settings.backdrop_mode | default: 'theme'
+
   assign link_url = section.settings.link_url
   if link_url == blank
     assign link_url = collection.url
@@ -49,6 +53,14 @@
     endif
   endif
 -%}
+
+{%- if section.settings.shadow_mode == 'custom' -%}
+  {%- style -%}
+    #shopify-section-{{ section.id }} {
+      --ab-shadow: {% render 'abmira-shadow', strength: section.settings.shadow %};
+    }
+  {%- endstyle -%}
+{%- endif -%}
 
 <div class="ab-section">
   <section class="ab-sec">
@@ -109,13 +121,27 @@
                 if image == blank and block_collection != blank
                   assign image = block_collection.products.first.featured_media
                 endif
+
+                assign ground = blank
+                if bg_mode == 'cycle'
+                  assign b = forloop.index0 | modulo: backdrops.size
+                  assign ground = backdrops[b]
+                elsif bg_mode == 'single'
+                  assign ground = section.settings.backdrop_color
+                endif
+                if block.settings.use_bg
+                  assign ground = block.settings.background
+                endif
+                if ground == blank
+                  assign ground = block.settings.background
+                endif
               -%}
               {% render 'abmira-category-card',
                 url: target,
                 title: label,
                 caption: block.settings.caption,
                 image: image,
-                background: block.settings.background,
+                background: ground,
                 invert: block.settings.invert,
                 attributes: block.shopify_attributes
               %}
@@ -125,9 +151,15 @@
             {%- for product in collection.products limit: count -%}
               {%- liquid
                 assign b = forloop.index0 | modulo: backdrops.size
+
                 assign ground = backdrops[b]
                 if settings.abmira_card_backdrop_mode == 'single'
                   assign ground = settings.abmira_card_backdrop | default: '#E8E2D4'
+                endif
+                if bg_mode == 'cycle'
+                  assign ground = backdrops[b]
+                elsif bg_mode == 'single'
+                  assign ground = section.settings.backdrop_color
                 endif
 
                 # "From" only where the price actually varies, so a garment on
@@ -202,6 +234,51 @@
     },
     {
       "type": "header",
+      "content": "Backdrops and shadow"
+    },
+    {
+      "type": "paragraph",
+      "content": "Theme default follows Theme settings > ABMIRA. Anything set here overrides it for this section only, and a card with its own backdrop switched on overrides both."
+    },
+    {
+      "type": "select",
+      "id": "backdrop_mode",
+      "label": "Backdrop",
+      "options": [
+        { "value": "theme", "label": "Theme default" },
+        { "value": "cycle", "label": "Cycle the palette" },
+        { "value": "single", "label": "One colour" }
+      ],
+      "default": "theme"
+    },
+    {
+      "type": "color",
+      "id": "backdrop_color",
+      "label": "Backdrop colour",
+      "default": "#E8E2D4",
+      "info": "Used when the backdrop is set to one colour."
+    },
+    {
+      "type": "select",
+      "id": "shadow_mode",
+      "label": "Contact shadow",
+      "options": [
+        { "value": "theme", "label": "Theme default" },
+        { "value": "custom", "label": "Set it here" }
+      ],
+      "default": "theme"
+    },
+    {
+      "type": "range",
+      "id": "shadow",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "label": "Shadow strength",
+      "default": 45
+    },
+    {
+      "type": "header",
       "content": "View all button"
     },
     {
@@ -262,6 +339,13 @@
           "label": "Caption",
           "default": "From £24.99",
           "info": "Plain text - it is not read from the product, so update it if your prices change. Leave empty to hide the line."
+        },
+        {
+          "type": "checkbox",
+          "id": "use_bg",
+          "label": "Give this card its own backdrop",
+          "default": false,
+          "info": "Off means it follows the section, then the theme."
         },
         {
           "type": "color",

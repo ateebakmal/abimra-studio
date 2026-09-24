@@ -96,6 +96,25 @@
     }
   {%- endstyle -%}
 
+  {%- comment -%}
+    [abmira] Gallery ground and shadow. Declared on this section's wrapper
+    so it beats the store-wide pair on :root, and sits in the product
+    section so it can be judged against the actual photograph in the
+    editor rather than guessed at from Theme settings.
+  {%- endcomment -%}
+  {%- if section.settings.ab_backdrop_mode == 'custom' or section.settings.ab_shadow_mode == 'custom' -%}
+    {%- style -%}
+      #shopify-section-{{ section.id }} {
+        {%- if section.settings.ab_backdrop_mode == 'custom' %}
+          --ab-media-bg: {{ section.settings.ab_backdrop }};
+        {%- endif %}
+        {%- if section.settings.ab_shadow_mode == 'custom' %}
+          --ab-shadow: {% render 'abmira-shadow', strength: section.settings.ab_shadow %};
+        {%- endif %}
+      }
+    {%- endstyle -%}
+  {%- endif -%}
+
   <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
   {% comment %} [custom] No-preselect, deselect and colour-filtered gallery behaviour. {% endcomment %}
@@ -2397,6 +2416,43 @@
     {
       "type": "header",
       "content": "Personalised product behaviour"
+    },
+    {
+      "type": "select",
+      "id": "ab_backdrop_mode",
+      "label": "Gallery backdrop",
+      "options": [
+        { "value": "theme", "label": "Theme default" },
+        { "value": "custom", "label": "Set it here" }
+      ],
+      "default": "theme",
+      "info": "Theme default follows Theme settings > ABMIRA."
+    },
+    {
+      "type": "color",
+      "id": "ab_backdrop",
+      "label": "Backdrop colour",
+      "default": "#F7F5EF"
+    },
+    {
+      "type": "select",
+      "id": "ab_shadow_mode",
+      "label": "Contact shadow",
+      "options": [
+        { "value": "theme", "label": "Theme default" },
+        { "value": "custom", "label": "Set it here" }
+      ],
+      "default": "theme"
+    },
+    {
+      "type": "range",
+      "id": "ab_shadow",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "label": "Shadow strength",
+      "default": 45,
+      "info": "Only shows on a cut-out photo. On one with its own background the shadow traces the edge of the picture."
     },
     {
       "type": "checkbox",

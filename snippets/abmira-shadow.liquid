@@ -1,0 +1,29 @@
+{%- comment -%}
+  Builds the contact-shadow filter value from a 0-100 strength.
+
+  Two drop-shadows, not one: a tight core where the garment meets the
+  surface, and a wide soft one for the falloff. A single layer reads as
+  either a sticker or a haze.
+
+  drop-shadow follows the image's alpha channel, so on a cut-out PNG it
+  traces the garment. box-shadow would draw a rectangle round the picture.
+
+  Zero returns the literal keyword none rather than a transparent shadow,
+  so the browser skips the compositing entirely.
+
+  Accepts:
+  - strength: {Number} 0-100
+
+  Usage, inside a style block:
+  --ab-shadow: {% render 'abmira-shadow', strength: 45 %};
+{%- endcomment -%}
+{%- liquid
+  assign sh = strength | default: 0
+  assign core = sh | divided_by: 545.0
+  assign soft = sh | divided_by: 300.0
+-%}
+{%- if sh > 0 -%}
+drop-shadow(0 4px 5px rgba(25, 24, 19, {{ core }})) drop-shadow(0 18px 20px rgba(25, 24, 19, {{ soft }}))
+{%- else -%}
+none
+{%- endif -%}

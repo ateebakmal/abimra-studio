@@ -38,20 +38,11 @@
         drifts into a generic palette. This block must come after abmira.css
         so it wins - both selectors are :root, so source order decides.
       {%- endcomment -%}
-      {%- liquid
-        # Contact shadow. Two drop-shadows rather than one: a tight core
-        # where the garment meets the surface, and a wide soft one for the
-        # falloff. One layer alone reads as either a sticker or a haze.
-        #
-        # drop-shadow follows the alpha channel, so on a cut-out PNG it
-        # traces the garment. box-shadow would outline the picture instead.
-        #
-        # Built here rather than in CSS so that zero means the filter is
-        # literally none, and the browser skips the work altogether.
-        assign sh = settings.abmira_shadow | default: 25
-        assign core = sh | divided_by: 545.0
-        assign soft = sh | divided_by: 300.0
-      -%}
+      {%- comment -%}
+        The store-wide defaults. A section that sets its own backdrop or
+        shadow re-declares these two on its own wrapper, which wins by
+        being more specific than :root.
+      {%- endcomment -%}
       {%- style -%}
         :root {
           --paper: {{ settings.abmira_paper }};
@@ -59,7 +50,7 @@
           --red: {{ settings.abmira_red }};
 
           --ab-media-bg: {{ settings.abmira_media_backdrop | default: '#F7F5EF' }};
-          --ab-shadow: {% if sh > 0 %}drop-shadow(0 4px 5px rgba(25, 24, 19, {{ core }})) drop-shadow(0 18px 20px rgba(25, 24, 19, {{ soft }})){% else %}none{% endif %};
+          --ab-shadow: {% render 'abmira-shadow', strength: settings.abmira_shadow %};
         }
       {%- endstyle -%}
     {%- endunless -%}

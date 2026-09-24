@@ -20,6 +20,7 @@
   - new_tag:       {String}  tag that marks a product as new, default 'new'
   - badge_label:   {String}  chip shown on products carrying badge_tag; blank for none
   - badge_tag:     {String}  tag the badge looks for, default 'customizable'
+  - background:    {String}  ground colour; overrides the palette and the theme setting
   - attributes:    {String}  block.shopify_attributes, when it came from a block
 
   Usage:
@@ -41,6 +42,12 @@
   # reads as one flat block.
   if settings.abmira_card_backdrop_mode == 'single'
     assign backdrop = settings.abmira_card_backdrop | default: '#E8E2D4'
+  endif
+
+  # A caller that has already decided - a section on its own setting, or a
+  # block with its own colour - passes it in and wins over both.
+  if background != blank
+    assign backdrop = background
   endif
 
   assign colors = null
