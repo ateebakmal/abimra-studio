@@ -1,0 +1,64 @@
+{%- comment -%}
+  Abmira — page intro.
+
+  Eyebrow, display headline, lede. The opening of a content page: returns,
+  shipping, terms. Deliberately generic rather than returns-specific, so
+  the next policy page does not need another section.
+
+  The headline is .ab-d1 and takes line breaks, because a policy headline
+  reads better broken where the sentence breaks than where the column
+  happens to end.
+{%- endcomment -%}
+
+<div class="ab-section">
+  <section class="ab-sec ab-page-intro">
+    <div class="ab-wrap">
+      <div class="ab-rv">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="ab-eyebrow"><i></i>{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.heading != blank -%}
+          <h1 class="ab-d1">{{ section.settings.heading | escape | newline_to_br }}</h1>
+        {%- endif -%}
+
+        {%- if section.settings.intro != blank -%}
+          <p class="ab-page-lede">{{ section.settings.intro | escape | newline_to_br }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Abmira page intro",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Returns and refunds"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "If it's wrong,\nwe'll fix it.",
+      "info": "Press Enter to break the line."
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro",
+      "default": "What you can return depends on whether you designed it or we did. Here's the difference in plain English."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Abmira page intro"
+    }
+  ]
+}
+{% endschema %}

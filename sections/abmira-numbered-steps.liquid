@@ -1,0 +1,102 @@
+{%- comment -%}
+  Abmira — numbered steps.
+
+  A process, one row per step, hairline between. Different from the
+  homepage's "abmira-steps": that one is three illustrated cards selling
+  how easy it is, this one is a list you follow while something has gone
+  wrong. No pictures, no cards - a number, a heading and the detail.
+
+  Numbers are generated from the loop and zero-padded, so inserting a step
+  in the middle renumbers the rest on its own.
+{%- endcomment -%}
+
+{%- liquid
+  assign steps = section.blocks | where: 'type', 'step'
+-%}
+
+<div class="ab-section">
+  <section class="ab-sec">
+    <div class="ab-wrap">
+      <div class="ab-sec-head ab-rv">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="ab-d2">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.intro != blank -%}
+          <p class="ab-meta">{{ section.settings.intro | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- if steps.size > 0 -%}
+        <ol class="ab-nsteps ab-rv ab-rv-1" role="list">
+          {%- for block in steps -%}
+            {%- liquid
+              assign n = forloop.index
+              if n < 10
+                assign n = '0' | append: n
+              endif
+            -%}
+            <li class="ab-nstep" {{ block.shopify_attributes }}>
+              <span class="ab-nstep-n" aria-hidden="true">{{ n }}</span>
+              <div class="ab-nstep-b">
+                {%- if block.settings.heading != blank -%}
+                  <h3>{{ block.settings.heading | escape }}</h3>
+                {%- endif -%}
+                {%- if block.settings.body != blank -%}
+                  <p>{{ block.settings.body }}</p>
+                {%- endif -%}
+              </div>
+            </li>
+          {%- endfor -%}
+        </ol>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Abmira numbered steps",
+  "tag": "section",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How to return something"
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro",
+      "default": "Four steps. Most are sorted within a day of us hearing from you."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Email us with your order number"
+        },
+        {
+          "type": "richtext",
+          "id": "body",
+          "label": "Text",
+          "info": "Links are allowed here, for an email address or a contact page."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Abmira numbered steps",
+      "blocks": [{ "type": "step" }, { "type": "step" }, { "type": "step" }, { "type": "step" }]
+    }
+  ]
+}
+{% endschema %}

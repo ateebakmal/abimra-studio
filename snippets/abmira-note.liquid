@@ -1,0 +1,60 @@
+{% comment %}
+  Abmira order note — a line item property on the product form.
+
+  Whatever is typed here is attached to that line of the order and travels
+  the whole way: cart, checkout, the order in the admin, the confirmation
+  email and any export. It sits under the product name on the order, so a
+  request is read against the item it belongs to rather than the order as
+  a whole.
+
+  The field lives outside <product-form> in the DOM, so it carries the
+  form attribute to tie it back. Without that it is simply not submitted.
+
+  The property name is what the customer and the merchant both see as the
+  label on the order. Prefixing it with an underscore would hide it from
+  the customer while keeping it on the order; it is deliberately visible
+  here, so the customer can check their own request in the cart.
+
+  Shopify drops a property whose value is blank, so an untouched field
+  leaves no empty row on the order.
+
+  Accepts:
+  - id:            {String} block id, to keep label/field pairs unique
+  - form_id:       {String} id of the product form this belongs to
+  - label:         {String}
+  - property_name: {String} what the note is called on the order
+  - placeholder:   {String}
+  - help:          {String} small print under the field
+  - rows:          {Number}
+  - maxlength:     {Number} 0 for no limit
+
+  Usage:
+  {% render 'abmira-note', id: block.id, form_id: product_form_id, label: l %}
+{% endcomment %}
+
+{%- liquid
+  assign field_id = 'AbNote-' | append: id
+  assign name = property_name | default: 'Special requirements'
+  assign rows = rows | default: 3
+-%}
+
+<div class="ab-note">
+  <label class="ab-note-label" for="{{ field_id }}">
+    {{ label | default: 'Add a note' | escape }}
+  </label>
+
+  <textarea
+    id="{{ field_id }}"
+    class="ab-note-field"
+    name="properties[{{ name | escape }}]"
+    form="{{ form_id }}"
+    rows="{{ rows }}"
+    {% if maxlength != blank and maxlength > 0 %}maxlength="{{ maxlength }}"{% endif %}
+    {% if placeholder != blank %}placeholder="{{ placeholder | escape }}"{% endif %}
+    {% if help != blank %}aria-describedby="{{ field_id }}-help"{% endif %}
+  ></textarea>
+
+  {%- if help != blank -%}
+    <small class="ab-note-help" id="{{ field_id }}-help">{{ help | escape }}</small>
+  {%- endif -%}
+</div>

@@ -1,0 +1,204 @@
+{%- comment -%}
+  Abmira — side-by-side comparison cards.
+
+  Two answers to the same question, set against each other: what you can
+  return on a Studio Original versus on something you designed yourself.
+  Putting them side by side is the point of the section - a customer is
+  trying to work out which one they have, not read two policies.
+
+  Each card carries a badge, a claim, an explanation, then what IS covered
+  and what is NOT. Ticks and crosses are two separate fields rather than
+  one list with markup in it, so nobody has to remember a syntax to add a
+  line.
+
+  The callout underneath is section-level, not a card: it is the thing
+  that applies whichever card you fell under, and that is exactly why it
+  sits below both.
+
+  The tick and cross are inline SVG rather than the shared sprite. The
+  sprite has to be rendered into the page to work, and a <use> pointing at
+  a symbol that was never rendered fails silently - which is how the trust
+  list lost its ticks once already.
+{%- endcomment -%}
+
+{%- liquid
+  assign cards = section.blocks | where: 'type', 'card'
+-%}
+
+<div class="ab-section">
+  <section class="ab-sec ab-compare-sec">
+    <div class="ab-wrap">
+      {%- if section.settings.heading != blank -%}
+        <div class="ab-sec-head ab-rv">
+          <h2 class="ab-d2">{{ section.settings.heading | escape }}</h2>
+        </div>
+      {%- endif -%}
+
+      {%- if cards.size > 0 -%}
+        <div class="ab-compare ab-rv ab-rv-1">
+          {%- for block in cards -%}
+            {%- liquid
+              assign yes = block.settings.included | newline_to_br | split: '<br />'
+              assign no = block.settings.excluded | newline_to_br | split: '<br />'
+            -%}
+            <article
+              class="ab-cmp{% if block.settings.invert %} ab-cmp-dark{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              {%- if block.settings.badge != blank -%}
+                <span class="ab-chip {% if block.settings.badge_style == 'red' %}ab-chip-red{% else %}ab-chip-blue{% endif %} ab-cmp-badge">
+                  {{- block.settings.badge | escape -}}
+                </span>
+              {%- endif -%}
+
+              {%- if block.settings.heading != blank -%}
+                <h3 class="ab-cmp-ttl">{{ block.settings.heading | escape }}</h3>
+              {%- endif -%}
+
+              {%- if block.settings.body != blank -%}
+                <p class="ab-cmp-body">{{ block.settings.body | escape }}</p>
+              {%- endif -%}
+
+              {%- if block.settings.included != blank or block.settings.excluded != blank -%}
+                <ul class="ab-cmp-list" role="list">
+                  {%- for line in yes -%}
+                    {%- assign text = line | strip -%}
+                    {%- if text != blank -%}
+                      <li>
+                        <svg class="ab-cmp-mark ab-cmp-yes" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="m3 8.5 3.5 3.5L13 4.5"/>
+                        </svg>
+                        <span>{{ text }}</span>
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+
+                  {%- for line in no -%}
+                    {%- assign text = line | strip -%}
+                    {%- if text != blank -%}
+                      <li class="ab-cmp-off">
+                        <svg class="ab-cmp-mark ab-cmp-no" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                          <path d="M4 4l8 8M12 4l-8 8"/>
+                        </svg>
+                        <span>{{ text }}</span>
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </article>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.note_heading != blank or section.settings.note_body != blank -%}
+        <aside class="ab-note-box ab-rv ab-rv-2">
+          {%- if section.settings.note_heading != blank -%}
+            <b>{{ section.settings.note_heading | escape }}</b>
+          {%- endif -%}
+          {%- if section.settings.note_body != blank -%}
+            <p>{{ section.settings.note_body | escape }}</p>
+          {%- endif -%}
+        </aside>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Abmira comparison",
+  "tag": "section",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Leave empty to hide."
+    },
+    {
+      "type": "header",
+      "content": "Callout below the cards"
+    },
+    {
+      "type": "paragraph",
+      "content": "For the rule that applies whichever card the customer falls under."
+    },
+    {
+      "type": "text",
+      "id": "note_heading",
+      "label": "Callout heading",
+      "default": "Faults are always covered, whatever you ordered."
+    },
+    {
+      "type": "textarea",
+      "id": "note_body",
+      "label": "Callout text",
+      "default": "Under the Consumer Rights Act 2015 you have 30 days to reject anything faulty or not as described, custom or not. Cracked prints, crooked placement, a colour that doesn't match your preview — that's on us, and we'll reprint or refund."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge",
+          "default": "Studio Originals"
+        },
+        {
+          "type": "select",
+          "id": "badge_style",
+          "label": "Badge colour",
+          "options": [
+            { "value": "blue", "label": "Blue" },
+            { "value": "red", "label": "Red" }
+          ],
+          "default": "blue"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "14 days to change your mind"
+        },
+        {
+          "type": "textarea",
+          "id": "body",
+          "label": "Text",
+          "default": "Our own designs are standard products. You get the full cooling-off period under the Consumer Contracts Regulations."
+        },
+        {
+          "type": "textarea",
+          "id": "included",
+          "label": "What is covered",
+          "default": "14 days from delivery to cancel, no reason needed\nRefunded within 14 days of us receiving it back\nStandard delivery cost refunded too",
+          "info": "One per line. Each gets a tick."
+        },
+        {
+          "type": "textarea",
+          "id": "excluded",
+          "label": "What is not",
+          "default": "Return postage is yours unless the item is faulty",
+          "info": "One per line. Each gets a cross and reads quieter."
+        },
+        {
+          "type": "checkbox",
+          "id": "invert",
+          "label": "Dark card",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Abmira comparison",
+      "blocks": [{ "type": "card" }, { "type": "card", "settings": { "invert": true } }]
+    }
+  ]
+}
+{% endschema %}

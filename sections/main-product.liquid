@@ -591,6 +591,21 @@
                     {% render 'abmira-trust', items: block.settings.items %}
                   </div>
 
+                {%- comment -%} [abmira] Order note, submitted as a line item property. {%- endcomment -%}
+                {%- when 'abmira_note' -%}
+                  <div {{ block.shopify_attributes }}>
+                    {% render 'abmira-note',
+                      id: block.id,
+                      form_id: product_form_id,
+                      label: block.settings.label,
+                      property_name: block.settings.property_name,
+                      placeholder: block.settings.placeholder,
+                      help: block.settings.help,
+                      rows: block.settings.rows,
+                      maxlength: block.settings.maxlength
+                    %}
+                  </div>
+
                 {%- comment -%} [abmira] Size guide, collapsed by default. {%- endcomment -%}
                 {%- when 'abmira_size_guide' -%}
                   <div {{ block.shopify_attributes }}>
@@ -2288,6 +2303,61 @@
           "label": "Lines",
           "default": "Printed to order — never mass produced\nPremium 240gsm cotton garment\nHigh-detail DTF print, washes without cracking\nDesigned and printed in the United Kingdom",
           "info": "One per line. Each gets a tick."
+        }
+      ]
+    },
+    {
+      "type": "abmira_note",
+      "name": "Abmira order note",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Adds a note box to the product form. What the customer types is attached to that line of the order and shows in the admin, the confirmation email and any export. An empty box adds nothing."
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Anything we should know?"
+        },
+        {
+          "type": "text",
+          "id": "property_name",
+          "label": "Name on the order",
+          "default": "Special requirements",
+          "info": "How this note is titled on the order and in the cart. Changing it does not affect orders already placed."
+        },
+        {
+          "type": "text",
+          "id": "placeholder",
+          "label": "Placeholder",
+          "default": "Placement, sizing, a deadline - anything specific."
+        },
+        {
+          "type": "text",
+          "id": "help",
+          "label": "Small print",
+          "default": "Optional. We will come back to you if anything is unclear."
+        },
+        {
+          "type": "range",
+          "id": "rows",
+          "min": 2,
+          "max": 8,
+          "step": 1,
+          "label": "Height in lines",
+          "default": 3
+        },
+        {
+          "type": "range",
+          "id": "maxlength",
+          "min": 0,
+          "max": 1000,
+          "step": 50,
+          "label": "Character limit",
+          "default": 500,
+          "info": "0 for no limit."
         }
       ]
     },

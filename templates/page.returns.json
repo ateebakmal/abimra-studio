@@ -1,0 +1,146 @@
+{
+  "sections": {
+    "intro": {
+      "type": "abmira-page-intro",
+      "settings": {
+        "eyebrow": "Returns and refunds",
+        "heading": "If it's wrong,\nwe'll fix it.",
+        "intro": "What you can return depends on whether you designed it or we did. Here's the difference in plain English."
+      }
+    },
+    "compare": {
+      "type": "abmira-compare",
+      "blocks": {
+        "standard": {
+          "type": "card",
+          "settings": {
+            "badge": "Studio Originals",
+            "badge_style": "blue",
+            "heading": "14 days to change your mind",
+            "body": "Our own designs are standard products. You get the full cooling-off period under the Consumer Contracts Regulations.",
+            "included": "14 days from delivery to cancel, no reason needed\nRefunded within 14 days of us receiving it back\nStandard delivery cost refunded too",
+            "excluded": "Return postage is yours unless the item is faulty",
+            "invert": false
+          }
+        },
+        "custom": {
+          "type": "card",
+          "settings": {
+            "badge": "Your own designs",
+            "badge_style": "red",
+            "heading": "Made for you, so no change of mind",
+            "body": "Anything you designed is printed for you alone and can't be resold. The law treats it as personalised, so the 14-day cancellation right doesn't apply.",
+            "included": "Faulty, damaged or misprinted — always covered\nWrong item or wrong size sent — always covered\nCancel free any time before it reaches the press",
+            "excluded": "Changed your mind after printing",
+            "invert": true
+          }
+        }
+      },
+      "block_order": ["standard", "custom"],
+      "settings": {
+        "heading": "",
+        "note_heading": "Faults are always covered, whatever you ordered.",
+        "note_body": "Under the Consumer Rights Act 2015 you have 30 days to reject anything faulty or not as described, custom or not. Cracked prints, crooked placement, a colour that doesn't match your preview — that's on us, and we'll reprint or refund."
+      }
+    },
+    "steps": {
+      "type": "abmira-numbered-steps",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "heading": "Email us with your order number",
+            "body": "<p>hello@abmira.studio, with #1026 or whatever yours is. If something's wrong with the print, send a photo — it usually saves a round trip.</p>"
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "heading": "We'll reply within one working day",
+            "body": "<p>If it's our mistake we'll send a prepaid label. If it's a change of mind on a Studio Original, we'll send the address and you cover the postage.</p>"
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "heading": "Send it back within 14 days",
+            "body": "<p>Unworn, unwashed, with tags on. Any packaging is fine — it doesn't need the original bag.</p>"
+          }
+        },
+        "s4": {
+          "type": "step",
+          "settings": {
+            "heading": "Refund or reprint",
+            "body": "<p>Back to your original payment method within 14 days of us receiving it. Reprints go straight into the queue and usually ship in two or three days.</p>"
+          }
+        }
+      },
+      "block_order": ["s1", "s2", "s3", "s4"],
+      "settings": {
+        "heading": "How to return something",
+        "intro": "Four steps. Most are sorted within a day of us hearing from you."
+      }
+    },
+    "faq": {
+      "type": "abmira-faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "My design printed smaller than I expected",
+            "answer": "<p>The designer shows the exact print size in inches and warns you when artwork is too low-resolution for the area you've placed it in. If what arrived doesn't match the preview you approved, that's a fault and we'll reprint it. If it matches the preview, it isn't — so it's worth checking the measurements before you order.</p>",
+            "open": true
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "I spelled something wrong",
+            "answer": "<p>Tell us straight away. If it hasn't reached the press we'll cancel or correct it for free. Once it's printed we can't resell it, so a reprint is a new order — though we'll usually help with the cost the first time.</p>",
+            "open": false
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Can I exchange for a different size?",
+            "answer": "<p>On a Studio Original, yes — send it back within 14 days and we'll swap it, stock permitting. On something you designed we can't, because the garment can't go back into stock. Check the size guide on the product page before ordering; measurements are of the garment, not the body.</p>",
+            "open": false
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "How long do refunds take to appear?",
+            "answer": "<p>We process within 14 days of the item reaching us, usually the same day. After that it's your bank — most cards show it in three to five working days.</p>",
+            "open": false
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Something arrived damaged",
+            "answer": "<p>Photograph it before you do anything else, including the packaging if that's damaged too, and email us. You have 30 days to reject a faulty item under the Consumer Rights Act, and we'll cover return postage.</p>",
+            "open": false
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5"],
+      "settings": {
+        "heading": "Common questions",
+        "intro": ""
+      }
+    },
+    "closer": {
+      "type": "abmira-closer",
+      "settings": {
+        "show_mark": false,
+        "heading": "Still stuck?",
+        "body": "A real person reads every email, usually within a working day.",
+        "cta_label": "Contact us",
+        "cta_link": "/pages/contact"
+      }
+    }
+  },
+  "order": ["intro", "compare", "steps", "faq", "closer"]
+}

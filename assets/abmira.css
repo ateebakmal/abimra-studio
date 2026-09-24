@@ -764,24 +764,6 @@
   font-style: normal;
 }
 
-.ab-ph-tick {
-  margin-left: auto;
-  width: 17px;
-  height: 17px;
-  border-radius: 50%;
-  background: var(--ink);
-  color: var(--paper);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-}
-
-.ab-ph-tick svg {
-  width: 9px;
-  height: 9px;
-}
-
 /* ---------------------------------------------------------- *
  * Carousels. These scroll at EVERY width, not just mobile. The
  * negative inline margin bleeds them to the screen edge while the
@@ -1276,16 +1258,6 @@
 
   .ab-ph-by {
     display: inline;
-  }
-
-  .ab-ph-tick {
-    width: 23px;
-    height: 23px;
-  }
-
-  .ab-ph-tick svg {
-    width: 12px;
-    height: 12px;
   }
 
   .ab-sec-head.ab-head-row {
@@ -2751,6 +2723,55 @@ body.ab-drawer-open {
   padding-bottom: 22px;
 }
 
+/* ---- order note ---- */
+
+.ab-note {
+  margin-top: 22px;
+}
+
+.ab-note-label {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--ab-f);
+  font-size: 14px;
+  font-weight: 600;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+  color: var(--ink);
+}
+
+.ab-note-field {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-input);
+  background: var(--paper-raised);
+  font-family: var(--ab-f);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+  resize: vertical;
+}
+
+.ab-note-field::placeholder {
+  color: var(--graphite);
+  opacity: 0.75;
+}
+
+.ab-note-field:focus {
+  border-color: var(--ink);
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.ab-note-help {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--ab-f);
+  font-size: 13px;
+  color: var(--graphite);
+}
+
 /* The contained chart. A size chart is wide and dense and the product
    column is narrow, so it is capped here and opened full size in the
    dialog below rather than shown at whatever height it happens to be. */
@@ -2902,4 +2923,254 @@ body.ab-drawer-open {
 .product .product__accordion,
 .product .product__info-container .quantity__rules {
   background: transparent;
+}
+
+/* ============================================================
+   Content pages - returns, shipping, terms
+   ============================================================ */
+
+.ab-page-intro .ab-eyebrow {
+  margin-bottom: 18px;
+}
+
+.ab-page-lede {
+  margin: 20px 0 0;
+  max-width: 48ch;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--graphite);
+}
+
+/* ---- comparison cards ---- */
+
+/* auto-fit rather than a fixed pair, so a third card is a block the
+   merchant adds rather than a CSS change. */
+.ab-compare {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+.ab-cmp {
+  padding: 24px 22px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+  background: var(--paper-raised);
+}
+
+.ab-cmp-dark {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.ab-cmp-badge {
+  position: static;
+  display: inline-flex;
+  margin-bottom: 16px;
+}
+
+.ab-chip-blue {
+  background: var(--blue-wash);
+  color: var(--blue);
+}
+
+.ab-cmp-ttl {
+  margin: 0;
+  font-family: var(--ab-f);
+  font-size: 19px;
+  line-height: 1.25;
+  font-weight: 600;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+  color: var(--ink);
+}
+
+.ab-cmp-dark .ab-cmp-ttl {
+  color: var(--paper);
+}
+
+.ab-cmp-body {
+  margin: 10px 0 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--graphite);
+}
+
+.ab-cmp-dark .ab-cmp-body {
+  color: rgba(238, 234, 224, 0.64);
+}
+
+.ab-cmp-list {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+}
+
+.ab-cmp-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 0;
+  border-top: 1px solid var(--rule);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.ab-cmp-dark .ab-cmp-list li {
+  border-color: var(--rule-inv);
+  color: var(--paper);
+}
+
+/* An excluded line is still information, so it is dimmed rather than
+   struck through - nobody reads struck text, and this is the line people
+   most often need. */
+.ab-cmp-list li.ab-cmp-off {
+  color: var(--graphite);
+}
+
+.ab-cmp-dark .ab-cmp-list li.ab-cmp-off {
+  color: rgba(238, 234, 224, 0.48);
+}
+
+.ab-cmp-mark {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  margin-top: 1px;
+}
+
+.ab-cmp-yes {
+  color: var(--ok, #2f7a3f);
+}
+
+.ab-cmp-dark .ab-cmp-yes {
+  color: #7fc492;
+}
+
+.ab-cmp-no {
+  color: var(--graphite);
+  opacity: 0.8;
+}
+
+/* ---- the callout ---- */
+
+.ab-note-box {
+  margin-top: 22px;
+  padding: 18px 20px;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--red);
+  border-radius: var(--r-input);
+  background: var(--paper-raised);
+}
+
+.ab-note-box b {
+  display: block;
+  font-family: var(--ab-f);
+  font-size: 15px;
+  font-weight: 600;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+  color: var(--ink);
+}
+
+.ab-note-box p {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--graphite);
+}
+
+/* ---- numbered steps ---- */
+
+.ab-nsteps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.ab-nstep {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 14px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.ab-nstep-n {
+  font-family: var(--ab-f-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--red);
+}
+
+.ab-nstep-b h3 {
+  margin: 0;
+  font-family: var(--ab-f);
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 600;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+  color: var(--ink);
+}
+
+.ab-nstep-b p {
+  margin: 8px 0 0;
+  max-width: 62ch;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--graphite);
+}
+
+.ab-nstep-b a {
+  color: var(--blue);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ---- FAQ ---- */
+
+/* .ab-guide already styles the summary, the plus sign and the body; only
+   the stacking between items is new. */
+.ab-faq {
+  border-bottom: 1px solid var(--rule);
+}
+
+.ab-faq-item {
+  margin-top: 0;
+}
+
+.ab-faq-item .ab-guide-body {
+  max-width: 76ch;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--graphite);
+}
+
+.ab-faq-item .ab-guide-body p {
+  margin: 0 0 10px;
+}
+
+.ab-faq-item .ab-guide-body p:last-child {
+  margin-bottom: 0;
+}
+
+@media screen and (min-width: 641px) {
+  .ab-compare {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: 20px;
+  }
+
+  .ab-cmp {
+    padding: 30px 28px;
+  }
+
+  .ab-nstep {
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .ab-nstep-b h3 {
+    font-size: 17px;
+  }
 }

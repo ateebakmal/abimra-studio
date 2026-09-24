@@ -37,10 +37,21 @@
           "type": "quantity_selector",
           "settings": {}
         },
+        "abmira_note": {
+          "type": "abmira_note",
+          "settings": {
+            "label": "Anything we should know?",
+            "property_name": "Special requirements",
+            "placeholder": "Placement, sizing, a deadline - anything specific.",
+            "help": "Optional. We will come back to you if anything is unclear.",
+            "rows": 3,
+            "maxlength": 500
+          }
+        },
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
-            "show_dynamic_checkout": true,
+            "show_dynamic_checkout": false,
             "show_gift_card_recipient": true
           }
         },
@@ -73,6 +84,7 @@
         "price",
         "variant_picker",
         "quantity_selector",
+        "abmira_note",
         "buy_buttons",
         "abmira_trust",
         "description",
