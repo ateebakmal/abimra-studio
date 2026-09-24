@@ -2933,6 +2933,28 @@ body.ab-drawer-open {
   margin-bottom: 18px;
 }
 
+/* An intro and the section beneath it are one thought, not two bands.
+   Left alone they contribute a full section pad each - 248px between a
+   headline and the form it introduces at desktop width.
+
+   :has() reaches across Shopify's own per-section wrappers, which is the
+   only way to see that the next section follows an intro. Where it is not
+   supported the pair simply keeps the wider gap, which is untidy rather
+   than broken. */
+.shopify-section:has(.ab-page-intro) .ab-sec {
+  padding-bottom: 0;
+}
+
+.shopify-section:has(.ab-page-intro) + .shopify-section .ab-sec {
+  padding-top: 34px;
+}
+
+@media screen and (min-width: 641px) {
+  .shopify-section:has(.ab-page-intro) + .shopify-section .ab-sec {
+    padding-top: 44px;
+  }
+}
+
 .ab-page-lede {
   margin: 20px 0 0;
   max-width: 48ch;
