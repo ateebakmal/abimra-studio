@@ -19,25 +19,43 @@
             "menu": "footer"
           }
         },
-        "col3": {
-          "type": "column",
+        "privacy": {
+          "type": "legal",
           "settings": {
-            "heading": "Studio",
-            "menu": ""
+            "label": "Privacy",
+            "policy": "privacy",
+            "link": ""
+          }
+        },
+        "terms": {
+          "type": "legal",
+          "settings": {
+            "label": "Terms",
+            "policy": "terms",
+            "link": ""
+          }
+        },
+        "refund": {
+          "type": "legal",
+          "settings": {
+            "label": "Refunds",
+            "policy": "refund",
+            "link": ""
           }
         }
       },
       "block_order": [
         "col1",
         "col2",
-        "col3"
+        "privacy",
+        "terms",
+        "refund"
       ],
       "settings": {
         "logo_text": "Abmira",
         "blurb": "Wear it. Make it yours.\nDesigned and printed in the United Kingdom.",
-        "show_colour_bar": true,
-        "copyright_suffix": "Studio",
-        "legal_text": "Privacy · Terms · Accessibility"
+        "show_colour_bar": false,
+        "copyright_suffix": "Studio"
       }
     }
   },

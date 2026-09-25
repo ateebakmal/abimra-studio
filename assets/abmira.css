@@ -3504,3 +3504,26 @@ a.ab-detail-t:hover {
 .product .product__media img {
   filter: var(--ab-shadow, none);
 }
+
+/* Legal links in the footer's bottom rule. They wrap onto their own line
+   on a phone, where the copyright already fills the width. */
+.ab-foot-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.ab-foot-legal a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.12s var(--ab-e);
+}
+
+.ab-foot-legal a:hover {
+  color: var(--paper);
+}
+
+.ab-foot-legal a:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}

@@ -12,6 +12,7 @@
 
 {%- liquid
   assign columns = section.blocks | where: 'type', 'column'
+  assign legal = section.blocks | where: 'type', 'legal'
 -%}
 
 <div class="ab-foot">
@@ -58,8 +59,34 @@
         {{ section.settings.logo_text | default: shop.name | escape }}
         {{ section.settings.copyright_suffix | escape }}
       </span>
-      {%- if section.settings.legal_text != blank -%}
-        <span>{{ section.settings.legal_text | escape }}</span>
+      {%- if legal.size > 0 -%}
+        <nav class="ab-foot-legal" aria-label="{{ 'sections.footer.payment' | t | default: 'Legal' }}">
+          {%- for block in legal -%}
+            {%- liquid
+              # An explicit link wins. Otherwise fall back to the Shopify
+              # policy it names, which is nil until that policy has been
+              # written - so an unwritten policy leaves no dead link.
+              assign href = block.settings.link
+              if href == blank
+                case block.settings.policy
+                  when 'privacy'
+                    assign href = shop.privacy_policy.url
+                  when 'terms'
+                    assign href = shop.terms_of_service.url
+                  when 'refund'
+                    assign href = shop.refund_policy.url
+                  when 'shipping'
+                    assign href = shop.shipping_policy.url
+                  when 'contact'
+                    assign href = shop.contact_information.url
+                endcase
+              endif
+            -%}
+            {%- if href != blank and block.settings.label != blank -%}
+              <a href="{{ href }}" {{ block.shopify_attributes }}>{{ block.settings.label | escape }}</a>
+            {%- endif -%}
+          {%- endfor -%}
+        </nav>
       {%- endif -%}
     </div>
   </div>
@@ -101,12 +128,45 @@
     },
     {
       "type": "text",
-      "id": "legal_text",
+      "id": "legal_text_unused",
       "label": "Legal line",
       "default": "Privacy · Terms · Accessibility"
     }
   ],
   "blocks": [
+    {
+      "type": "legal",
+      "name": "Legal link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Privacy"
+        },
+        {
+          "type": "select",
+          "id": "policy",
+          "label": "Shopify policy",
+          "options": [
+            { "value": "none", "label": "None - use the link below" },
+            { "value": "privacy", "label": "Privacy policy" },
+            { "value": "terms", "label": "Terms of service" },
+            { "value": "refund", "label": "Refund policy" },
+            { "value": "shipping", "label": "Shipping policy" },
+            { "value": "contact", "label": "Contact information" }
+          ],
+          "default": "privacy",
+          "info": "Points at the policy written under Settings > Policies. The link disappears until that policy has something in it, so it can never be a dead link."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Overrides the policy above. Use this for anything that is not a Shopify policy."
+        }
+      ]
+    },
     {
       "type": "column",
       "name": "Link column",
