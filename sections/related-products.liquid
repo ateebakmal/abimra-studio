@@ -20,7 +20,22 @@
   }
 {%- endstyle -%}
 
-<div class="color-{{ section.settings.color_scheme }} gradient">
+{%- comment -%}
+  [abmira] The recommendation machinery is Dawn's and untouched: this
+  section is re-fetched by product-recommendations.js against its own
+  section id, so whatever is rendered here is what comes back. Only the
+  heading and the card were swapped, onto the ones the rest of the store
+  uses, which is what gives these cards the backdrop and contact shadow.
+{%- endcomment -%}
+{%- if section.settings.ab_shadow_mode == 'custom' -%}
+  {%- style -%}
+    #shopify-section-{{ section.id }} {
+      --ab-shadow: {% render 'abmira-shadow', strength: section.settings.ab_shadow %};
+    }
+  {%- endstyle -%}
+{%- endif -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient ab-section">
   <product-recommendations
     class="related-products page-width section-{{ section.id }}-padding isolate{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
     data-url="{{ routes.product_recommendations_url }}?limit={{ section.settings.products_to_show }}"
@@ -28,28 +43,29 @@
     data-product-id="{{ product.id }}"
   >
     {% if recommendations.performed and recommendations.products_count > 0 %}
-      <h2 class="related-products__heading inline-richtext {{ section.settings.heading_size }}">
-        {{ section.settings.heading }}
-      </h2>
-      <ul
-        class="grid product-grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
-        role="list"
-      >
-        {% assign skip_card_product_styles = false %}
+      <div class="ab-sec-head">
+        <h2 class="ab-d2">{{ section.settings.heading }}</h2>
+      </div>
+      <ul class="ab-prod-grid" role="list">
         {% for recommendation in recommendations.products %}
-          <li class="grid__item">
-            {% render 'card-product',
+          {%- liquid
+            assign card_bg = blank
+            if section.settings.ab_backdrop_mode == 'cycle'
+              assign b = forloop.index0 | modulo: 6
+              assign backdrops = '#E8E2D4,#DFE7DC,#EDE3C9,#E3EAF6,#DCD9CF,#FBE7E1' | split: ','
+              assign card_bg = backdrops[b]
+            elsif section.settings.ab_backdrop_mode == 'single'
+              assign card_bg = section.settings.ab_backdrop
+            endif
+          -%}
+          <li>
+            {% render 'abmira-product-card',
               card_product: recommendation,
-              media_aspect_ratio: section.settings.image_ratio,
-              image_shape: section.settings.image_shape,
-              show_secondary_image: section.settings.show_secondary_image,
-              show_vendor: section.settings.show_vendor,
-              show_rating: section.settings.show_rating,
-              skip_styles: skip_card_product_styles,
-              product_view_context: 'recommendation'
+              index: forloop.index0,
+              lazy: true,
+              background: card_bg
             %}
           </li>
-          {%- assign skip_card_product_styles = true -%}
         {% endfor %}
       </ul>
     {% endif %}
@@ -68,6 +84,43 @@
     {
       "type": "paragraph",
       "content": "t:sections.related-products.settings.paragraph__1.content"
+    },
+    {
+      "type": "select",
+      "id": "ab_backdrop_mode",
+      "label": "Backdrop",
+      "options": [
+        { "value": "theme", "label": "Theme default" },
+        { "value": "cycle", "label": "Cycle the palette" },
+        { "value": "single", "label": "One colour" }
+      ],
+      "default": "theme",
+      "info": "Theme default follows Theme settings > ABMIRA."
+    },
+    {
+      "type": "color",
+      "id": "ab_backdrop",
+      "label": "Backdrop colour",
+      "default": "#E8E2D4"
+    },
+    {
+      "type": "select",
+      "id": "ab_shadow_mode",
+      "label": "Contact shadow",
+      "options": [
+        { "value": "theme", "label": "Theme default" },
+        { "value": "custom", "label": "Set it here" }
+      ],
+      "default": "theme"
+    },
+    {
+      "type": "range",
+      "id": "ab_shadow",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "label": "Shadow strength",
+      "default": 45
     },
     {
       "type": "inline_richtext",
