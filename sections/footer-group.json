@@ -16,7 +16,8 @@
           "type": "column",
           "settings": {
             "heading": "Help",
-            "menu": "footer"
+            "menu": "",
+            "links": "Contact us | /pages/contact\nReturns & exchanges | /pages/returns"
           }
         },
         "privacy": {
@@ -27,35 +28,61 @@
             "link": ""
           }
         },
-        "terms": {
+        "ig": {
+          "type": "social",
+          "settings": {
+            "network": "instagram",
+            "link": "#"
+          }
+        },
+        "tt": {
+          "type": "social",
+          "settings": {
+            "network": "tiktok",
+            "link": "#"
+          }
+        },
+        "terms2": {
           "type": "legal",
           "settings": {
             "label": "Terms",
-            "policy": "terms",
-            "link": ""
+            "policy": "none",
+            "link": "#"
           }
         },
-        "refund": {
+        "cookies": {
           "type": "legal",
           "settings": {
-            "label": "Refunds",
-            "policy": "refund",
-            "link": ""
+            "label": "Cookie preferences",
+            "policy": "none",
+            "link": "#"
+          }
+        },
+        "a11y": {
+          "type": "legal",
+          "settings": {
+            "label": "Accessibility",
+            "policy": "none",
+            "link": "#"
           }
         }
       },
       "block_order": [
+        "ig",
+        "tt",
         "col1",
         "col2",
         "privacy",
-        "terms",
-        "refund"
+        "terms2",
+        "cookies",
+        "a11y"
       ],
       "settings": {
         "logo_text": "Abmira",
         "blurb": "Wear it. Make it yours.\nDesigned and printed in the United Kingdom.",
         "show_colour_bar": false,
-        "copyright_suffix": "Studio"
+        "copyright_suffix": "Studio",
+        "legal_details": "Abmira Studio Ltd, registered in England and Wales, company no. 00000000. Registered office: 1 Example Street, Manchester M1 1AA. VAT no. GB 000 0000 00."
       }
     }
   },

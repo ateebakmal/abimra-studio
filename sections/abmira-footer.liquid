@@ -13,6 +13,7 @@
 {%- liquid
   assign columns = section.blocks | where: 'type', 'column'
   assign legal = section.blocks | where: 'type', 'legal'
+  assign social = section.blocks | where: 'type', 'social'
 -%}
 
 <div class="ab-foot">
@@ -36,56 +37,14 @@
           </div>
         {%- endif -%}
 
-        {%- liquid
-          assign socials = ''
-          if settings.social_instagram_link != blank
-            assign socials = socials | append: 'instagram,'
-          endif
-          if settings.social_tiktok_link != blank
-            assign socials = socials | append: 'tiktok,'
-          endif
-          if settings.social_facebook_link != blank
-            assign socials = socials | append: 'facebook,'
-          endif
-          if settings.social_youtube_link != blank
-            assign socials = socials | append: 'youtube,'
-          endif
-          if settings.social_pinterest_link != blank
-            assign socials = socials | append: 'pinterest,'
-          endif
-          if settings.social_twitter_link != blank
-            assign socials = socials | append: 'twitter,'
-          endif
-          assign socials = socials | split: ','
-        -%}
-        {%- if section.settings.show_social and socials.size > 0 -%}
+        {%- if social.size > 0 -%}
           <ul class="ab-foot-social" role="list">
-            {%- for name in socials -%}
+            {%- for block in social -%}
               {%- liquid
-                case name
-                  when 'instagram'
-                    assign href = settings.social_instagram_link
-                    assign label = 'Instagram'
-                  when 'tiktok'
-                    assign href = settings.social_tiktok_link
-                    assign label = 'TikTok'
-                  when 'facebook'
-                    assign href = settings.social_facebook_link
-                    assign label = 'Facebook'
-                  when 'youtube'
-                    assign href = settings.social_youtube_link
-                    assign label = 'YouTube'
-                  when 'pinterest'
-                    assign href = settings.social_pinterest_link
-                    assign label = 'Pinterest'
-                  when 'twitter'
-                    assign href = settings.social_twitter_link
-                    assign label = 'X'
-                endcase
-                assign icon = 'icon-' | append: name | append: '.svg'
+                assign icon = 'icon-' | append: block.settings.network | append: '.svg'
               -%}
-              <li>
-                <a href="{{ href }}" aria-label="{{ label }}">
+              <li {{ block.shopify_attributes }}>
+                <a href="{{ block.settings.link | default: '#' }}" aria-label="{{ block.settings.network | capitalize }}">
                   {{ icon | inline_asset_content }}
                 </a>
               </li>
@@ -99,10 +58,33 @@
           {%- if block.settings.heading != blank -%}
             <h5>{{ block.settings.heading | escape }}</h5>
           {%- endif -%}
+          {%- liquid
+            # A Shopify menu when one is chosen, otherwise the lines typed
+            # into the block: "Label | /url", one per line. Without this a
+            # column cannot say anything until someone has built a menu in
+            # the admin, which is a long way to go for four links.
+            assign rows = ''
+            if block.settings.menu == blank and block.settings.links != blank
+              assign rows = block.settings.links | newline_to_br | split: '<br />'
+            endif
+          -%}
           {%- if block.settings.menu != blank -%}
             <ul>
               {%- for link in block.settings.menu.links -%}
                 <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+              {%- endfor -%}
+            </ul>
+          {%- elsif rows.size > 0 -%}
+            <ul>
+              {%- for row in rows -%}
+                {%- liquid
+                  assign parts = row | split: '|'
+                  assign text = parts[0] | strip
+                  assign href = parts[1] | strip | default: '#'
+                -%}
+                {%- if text != blank -%}
+                  <li><a href="{{ href }}">{{ text | escape }}</a></li>
+                {%- endif -%}
               {%- endfor -%}
             </ul>
           {%- endif -%}
@@ -178,13 +160,6 @@
       "info": "Print furniture. The guide allows two such devices per page."
     },
     {
-      "type": "checkbox",
-      "id": "show_social",
-      "label": "Show social icons",
-      "default": true,
-      "info": "Shows an icon for every link filled in under Theme settings > Social media."
-    },
-    {
       "type": "textarea",
       "id": "legal_details",
       "label": "Company details",
@@ -208,6 +183,27 @@
     }
   ],
   "blocks": [
+    {
+      "type": "social",
+      "name": "Social link",
+      "settings": [
+        {
+          "type": "select",
+          "id": "network",
+          "label": "Network",
+          "options": [
+            { "value": "instagram", "label": "Instagram" },
+            { "value": "tiktok", "label": "TikTok" },
+            { "value": "facebook", "label": "Facebook" },
+            { "value": "youtube", "label": "YouTube" },
+            { "value": "pinterest", "label": "Pinterest" },
+            { "value": "twitter", "label": "X" }
+          ],
+          "default": "instagram"
+        },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    },
     {
       "type": "legal",
       "name": "Legal link",
@@ -251,6 +247,12 @@
           "id": "heading",
           "label": "Heading",
           "default": "Shop"
+        },
+        {
+          "type": "textarea",
+          "id": "links",
+          "label": "Links",
+          "info": "One per line, as Label | /url. Ignored when a menu is chosen below."
         },
         {
           "type": "link_list",
