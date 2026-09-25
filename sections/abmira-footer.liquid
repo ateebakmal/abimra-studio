@@ -35,6 +35,63 @@
             <span style="background: var(--graphite);"></span>
           </div>
         {%- endif -%}
+
+        {%- liquid
+          assign socials = ''
+          if settings.social_instagram_link != blank
+            assign socials = socials | append: 'instagram,'
+          endif
+          if settings.social_tiktok_link != blank
+            assign socials = socials | append: 'tiktok,'
+          endif
+          if settings.social_facebook_link != blank
+            assign socials = socials | append: 'facebook,'
+          endif
+          if settings.social_youtube_link != blank
+            assign socials = socials | append: 'youtube,'
+          endif
+          if settings.social_pinterest_link != blank
+            assign socials = socials | append: 'pinterest,'
+          endif
+          if settings.social_twitter_link != blank
+            assign socials = socials | append: 'twitter,'
+          endif
+          assign socials = socials | split: ','
+        -%}
+        {%- if section.settings.show_social and socials.size > 0 -%}
+          <ul class="ab-foot-social" role="list">
+            {%- for name in socials -%}
+              {%- liquid
+                case name
+                  when 'instagram'
+                    assign href = settings.social_instagram_link
+                    assign label = 'Instagram'
+                  when 'tiktok'
+                    assign href = settings.social_tiktok_link
+                    assign label = 'TikTok'
+                  when 'facebook'
+                    assign href = settings.social_facebook_link
+                    assign label = 'Facebook'
+                  when 'youtube'
+                    assign href = settings.social_youtube_link
+                    assign label = 'YouTube'
+                  when 'pinterest'
+                    assign href = settings.social_pinterest_link
+                    assign label = 'Pinterest'
+                  when 'twitter'
+                    assign href = settings.social_twitter_link
+                    assign label = 'X'
+                endcase
+                assign icon = 'icon-' | append: name | append: '.svg'
+              -%}
+              <li>
+                <a href="{{ href }}" aria-label="{{ label }}">
+                  {{ icon | inline_asset_content }}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
       </div>
 
       {%- for block in columns -%}
@@ -52,6 +109,10 @@
         </div>
       {%- endfor -%}
     </div>
+
+    {%- if section.settings.legal_details != blank -%}
+      <p class="ab-foot-reg">{{ section.settings.legal_details | escape | newline_to_br }}</p>
+    {%- endif -%}
 
     <div class="ab-foot-bot">
       <span>
@@ -115,6 +176,19 @@
       "label": "Show colour bar",
       "default": true,
       "info": "Print furniture. The guide allows two such devices per page."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "label": "Show social icons",
+      "default": true,
+      "info": "Shows an icon for every link filled in under Theme settings > Social media."
+    },
+    {
+      "type": "textarea",
+      "id": "legal_details",
+      "label": "Company details",
+      "info": "Company number, registered office, VAT number. Shown above the bottom rule. Leave empty to hide."
     },
     {
       "type": "header",
