@@ -3611,6 +3611,17 @@ a.ab-detail-t:hover {
   outline-offset: 2px;
 }
 
+/* The collapse removes six screens from ABOVE the viewport, and
+   abmira-story-extras.js takes the same distance off the scroll position
+   so nothing appears to move. Browsers do their own scroll anchoring for
+   exactly this situation, and two corrections for one change land the
+   visitor nowhere near where they were. Ours is the one that knows the
+   section, so the browser's is switched off here. */
+.as,
+.as__runway {
+  overflow-anchor: none;
+}
+
 /* ---- brand story: watch again ----
    Added by assets/abmira-story-extras.js once the story has collapsed to
    its finale, so it never appears mid-animation. Styled as the quieter of

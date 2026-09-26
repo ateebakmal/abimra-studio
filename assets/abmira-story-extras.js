@@ -64,9 +64,16 @@
    * any effect and the animation simply plays, which is the right way for
    * it to fail.
    * ------------------------------------------------------------------ */
+  var realMM = null;
+
+  function restoreMM() {
+    if (realMM) { window.matchMedia = realMM; realMM = null; }
+  }
+
   function borrowReducedMotion() {
     var real = window.matchMedia;
-    if (typeof real !== 'function') return;
+    if (typeof real !== 'function' || realMM) return;
+    realMM = real;
 
     window.matchMedia = function (q) {
       if (String(q).indexOf('prefers-reduced-motion') !== -1) {
@@ -86,9 +93,7 @@
 
     // Deferred scripts all run before DOMContentLoaded, so by here the
     // section has booted and captured its answer.
-    document.addEventListener('DOMContentLoaded', function () {
-      window.matchMedia = real;
-    });
+    document.addEventListener('DOMContentLoaded', restoreMM);
   }
 
   if (seen() && document.querySelector(SEL)) borrowReducedMotion();
@@ -134,6 +139,24 @@
 
     remember(true);
     addReplay(sec);
+    defend(sec);
+  }
+
+  // Anything that clears is-static puts the animation back. The section's
+  // own init is the only thing that does, and its __as guard stops it
+  // running twice on the same element - but the theme editor replaces the
+  // element wholesale, and a fresh one carries no guard.
+  function defend(sec) {
+    sec.__abCollapsed = true;
+    if (sec.__abGuard || typeof MutationObserver !== 'function') return;
+    sec.__abGuard = new MutationObserver(function () {
+      if (sec.__abCollapsed && !sec.classList.contains('is-static')) {
+        if (typeof sec.__asDestroy === 'function') sec.__asDestroy();
+        sec.classList.add('is-static');
+        addReplay(sec);
+      }
+    });
+    sec.__abGuard.observe(sec, { attributes: true, attributeFilter: ['class'] });
   }
 
   function replay(sec) {
@@ -142,6 +165,8 @@
     var b = sec.querySelector('.ab-story-replay');
     if (b && b.parentNode) b.parentNode.removeChild(b);
 
+    sec.__abCollapsed = false;
+    if (sec.__abGuard) { sec.__abGuard.disconnect(); sec.__abGuard = null; }
     sec.classList.remove('is-static');
 
     // The section refuses to init twice; this is the flag it guards with.
@@ -188,7 +213,7 @@
 
   function start() {
     Array.prototype.forEach.call(document.querySelectorAll(SEL), function (sec) {
-      if (sec.classList.contains('is-static')) addReplay(sec);
+      if (sec.classList.contains('is-static')) { addReplay(sec); defend(sec); }
       else watch(sec);
     });
   }
@@ -201,6 +226,7 @@
 
   // The theme editor swaps the section without reloading the page.
   document.addEventListener('shopify:section:load', function () {
-    window.setTimeout(start, 0);
+    if (seen()) borrowReducedMotion();
+    window.setTimeout(function () { restoreMM(); start(); }, 0);
   });
 })();
