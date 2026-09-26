@@ -10,3 +10,4 @@ TemplateLength:
 ignore:
   - design-guides/**
   - test-files/**
+  - docs/**

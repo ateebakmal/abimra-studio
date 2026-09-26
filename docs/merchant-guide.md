@@ -1,0 +1,179 @@
+# Running the Abmira store
+
+Written for whoever looks after this shop day to day. No code required —
+everything here is done in the Shopify admin or the theme editor.
+
+---
+
+## Adding a product
+
+### 1. Pick a theme template
+
+Each product uses a template, chosen on its own admin page under **Theme
+template** (right-hand column, below Search engine listing).
+
+| Template | Use it for |
+|---|---|
+| **Default product** | An ordinary product. Stock Shopify gallery. |
+| **studio** | Ready-made designs — Studio Originals. Gallery is a carousel with thumbnails and arrows. |
+| **customify** | Anything the customer designs themselves. Loads the Customify designer in place of the gallery. |
+
+If the dropdown doesn't list the template you want, the theme hasn't been
+published yet. See *Why a template is missing* below.
+
+### 2. Fill in the fields that the design uses
+
+Some parts of the design read product fields that are easy to leave empty:
+
+- **Product type** — shown on the card as "Oversized tee · 4 colours". An
+  empty type means the card just says "4 colours".
+- **Price** — a product priced 0.00 shows as £0.00 on every card.
+- **Tags** — `customizable` shows the "Design your own" badge on the
+  homepage rail. `new` shows a "New" chip.
+- **Image alt text** — on a product with colour variants, set each photo's
+  alt text to the colour name ("Black", "White"). Some templates use it to
+  show only the photos for the colour that's selected.
+
+### 3. Photograph on a transparent background where you can
+
+Cards put the garment on a coloured ground with a soft shadow beneath it.
+That only works on a cut-out — a PNG with a transparent background. A
+photo with its own background will show as a rectangle sitting on the
+card's colour, and its shadow will trace the rectangle rather than the
+garment.
+
+If you can't cut it out, see **Card images** below.
+
+---
+
+## Card images
+
+By default a card shows the product's first photo. Two optional fields
+change that, set per product. Both need creating once (see *Setting up
+custom fields*), then they appear on every product's admin page.
+
+### `card_image` — a picture only used on cards
+
+Upload an image here and cards will use it instead of the first photo.
+
+It does **not** appear in the gallery on the product page. That's the
+point: you can have a styled shot on the card and the plain photos on the
+product itself.
+
+If you change the product's photos later, remember this one doesn't
+change with them.
+
+### `card_style` — Inset or Fill
+
+- **Inset** (the default) — the garment sits inside the card with space
+  around it, on the card's colour. Right for cut-outs.
+- **Fill** — the picture fills the whole card, edge to edge, and is
+  cropped to fit. Right for a photo that already has its own background.
+
+---
+
+## Setting up custom fields
+
+Done once. **Settings → Custom data → Products → Add definition.**
+
+**Card image**
+
+| | |
+|---|---|
+| Name | Card image |
+| Namespace and key | `custom.card_image` |
+| Type | File → **Accept only images** |
+| Description | Shown on collection and homepage cards instead of the first product photo. Does not appear on the product page. |
+
+**Card style**
+
+| | |
+|---|---|
+| Name | Card style |
+| Namespace and key | `custom.card_style` |
+| Type | Single line text |
+| Validation | **Limit to preset choices**: `Inset`, `Fill` |
+| Description | Inset for cut-out garments on a transparent background. Fill for photos that already have their own background. |
+
+There is also one on collections, which you may already have:
+
+**Show in grid** — `custom.show_in_grid`, type True/false. Ticked
+collections appear in "Shop by theme" when that section is set to *Only
+collections marked in the admin*.
+
+---
+
+## Changing how cards and product images look
+
+**Theme editor → Theme settings → ABMIRA.** These apply across the whole
+store, so everything stays consistent.
+
+| Setting | What it does |
+|---|---|
+| Paper, Ink, Press red | The three brand colours. Everything else is fixed in the stylesheet. |
+| Contact shadow | How firmly garments sit on their backdrop. 0 removes it. Only visible on cut-outs. |
+| Card backdrops | *Cycle the palette* gives each card in a row a different ground. *One colour* uses the same everywhere. |
+| Card backdrop | The colour, when set to one colour. |
+| Product page backdrop | Behind the gallery image on a product page. |
+| Space around card images | The gap between a garment and the edge of its card. |
+
+Individual sections can override the backdrop and shadow — open the
+section in the editor and look for **Backdrops and shadow**. A single
+card in *Customise apparel* can override them again with **Give this card
+its own backdrop**. Most specific wins.
+
+---
+
+## Homepage sections
+
+Everything on the homepage is a section you can reorder, hide or remove
+in the theme editor.
+
+- **Abmira hero** — the opening screen. It is sized to fill exactly one
+  screen, so anything you switch on competes for that space. The line
+  above the headline and the ratings row are both optional for that
+  reason.
+- **Brand story** — the scroll animation. *Scroll length* controls how
+  many screens it lasts; lower it if it feels long.
+- **Abmira categories** ("Customise apparel") — either every product in a
+  collection, or cards you add by hand.
+- **Abmira product rail** ("Studio Originals") — same choice.
+- **Abmira testimonials**, **closing band**, etc.
+
+Where a section offers *Everything in a collection* versus *Only the ones
+I pick*, the first keeps itself up to date as you add products and the
+second gives you control of the order.
+
+---
+
+## Pages
+
+- `/pages/contact` and `/pages/returns` use their own templates and are
+  edited in the theme editor, not in the page's text box. Open the page in
+  the editor and edit the sections.
+- To create the returns page: **Pages → Add page**, then set **Theme
+  template** to `returns`.
+
+---
+
+## Things that catch people out
+
+**Why a template is missing from the dropdown.** The admin only lists
+templates that exist on the *published* theme. A template added to a draft
+theme is invisible until that theme is published.
+
+**Why a page looks different from the theme editor preview.** The editor
+previews the theme you have open, which may not be the live one. Check
+the theme name at the top.
+
+**Why the storefront looks old.** You are probably still in preview mode
+for another theme — there is a black bar at the bottom of the screen with
+the theme's name. Click the ✕ on it, or open the store in a private
+window.
+
+**Why a policy link is missing from the footer.** Terms, Refunds and so on
+only appear once that policy has text in it, under **Settings →
+Policies**. This is deliberate: it is better than a link to an empty page.
+
+**Why "Buy it now" doesn't appear.** It is switched off on every product
+template on purpose.

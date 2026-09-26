@@ -23,6 +23,10 @@
   - background:    {String}  ground colour; overrides the palette and the theme setting
   - attributes:    {String}  block.shopify_attributes, when it came from a block
 
+  Product metafields it reads, both optional:
+  - custom.card_image  {File}  shown instead of the featured image, on cards only
+  - custom.card_style  {Text}  "Inset" (default) or "Fill"
+
   Usage:
   {% render 'abmira-product-card', card_product: product, index: forloop.index0 %}
 {% endcomment %}
@@ -78,19 +82,52 @@
   unless lazy
     assign loading = 'eager'
   endunless
+
+  # A card image set on the product wins over its featured image. It is a
+  # metafield rather than product media on purpose: media would also appear
+  # in the gallery on the product page, and the point of this is a picture
+  # that is only ever a card.
+  #
+  # A file_reference to an image answers as a MediaImage, which carries a
+  # preview_image; an image_reference answers as the image itself. Both
+  # shapes are accepted so the definition can be created either way.
+  assign card_image = card_product.featured_media
+  assign mf_image = card_product.metafields.custom.card_image.value
+  if mf_image != blank
+    if mf_image.preview_image != blank
+      assign card_image = mf_image.preview_image
+    else
+      assign card_image = mf_image
+    endif
+  endif
+
+  # Inset is the default because a cut-out garment wants to sit ON the
+  # backdrop. Fill is for a photograph that brought its own background,
+  # where insetting it reads as a picture pinned to a card.
+  assign fill = false
+  assign style = card_product.metafields.custom.card_style.value | downcase | strip
+  if style == 'fill'
+    assign fill = true
+  endif
 -%}
 
 <article class="ab-prod" {{ attributes }}>
-  <a class="ab-prod-img" href="{{ card_product.url }}" style="background: {{ backdrop }};" tabindex="-1" aria-hidden="true">
-    {%- if card_product.featured_media != blank -%}
+  <a
+    class="ab-prod-img{% if fill %} ab-prod-img--fill{% endif %}"
+    href="{{ card_product.url }}"
+    style="background: {{ backdrop }};"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    {%- if card_image != blank -%}
       {{
-        card_product.featured_media
+        card_image
         | image_url: width: 700
         | image_tag:
           widths: '210, 320, 480, 700',
           sizes: '(min-width: 1025px) 25vw, (min-width: 641px) 33vw, 50vw',
           loading: loading,
-          alt: card_product.featured_media.alt | default: card_product.title
+          alt: card_image.alt | default: card_product.title
       }}
     {%- else -%}
       <svg viewBox="0 0 300 340" width="150" style="--g: #191813;" aria-hidden="true">

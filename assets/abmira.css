@@ -851,6 +851,20 @@
   object-fit: contain;
 }
 
+/* Set per product, by the custom.card_style metafield. For a photograph
+   that brought its own background: insetting one reads as a picture
+   pinned to a card rather than a garment standing on a ground. Both
+   properties have to go together - padding with cover would only crop
+   harder, and cover without padding is what fills the tile. */
+.ab-prod-img--fill {
+  padding: 0;
+}
+
+.ab-prod-img--fill img,
+.ab-section .ab-prod-img--fill img[width][height] {
+  object-fit: cover;
+}
+
 .ab-prod-img .ab-chip {
   position: absolute;
   top: 14px;
