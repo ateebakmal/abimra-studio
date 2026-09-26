@@ -1498,10 +1498,21 @@
    own page-switcher bar; the theme uses top:0, as it instructs.
    ============================================================ */
 
-.ab-nav {
+/* Sticky lives on the section-group wrapper, not on the <nav>.
+
+   A sticky element can only travel inside its own parent's box, and the
+   nav's parent is .ab-section, which is exactly nav-height tall - so it
+   had nowhere to go and scrolled away immediately. The header has never
+   actually stuck; the pinned brand story is just the first thing that
+   made it obvious. The group wrapper sits directly in <body>, so from
+   there it can hold for the whole page. */
+.shopify-section-group-header-group {
   position: sticky;
   top: 0;
   z-index: 50;
+}
+
+.ab-nav {
   background: var(--paper);
   border-bottom: 1px solid var(--rule);
 }
@@ -3597,5 +3608,34 @@ a.ab-detail-t:hover {
 
 .ab-foot-legal a:focus-visible {
   outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* ---- brand story: watch again ----
+   Added by assets/abmira-story-extras.js once the story has collapsed to
+   its finale, so it never appears mid-animation. Styled as the quieter of
+   the two finale actions: the calls to action come first. */
+.ab-story-replay {
+  appearance: none;
+  border: 1px solid rgba(238, 234, 224, 0.5);
+  background: none;
+  border-radius: var(--r-pill);
+  padding: 10px 18px;
+  font-family: var(--ab-f);
+  font-size: 14px;
+  font-weight: 500;
+  font-variation-settings: 'wdth' 100, 'wght' 500;
+  color: var(--paper);
+  cursor: pointer;
+  transition: border-color 0.12s var(--ab-e), background-color 0.12s var(--ab-e);
+}
+
+.ab-story-replay:hover {
+  border-color: var(--paper);
+  background: rgba(238, 234, 224, 0.1);
+}
+
+.ab-story-replay:focus-visible {
+  outline: 2px solid var(--paper);
   outline-offset: 2px;
 }

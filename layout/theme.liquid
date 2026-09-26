@@ -31,6 +31,13 @@
 
       {{ 'abmira.css' | asset_url | stylesheet_tag }}
       <script src="{{ 'abmira.js' | asset_url }}" defer="defer"></script>
+      {% comment %}
+        Brand story extras. Deliberately in the head: deferred scripts run
+        in document order, and this one has to run before the section's own
+        script for the once-per-visit behaviour to work. It costs ~2KB and
+        exits immediately on a page with no story section.
+      {% endcomment %}
+      <script src="{{ 'abmira-story-extras.js' | asset_url }}" defer="defer"></script>
 
       {%- comment -%}
         [ABMIRA] Only three tokens are exposed to the theme editor. The guide

@@ -1,0 +1,8 @@
+Everything is perfect. You did great.
+
+Now the next thing to do is add a preloader.
+
+I want a preloader that works like this:
+It appears only the first time website loads and then never again. Only when user hard reloads.
+
+Is this possible if it is. I will now share those details with you
