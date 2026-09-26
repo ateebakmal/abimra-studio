@@ -1,106 +1,36 @@
 /*
   Abmira: brand story extras.
 
-  Three behaviours layered on top of abimra-story.js WITHOUT editing it, so
+  Two behaviours layered on top of abimra-story.js WITHOUT editing it, so
   the handoff files stay byte-identical and can be replaced wholesale if
   their author ships an update.
 
-    1. Collapse on completion. Once the runway has been scrolled all the way
-       past, the section stops animating and shrinks from seven screens to
-       one, holding the finale. Scrolling back up then passes a single
+    1. Collapse on completion. Once the runway has been scrolled all the
+       way past, the section stops animating and shrinks from seven screens
+       to one, holding the finale. Scrolling back up then passes a single
        screen instead of rewinding the whole story.
 
-    2. Once per visit. A collapsed section is remembered for the browsing
-       session, so a reload does not replay it. sessionStorage rather than
-       localStorage: a visitor coming back tomorrow should still get the
-       brand moment once.
+    2. Watch again. Puts the runway back and re-boots the animation.
 
-    3. Watch again. Puts the runway back and re-boots the animation.
+  WHAT IS DELIBERATELY NOT HERE
 
-  This file is loaded in the document head so it runs BEFORE the section's
-  own deferred script. That ordering is load-bearing for (2).
+  An earlier version also remembered, for the browsing session, that the
+  story had been seen, and booted a returning visitor straight into the
+  static finale. The section gives no way to ask for that: every boot
+  clears the `is-static` class, and the finale frame can only be drawn by
+  the section's own code. The way in was to answer matchMedia `true` for
+  the reduced-motion query while it booted - and that turned out to freeze
+  whatever frame happened to be current rather than the finale, so the
+  animation never played at all.
+
+  It was too clever for what it bought. The animation now plays on every
+  page load, which is also the only behaviour that cannot surprise anyone.
 */
 
 (function () {
   'use strict';
 
-  var KEY = 'ab-story-seen';
   var SEL = '[data-as]';
-
-  // Storage throws in private mode in some browsers. Failing to read means
-  // "not seen", so the animation plays - showing it to someone twice is a
-  // far smaller harm than wrongly hiding it.
-  function seen() {
-    try {
-      return sessionStorage.getItem(KEY) === '1';
-    } catch (e) {
-      return false;
-    }
-  }
-
-  function remember(v) {
-    try {
-      if (v) sessionStorage.setItem(KEY, '1');
-      else sessionStorage.removeItem(KEY);
-    } catch (e) {
-      /* nothing to do: the session just will not be remembered */
-    }
-  }
-
-  /* ------------------------------------------------------------------ *
-   * 1. Booting straight into the finale, for a visitor who has seen it
-   *
-   * The section has exactly one state that means "one frame, no pinning":
-   * the `is-static` class it uses for prefers-reduced-motion. There is no
-   * way to ask for it from outside - every normal boot calls
-   * classList.remove('is-static') - and the frame it holds has to be drawn
-   * by the section's own code, or the stage is empty.
-   *
-   * So the reduced-motion branch is borrowed: matchMedia is answered `true`
-   * for that one query while the section boots, and restored immediately
-   * after. The section then runs its own tested path to a static finale.
-   *
-   * If a future version reads the preference differently this stops having
-   * any effect and the animation simply plays, which is the right way for
-   * it to fail.
-   * ------------------------------------------------------------------ */
-  var realMM = null;
-
-  function restoreMM() {
-    if (realMM) { window.matchMedia = realMM; realMM = null; }
-  }
-
-  function borrowReducedMotion() {
-    var real = window.matchMedia;
-    if (typeof real !== 'function' || realMM) return;
-    realMM = real;
-
-    window.matchMedia = function (q) {
-      if (String(q).indexOf('prefers-reduced-motion') !== -1) {
-        return {
-          matches: true,
-          media: q,
-          onchange: null,
-          addListener: function () {},
-          removeListener: function () {},
-          addEventListener: function () {},
-          removeEventListener: function () {},
-          dispatchEvent: function () { return false; }
-        };
-      }
-      return real.apply(window, arguments);
-    };
-
-    // Deferred scripts all run before DOMContentLoaded, so by here the
-    // section has booted and captured its answer.
-    document.addEventListener('DOMContentLoaded', restoreMM);
-  }
-
-  if (seen() && document.querySelector(SEL)) borrowReducedMotion();
-
-  /* ------------------------------------------------------------------ *
-   * 2. Collapse, and the control to undo it
-   * ------------------------------------------------------------------ */
 
   function label(sec) {
     return sec.getAttribute('data-replay-label') || 'Watch again';
@@ -121,6 +51,17 @@
     host.appendChild(b);
   }
 
+  /* ------------------------------------------------------------------ *
+   * Collapse
+   *
+   * `is-static` is the section's own state for one frame and no pinning -
+   * what it uses for prefers-reduced-motion. Reusing it means the
+   * collapsed layout is a path the section already supports and tests,
+   * rather than something invented here.
+   *
+   * This only ever runs once the runway has been scrolled fully past, so
+   * the frame it freezes is always the finale.
+   * ------------------------------------------------------------------ */
   function collapse(sec) {
     if (sec.classList.contains('is-static')) return;
     var runway = sec.querySelector('.as__runway');
@@ -133,40 +74,19 @@
 
     // Six screens have just been removed from the page ABOVE the viewport.
     // Taking the same distance off the scroll position in this same frame
-    // is what stops everything below appearing to leap upwards.
+    // is what stops everything below appearing to leap upwards. The
+    // browser's own scroll anchoring is switched off for this section in
+    // abmira.css, or the change would be corrected twice.
     var shrank = before - after;
     if (shrank > 0) window.scrollBy(0, -shrank);
 
-    remember(true);
     addReplay(sec);
-    defend(sec);
-  }
-
-  // Anything that clears is-static puts the animation back. The section's
-  // own init is the only thing that does, and its __as guard stops it
-  // running twice on the same element - but the theme editor replaces the
-  // element wholesale, and a fresh one carries no guard.
-  function defend(sec) {
-    sec.__abCollapsed = true;
-    if (sec.__abGuard || typeof MutationObserver !== 'function') return;
-    sec.__abGuard = new MutationObserver(function () {
-      if (sec.__abCollapsed && !sec.classList.contains('is-static')) {
-        if (typeof sec.__asDestroy === 'function') sec.__asDestroy();
-        sec.classList.add('is-static');
-        addReplay(sec);
-      }
-    });
-    sec.__abGuard.observe(sec, { attributes: true, attributeFilter: ['class'] });
   }
 
   function replay(sec) {
-    remember(false);
-
     var b = sec.querySelector('.ab-story-replay');
     if (b && b.parentNode) b.parentNode.removeChild(b);
 
-    sec.__abCollapsed = false;
-    if (sec.__abGuard) { sec.__abGuard.disconnect(); sec.__abGuard = null; }
     sec.classList.remove('is-static');
 
     // The section refuses to init twice; this is the flag it guards with.
@@ -213,7 +133,7 @@
 
   function start() {
     Array.prototype.forEach.call(document.querySelectorAll(SEL), function (sec) {
-      if (sec.classList.contains('is-static')) { addReplay(sec); defend(sec); }
+      if (sec.classList.contains('is-static')) addReplay(sec);
       else watch(sec);
     });
   }
@@ -224,9 +144,9 @@
     start();
   }
 
-  // The theme editor swaps the section without reloading the page.
+  // The theme editor replaces the section rather than re-running it, so the
+  // replacement is a fresh element that needs watching again.
   document.addEventListener('shopify:section:load', function () {
-    if (seen()) borrowReducedMotion();
-    window.setTimeout(function () { restoreMM(); start(); }, 0);
+    window.setTimeout(start, 0);
   });
 })();
