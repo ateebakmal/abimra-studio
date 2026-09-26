@@ -833,13 +833,22 @@
   justify-content: center;
   position: relative;
   overflow: hidden;
+  /* The same breathing room the category cards have. Set on the tile, so
+     the backdrop still runs to the card edge and only the garment is
+     inset - which is what makes a cut-out read as sitting ON the colour
+     rather than being cropped by it. The chip is absolutely positioned
+     against the padding box, so it stays in the corner regardless. */
+  padding: var(--ab-card-pad, 18px);
 }
 
+/* contain, not cover: with padding, cover would just crop a little more
+   and the space would never show. contain is also the honest fit for a
+   cut-out garment, which has nothing at its edges worth filling with. */
 .ab-prod-img img,
 .ab-section .ab-prod-img img[width][height] {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .ab-prod-img .ab-chip {

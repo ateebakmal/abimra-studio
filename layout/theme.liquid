@@ -57,6 +57,7 @@
           --red: {{ settings.abmira_red }};
 
           --ab-media-bg: {{ settings.abmira_media_backdrop | default: '#F7F5EF' }};
+          --ab-card-pad: {{ settings.abmira_card_pad | default: 18 }}px;
           --ab-shadow: {% render 'abmira-shadow', strength: settings.abmira_shadow %};
         }
       {%- endstyle -%}

@@ -83,6 +83,16 @@
         "label": "Product page backdrop",
         "default": "#F7F5EF",
         "info": "Behind the gallery image on a product page."
+      },
+      {
+        "type": "range",
+        "id": "abmira_card_pad",
+        "min": 0,
+        "max": 48,
+        "step": 2,
+        "label": "Space around card images",
+        "default": 18,
+        "info": "Breathing room between a garment and the edge of its card. 0 lets the picture fill the tile, which suits a photograph more than a cut-out."
       }
     ]
   },

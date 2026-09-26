@@ -69,10 +69,15 @@
   endif
 -%}
 
-{%- if section.settings.shadow_mode == 'custom' -%}
+{%- if section.settings.shadow_mode == 'custom' or section.settings.pad_mode == 'custom' -%}
   {%- style -%}
     #shopify-section-{{ section.id }} {
-      --ab-shadow: {% render 'abmira-shadow', strength: section.settings.shadow %};
+      {%- if section.settings.shadow_mode == 'custom' %}
+        --ab-shadow: {% render 'abmira-shadow', strength: section.settings.shadow %};
+      {%- endif %}
+      {%- if section.settings.pad_mode == 'custom' %}
+        --ab-card-pad: {{ section.settings.pad }}px;
+      {%- endif %}
     }
   {%- endstyle -%}
 {%- endif -%}
@@ -278,6 +283,26 @@
       "step": 5,
       "label": "Shadow strength",
       "default": 45
+    },
+    {
+      "type": "select",
+      "id": "pad_mode",
+      "label": "Space around images",
+      "options": [
+        { "value": "theme", "label": "Theme default" },
+        { "value": "custom", "label": "Set it here" }
+      ],
+      "default": "theme"
+    },
+    {
+      "type": "range",
+      "id": "pad",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "label": "Space around images",
+      "default": 18,
+      "info": "0 lets the picture fill the tile."
     },
     {
       "type": "header",
