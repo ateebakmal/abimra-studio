@@ -3650,3 +3650,132 @@ a.ab-detail-t:hover {
   outline: 2px solid var(--paper);
   outline-offset: 2px;
 }
+
+/* ============================================================
+   Hero: exactly one screen, on every size of screen
+   ============================================================
+
+   The hero used to be sized by its contents and nothing else, with a
+   1200px cap on width and an 88px cap on the headline. Two failures came
+   out of that: on a 27in monitor the whole thing sat as a small island in
+   the middle of an enormous page, and on a phone it ran well past the
+   fold, so the image - the thing that sells a print shop - was below it.
+
+   It now fills the viewport minus the header, and its contents are sized
+   against the viewport in BOTH directions. Width alone is not enough: a
+   wide, short window would scale the headline up until it pushed
+   everything off the bottom, which is the same bug in the other
+   direction.
+   ============================================================ */
+
+.ab-hero {
+  min-height: calc(100vh - var(--ab-nav-h));
+  min-height: calc(100svh - var(--ab-nav-h));
+  display: flex;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.ab-hero > .ab-wrap {
+  width: 100%;
+}
+
+/* min() of a width and a height unit: whichever runs out first decides.
+   The px floor and ceiling stop it collapsing on a tiny phone or running
+   away on a projector. */
+.ab-hero .ab-d1 {
+  font-size: clamp(34px, min(11.5vw, 7.4svh), 54px);
+}
+
+.ab-hero-sub {
+  margin-top: 16px;
+}
+
+.ab-hero-cta {
+  margin-top: 22px;
+}
+
+.ab-hero-proof {
+  margin-top: 16px;
+}
+
+.ab-hero-feats {
+  margin-top: 22px;
+  gap: 18px;
+}
+
+.ab-hero-grid {
+  gap: 24px;
+}
+
+/* The art is what gets squeezed, because it is the one element that can
+   give up height without losing information. */
+.ab-hero-art {
+  padding: 10px;
+}
+
+.ab-hero-art img {
+  max-height: 34svh;
+  width: auto;
+  max-width: 100%;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+@media screen and (min-width: 641px) {
+  .ab-hero {
+    padding: 28px 0;
+  }
+
+  .ab-hero .ab-d1 {
+    font-size: clamp(46px, min(6.6vw, 11svh), 88px);
+  }
+
+  .ab-hero-grid {
+    gap: 32px;
+  }
+
+  .ab-hero-art {
+    padding: 14px;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  /* Side by side, so the art has a full column and no longer needs a
+     height cap - the grid row is the cap. */
+  .ab-hero-art img {
+    max-height: none;
+    width: 100%;
+  }
+
+  .ab-hero-grid {
+    gap: 40px;
+  }
+}
+
+/* Above 1500px the 1200px wrapper is the thing making the hero look
+   small, not the type. Both are let out together. */
+@media screen and (min-width: 1500px) {
+  .ab-hero .ab-wrap {
+    max-width: 1440px;
+  }
+
+  .ab-hero .ab-d1 {
+    font-size: clamp(72px, min(6.4vw, 13svh), 132px);
+  }
+
+  .ab-hero-sub {
+    font-size: 19px;
+    max-width: 42ch;
+  }
+
+  .ab-hero-grid {
+    gap: 64px;
+  }
+}
+
+@media screen and (min-width: 2000px) {
+  .ab-hero .ab-wrap {
+    max-width: 1680px;
+  }
+}

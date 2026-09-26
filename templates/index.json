@@ -41,7 +41,9 @@
         "avatar_initials": "HM, DO, PR, +",
         "rating_text": "4.9 from 126 orders",
         "collage_image": "shopify://shop_images/hero-image.png",
-        "collage_mat_color": "#F3EFE5"
+        "collage_mat_color": "#F3EFE5",
+        "show_eyebrow": false,
+        "show_proof": false
       }
     },
     "marquee": {

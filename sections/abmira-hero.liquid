@@ -10,7 +10,9 @@
       <div class="ab-hero-grid">
         <div>
           {%- if section.settings.eyebrow != blank -%}
-            <p class="ab-eyebrow"><i></i>{{ section.settings.eyebrow | escape }}</p>
+            {%- if section.settings.show_eyebrow -%}
+              <p class="ab-eyebrow"><i></i>{{ section.settings.eyebrow | escape }}</p>
+            {%- endif -%}
           {%- endif -%}
 
           {%- comment -%}
@@ -62,7 +64,7 @@
             </div>
           {%- endif -%}
 
-          {%- if section.settings.rating_text != blank -%}
+          {%- if section.settings.show_proof and section.settings.rating_text != blank -%}
             <div class="ab-hero-proof ab-rv ab-rv-3">
               {%- if section.settings.avatar_initials != blank -%}
                 <div class="ab-avs">
@@ -130,6 +132,13 @@
   "tag": "section",
   "settings": [
     {
+      "type": "checkbox",
+      "id": "show_eyebrow",
+      "label": "Show the line above the headline",
+      "default": true,
+      "info": "The hero is one screen tall. Every row above the fold competes with the headline and the image for that space."
+    },
+    {
       "type": "text",
       "id": "eyebrow",
       "label": "Eyebrow",
@@ -196,6 +205,12 @@
     {
       "type": "header",
       "content": "Proof"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_proof",
+      "label": "Show avatars and rating",
+      "default": true
     },
     {
       "type": "text",
