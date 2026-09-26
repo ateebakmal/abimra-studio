@@ -305,10 +305,21 @@
         "body": "Your name. Your artwork. Your message.\nBlack, bone or navy — tee or hoodie, printed to order.",
         "cta_label": "Design your own"
       }
+    },
+    "brand_story": {
+      "type": "abimra-brand-story",
+      "settings": {
+        "header_offset": 76,
+        "scroll_length": 7,
+        "scroll_length_mobile": 6,
+        "cta_link": "/collections/design-your-own",
+        "cta2_link": "/collections/studio-originals"
+      }
     }
   },
   "order": [
     "hero",
+    "brand_story",
     "marquee",
     "steps",
     "designed_worn",

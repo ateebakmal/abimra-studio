@@ -56,6 +56,19 @@
   --ab-f: 'Archivo', system-ui, -apple-system, sans-serif;
   --ab-f-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
+  /* Total height of the sticky header: .ab-nav-in plus its 1px rule. Named
+     because the brand story has to offset its pinned stage by exactly this,
+     and an unnamed 75 in two files drifts apart. The story reads it through
+     its own "Sticky header height" setting - Shopify writes that inline, so
+     a stylesheet cannot reach it without !important, and silently ignoring
+     an editor setting is worse than repeating the number once.
+
+     76 rather than 75 because the story's offset setting moves in steps of
+     2, so an odd number cannot be entered. A pinned stage that is off by a
+     pixel shows a sliver of the wrong colour under the header rule on the
+     red chapters, so the header gives up a pixel instead. */
+  --ab-nav-h: 76px;
+
   --r-card: 20px;
   --r-band: 28px;
   --r-input: 8px;
@@ -1497,7 +1510,7 @@
   max-width: var(--ab-mw);
   margin: 0 auto;
   padding: 0 var(--ab-pm);
-  height: 74px;
+  height: calc(var(--ab-nav-h) - 1px);
   display: flex;
   align-items: center;
   justify-content: space-between;

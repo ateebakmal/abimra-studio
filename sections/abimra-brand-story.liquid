@@ -1,0 +1,244 @@
+{%- comment -%}
+  Abimra Studio: "Blank to yours" brand story. Scroll-scrubbed, sits directly under the hero.
+  Needs assets/abimra-story.css and assets/abimra-story.js, and Archivo (with its width axis) plus IBM Plex Mono loaded by the theme.
+  All markup, class names and data attributes are read by abimra-story.js. Change copy through the settings, not the markup.
+{%- endcomment -%}
+{{ 'abimra-story.css' | asset_url | stylesheet_tag }}
+<section class="as is-static" data-as data-uid="-{{ section.id }}" data-catch="{{ section.settings.catch | escape }}" data-phrases="{{ section.settings.phrases | newline_to_br | strip_newlines | replace: '<br />', '|' | escape }}" style="--as-len:{{ section.settings.scroll_length }};--as-len-m:{{ section.settings.scroll_length_mobile }};--as-offset:{{ section.settings.header_offset }}px" aria-labelledby="as-title-{{ section.id }}">
+  <h2 id="as-title-{{ section.id }}" class="as__sr">{{ section.settings.sr_title | escape }}</h2>
+  <ol class="as__sr"><li>{{ section.settings.caption_1 | escape }}</li><li>{{ section.settings.caption_2 | escape }}</li><li>{{ section.settings.caption_3 | escape }}</li><li>{{ section.settings.caption_4 | escape }}</li></ol>
+  <div class="as__runway">
+    <div class="as__stage">
+      <svg class="as__defs" width="0" height="0" aria-hidden="true" focusable="false"><defs>
+<linearGradient id="asShade-{{ section.id }}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".14"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>
+<g id="asTeeG-{{ section.id }}">
+  <path d="M222 78Q300 160 378 78Q300 104 222 78Z" fill="currentColor"/><path d="M222 78Q300 160 378 78Q300 104 222 78Z" fill="#000" fill-opacity=".35"/>
+  <path d="M222 78Q300 160 378 78L462 100Q525 125 572 178L518 248Q482 222 452 208L455 588Q455 600 443 600L157 600Q145 600 145 588L148 208Q118 222 82 248L28 178Q75 125 138 100Z" fill="currentColor"/><path d="M222 78Q300 160 378 78L462 100Q525 125 572 178L518 248Q482 222 452 208L455 588Q455 600 443 600L157 600Q145 600 145 588L148 208Q118 222 82 248L28 178Q75 125 138 100Z" fill="url(#asShade-{{ section.id }})"/>
+  <path d="M222 78Q300 160 378 78" fill="none" stroke="#000" stroke-opacity=".16" stroke-width="9" stroke-linecap="round"/>
+  <g fill="none" stroke-linecap="round" stroke-width="3"><path d="M184 252Q202 410 186 566" stroke="#000" stroke-opacity=".07"/><path d="M418 250Q398 420 414 572" stroke="#000" stroke-opacity=".08"/><path d="M466 142Q498 172 518 214" stroke="#000" stroke-opacity=".08"/><path d="M134 142Q102 172 82 214" stroke="#000" stroke-opacity=".07"/></g>
+</g>
+<g id="asHoodG-{{ section.id }}">
+  <path d="M200 138C190 60 250 28 300 28C350 28 410 60 400 138Z" fill="currentColor"/><path d="M200 138C190 60 250 28 300 28C350 28 410 60 400 138Z" fill="#000" fill-opacity=".22"/>
+  <path d="M232 118Q300 175 368 118L440 132Q515 150 545 230L580 505Q582 520 568 522L535 526Q522 527 520 513L492 300L478 280L480 560L120 560L122 280L108 300L80 513Q78 527 65 526L32 522Q18 520 20 505L55 230Q85 150 160 132Z" fill="currentColor"/>
+  <path d="M232 118C242 72 358 72 368 118C340 150 260 150 232 118Z" fill="currentColor"/><path d="M232 118C242 72 358 72 368 118C340 150 260 150 232 118Z" fill="#000" fill-opacity=".35"/>
+  <path d="M120 558L480 558L482 598Q482 606 474 606L126 606Q118 606 118 598Z" fill="currentColor"/>
+  <path d="M577 482L580 505Q582 520 568 522L535 526Q522 527 520 513L517 490Z" fill="currentColor"/><path d="M23 482L20 505Q18 520 32 522L65 526Q78 527 80 513L83 490Z" fill="currentColor"/>
+  <path d="M200 420L400 420Q412 420 415 432L438 540L162 540L185 432Q188 420 200 420Z" fill="#000" fill-opacity=".06" stroke="#000" stroke-opacity=".12" stroke-width="2"/>
+  <path d="M232 118Q300 175 368 118L440 132Q515 150 545 230L580 505Q582 520 568 522L535 526Q522 527 520 513L492 300L478 280L480 560L120 560L122 280L108 300L80 513Q78 527 65 526L32 522Q18 520 20 505L55 230Q85 150 160 132Z" fill="url(#asShade-{{ section.id }})"/>
+  <g fill="none" stroke-linecap="round"><path d="M120 558H480M20 492L83 490M517 490L580 492" stroke="#000" stroke-opacity=".14" stroke-width="3"/><path d="M276 150L270 250M324 150L330 250" stroke="#000" stroke-opacity=".3" stroke-width="5"/></g>
+</g>
+<symbol id="asPhoto1-{{ section.id }}" viewBox="0 0 100 100"><clipPath id="asPc1-{{ section.id }}"><rect width="100" height="100" rx="4"/></clipPath><g clip-path="url(#asPc1-{{ section.id }})">
+  <rect width="100" height="100" fill="#F3E4D6"/><circle cx="64" cy="40" r="17" fill="#D42E12"/>
+  <path d="M0 62L18 46L30 55L46 36L62 54L74 45L100 64V100H0Z" fill="#E9A18D"/><path d="M0 73L22 58L38 68L56 52L78 70L100 60V100H0Z" fill="#D42E12"/>
+  <path d="M0 85Q30 75 55 83T100 81V100H0Z" fill="#191813"/><g fill="#F3E4D6" opacity=".75"><rect x="50" y="89" width="26" height="1.6"/><rect x="57" y="93" width="14" height="1.4"/></g></g></symbol>
+<symbol id="asPhoto2-{{ section.id }}" viewBox="0 0 100 100"><path d="M50 10L60.5 37.5H89L66 55L74.5 84L50 66.5L25.5 84L34 55L11 37.5H39.5Z" fill="none" stroke="#D42E12" stroke-width="6" stroke-linejoin="round"/><circle cx="50" cy="52" r="6" fill="#D42E12"/></symbol>
+<symbol id="asPhoto3-{{ section.id }}" viewBox="0 0 100 100"><clipPath id="asPc3-{{ section.id }}"><circle cx="50" cy="50" r="47"/></clipPath><g clip-path="url(#asPc3-{{ section.id }})"><rect width="100" height="100" fill="#F3E4D6"/><path d="M0 0h12.5v12.5h-12.5zM25 0h12.5v12.5h-12.5zM50 0h12.5v12.5h-12.5zM75 0h12.5v12.5h-12.5zM12.5 12.5h12.5v12.5h-12.5zM37.5 12.5h12.5v12.5h-12.5zM62.5 12.5h12.5v12.5h-12.5zM87.5 12.5h12.5v12.5h-12.5zM0 25h12.5v12.5h-12.5zM25 25h12.5v12.5h-12.5zM50 25h12.5v12.5h-12.5zM75 25h12.5v12.5h-12.5zM12.5 37.5h12.5v12.5h-12.5zM37.5 37.5h12.5v12.5h-12.5zM62.5 37.5h12.5v12.5h-12.5zM87.5 37.5h12.5v12.5h-12.5zM0 50h12.5v12.5h-12.5zM25 50h12.5v12.5h-12.5zM50 50h12.5v12.5h-12.5zM75 50h12.5v12.5h-12.5zM12.5 62.5h12.5v12.5h-12.5zM37.5 62.5h12.5v12.5h-12.5zM62.5 62.5h12.5v12.5h-12.5zM87.5 62.5h12.5v12.5h-12.5zM0 75h12.5v12.5h-12.5zM25 75h12.5v12.5h-12.5zM50 75h12.5v12.5h-12.5zM75 75h12.5v12.5h-12.5zM12.5 87.5h12.5v12.5h-12.5zM37.5 87.5h12.5v12.5h-12.5zM62.5 87.5h12.5v12.5h-12.5zM87.5 87.5h12.5v12.5h-12.5z" fill="#D42E12"/></g></symbol>
+<symbol id="asPhoto4-{{ section.id }}" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#D42E12"/><circle cx="50" cy="50" r="38" fill="none" stroke="#F3E4D6" stroke-width="2.4"/><text x="50" y="62" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="800" font-size="34" style="font-stretch:75%" fill="#F3E4D6">AC</text><g fill="#F3E4D6"><circle cx="30" cy="30" r="2.4"/><circle cx="70" cy="30" r="2.4"/><circle cx="50" cy="20" r="2.4"/></g></symbol>
+</defs></svg>
+      <p class="as__big as__big--outline as__blank" aria-hidden="true">{{ section.settings.blank | escape }}</p>
+      <div class="as__rows" aria-hidden="true"></div>
+      <div class="as__red" aria-hidden="true"><p class="as__inked as__inked--a">{{ section.settings.inked_a | escape }}</p><p class="as__inked as__inked--b">{{ section.settings.inked_b | escape }}</p></div>
+      <div class="as__wall" aria-hidden="true"></div>
+      <div class="as__cards" aria-hidden="true"><div class="as__card"><svg viewBox="0 0 100 100"><use href="#asPhoto1-{{ section.id }}"/></svg><span class="as__cap">{{ section.settings.card_1 | escape }}</span></div><div class="as__card"><svg viewBox="0 0 100 100"><use href="#asPhoto2-{{ section.id }}"/></svg><span class="as__cap">{{ section.settings.card_2 | escape }}</span></div><div class="as__card"><svg viewBox="0 0 100 100"><use href="#asPhoto4-{{ section.id }}"/></svg><span class="as__cap">{{ section.settings.card_3 | escape }}</span></div><div class="as__card"><svg viewBox="0 0 100 100"><use href="#asPhoto3-{{ section.id }}"/></svg><span class="as__cap">{{ section.settings.card_4 | escape }}</span></div></div>
+      <div class="as__tee" aria-hidden="true">
+        <svg viewBox="0 0 600 640"><use href="#asTeeG-{{ section.id }}" style="color:#1E1D1A"/></svg>
+        <div class="as__pr"><div class="as__prPhoto"><svg viewBox="0 0 100 100"><use href="#asPhoto1-{{ section.id }}"/></svg></div><p class="as__prText"></p></div>
+      </div>
+      <div class="as__fly" aria-hidden="true"></div>
+      <div class="as__blade" aria-hidden="true"></div>
+      <div class="as__caps" aria-hidden="true"><p class="as__capt">{{ section.settings.caption_1 | escape }}</p><p class="as__capt">{{ section.settings.caption_2 | escape }}</p><p class="as__capt">{{ section.settings.caption_3 | escape }}</p><p class="as__capt as__capt--inv">{{ section.settings.caption_4 | escape }}</p></div>
+      <div class="as__hint" aria-hidden="true">Scroll<i></i></div>
+      <div class="as__end">
+        <p class="as__tag">{{ section.settings.tagline | escape }}</p>
+        <div class="as__ctas"><a class="as__btn" href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}">{{ section.settings.cta_label | escape }}</a><a class="as__link" href="{{ section.settings.cta2_link | default: routes.all_products_collection_url }}">{{ section.settings.cta2_label | escape }}</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="{{ 'abimra-story.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Brand story",
+  "tag": "div",
+  "class": "section-abimra-story",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Opening"
+    },
+    {
+      "type": "text",
+      "id": "blank",
+      "label": "Opening words",
+      "default": "Start blank."
+    },
+    {
+      "type": "text",
+      "id": "caption_1",
+      "label": "Caption",
+      "default": "Nothing on it yet. That’s the exciting part."
+    },
+    {
+      "type": "header",
+      "content": "Words"
+    },
+    {
+      "type": "text",
+      "id": "catch",
+      "label": "Phrase that flies onto the tee",
+      "default": "Abimra Club",
+      "info": "Keep it short, under 16 characters."
+    },
+    {
+      "type": "textarea",
+      "id": "phrases",
+      "label": "Phrases in the big scrolling type",
+      "default": "Birthdays\nEvents\nBranding\nClass of 2026\nYour club\nPersonal\nTeam kits\nHen do\nStag do\nBand merch\nStaff uniforms\nWeddings\nCharity runs\nGifts\nLaunch party",
+      "info": "One per line. They also fill the wall of tees at the end."
+    },
+    {
+      "type": "text",
+      "id": "caption_2",
+      "label": "Caption",
+      "default": "Birthdays, leavers, launches, club nights. If it’s worth saying, it’s worth wearing."
+    },
+    {
+      "type": "header",
+      "content": "Pictures"
+    },
+    {
+      "type": "text",
+      "id": "card_1",
+      "label": "Snap 1 caption",
+      "default": "Holiday, 2019"
+    },
+    {
+      "type": "text",
+      "id": "card_2",
+      "label": "Snap 2 caption",
+      "default": "Her sketch"
+    },
+    {
+      "type": "text",
+      "id": "card_3",
+      "label": "Snap 3 caption",
+      "default": "Club badge"
+    },
+    {
+      "type": "text",
+      "id": "card_4",
+      "label": "Snap 4 caption",
+      "default": "The band"
+    },
+    {
+      "type": "text",
+      "id": "caption_3",
+      "label": "Caption",
+      "default": "Add your pictures too. Photos, sketches, logos, whatever you’ve got."
+    },
+    {
+      "type": "header",
+      "content": "Press"
+    },
+    {
+      "type": "text",
+      "id": "inked_a",
+      "label": "Big words, top",
+      "default": "Pulled"
+    },
+    {
+      "type": "text",
+      "id": "inked_b",
+      "label": "Big words, bottom",
+      "default": "in ink."
+    },
+    {
+      "type": "text",
+      "id": "caption_4",
+      "label": "Caption",
+      "default": "Then we print it in our own studio and send it out in 2–4 days."
+    },
+    {
+      "type": "header",
+      "content": "Finale"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Made to be admired."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Design your own"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link",
+      "info": "The product page where the Customify designer lives."
+    },
+    {
+      "type": "text",
+      "id": "cta2_label",
+      "label": "Second link label",
+      "default": "Shop Studio Originals"
+    },
+    {
+      "type": "url",
+      "id": "cta2_link",
+      "label": "Second link"
+    },
+    {
+      "type": "header",
+      "content": "Scrolling"
+    },
+    {
+      "type": "range",
+      "id": "scroll_length",
+      "label": "Scroll length on desktop",
+      "min": 5,
+      "max": 10,
+      "step": 1,
+      "unit": "scr",
+      "default": 7,
+      "info": "How many screen heights the story takes to scroll through."
+    },
+    {
+      "type": "range",
+      "id": "scroll_length_mobile",
+      "label": "Scroll length on phones",
+      "min": 4,
+      "max": 9,
+      "step": 1,
+      "unit": "scr",
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "header_offset",
+      "label": "Sticky header height",
+      "min": 0,
+      "max": 140,
+      "step": 2,
+      "unit": "px",
+      "default": 0,
+      "info": "Match the sticky header so it doesn't cover the story."
+    },
+    {
+      "type": "text",
+      "id": "sr_title",
+      "label": "Heading for screen readers",
+      "default": "What Abimra Studio prints"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand story"
+    }
+  ]
+}
+{% endschema %}

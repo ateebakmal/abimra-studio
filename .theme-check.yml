@@ -2,3 +2,11 @@ MatchingTranslations:
   enabled: false
 TemplateLength:
   enabled: false
+
+# design-guides/ and test-files/ are working material, not theme code. Shopify
+# never uploads them - the CLI only sends recognised theme directories - but
+# theme-check walks every .liquid it finds, and the handoff packages contain
+# section files that reference assets which deliberately are not in assets/.
+ignore:
+  - design-guides/**
+  - test-files/**
