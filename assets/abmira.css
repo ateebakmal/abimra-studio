@@ -792,6 +792,14 @@
   -webkit-overflow-scrolling: touch;
   margin-inline: calc(var(--ab-pm) * -1);
   padding-inline: var(--ab-pm);
+  /* The negative margin pulls the rail out to the screen edge and the
+     padding puts the first card back on the grid - but padding is not
+     what scroll snapping measures against. The snapport is the scroll
+     port, so scroll-snap-align: start lands every card AFTER the first
+     flush against the screen edge, with the gutter gone. scroll-padding
+     insets the snapport to match, so a snapped card sits on the grid
+     like the first one does. */
+  scroll-padding-inline: var(--ab-pm);
   padding-bottom: 6px;
 }
 
