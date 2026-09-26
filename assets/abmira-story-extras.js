@@ -138,10 +138,24 @@
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', start);
-  } else {
+  // Wait for DOMContentLoaded, and do NOT take an early exit on
+  // readyState.
+  //
+  // The section is rendered by Liquid as `class="as is-static"`, and its
+  // own script clears that when it boots. Both scripts are deferred, and
+  // deferred scripts run while readyState is already "interactive" - so a
+  // plain `readyState === 'loading'` test falls through to running
+  // immediately, which is BEFORE the section has booted. start() then sees
+  // is-static on a section that is about to animate, treats it as already
+  // collapsed, and never attaches the scroll watcher. The collapse can
+  // then never happen.
+  //
+  // Every deferred script has finished by DOMContentLoaded, so that is the
+  // earliest moment the class means what it says.
+  if (document.readyState === 'complete') {
     start();
+  } else {
+    document.addEventListener('DOMContentLoaded', start);
   }
 
   // The theme editor replaces the section rather than re-running it, so the
