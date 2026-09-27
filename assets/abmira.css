@@ -3810,3 +3810,36 @@ a.ab-detail-t:hover {
     max-width: 1680px;
   }
 }
+
+/* ============================================================
+   Abimra menu: bridge to this theme's measurements
+   ============================================================
+   The menu ships with its own defaults (62px bar, 20px padding,
+   z-index 1000). Pointing them at the theme's tokens instead means the
+   menu's top bar lines up with the header behind it at every breakpoint,
+   including the ones where the page gutter changes - rather than
+   matching at 390px and drifting everywhere else.
+
+   Set on :root, not on .am-menu, because the pill in the header reads
+   --am-pad too.
+   ============================================================ */
+
+:root {
+  --am-hdr: var(--ab-nav-h);
+  --am-pad: var(--ab-pm);
+  /* Clear of the header (50) and the old drawer (60). */
+  --am-z: 1000;
+}
+
+/* The pill keeps .ab-burger's breakpoint rule - one place decides when
+   the mobile menu exists - but none of its box styling, which belonged
+   to a 42px icon button. */
+.ab-nav-in .am-btn {
+  display: inline-flex;
+}
+
+@media screen and (min-width: 861px) {
+  .ab-nav-in .am-btn {
+    display: none;
+  }
+}

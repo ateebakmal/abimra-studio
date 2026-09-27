@@ -1,0 +1,9 @@
+[
+  { "type": "header", "content": "Mobile menu" },
+  { "type": "link_list", "id": "abimra_menu", "label": "Menu links", "default": "main-menu", "info": "Top-level links only. Shown as the big outline words." },
+  { "type": "text", "id": "abimra_cta_label", "label": "Red button text", "default": "Design your own" },
+  { "type": "url", "id": "abimra_cta_link", "label": "Red button link", "info": "The Customify designer product page." },
+  { "type": "url", "id": "abimra_returns_link", "label": "Returns link", "info": "Leave empty to use the store's refund policy." },
+  { "type": "url", "id": "abimra_contact_link", "label": "Contact us link", "info": "Leave empty to use /pages/contact." },
+  { "type": "checkbox", "id": "abimra_logo_mark", "label": "Show the logo mark in the menu", "default": true }
+]

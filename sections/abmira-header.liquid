@@ -21,16 +21,13 @@
 <div class="ab-section">
   <nav class="ab-nav" aria-label="Main navigation">
     <div class="ab-nav-in">
-      <button
-        type="button"
-        class="ab-burger"
-        aria-label="Open menu"
-        aria-expanded="false"
-        aria-controls="AbmiraDrawer"
-        data-abmira-drawer-open
-      >
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-      </button>
+      {%- comment -%}
+        [abmira] The Abimra menu pill replaces the old burger here. It
+        keeps the .ab-burger class alongside its own so the theme's
+        existing breakpoint rule still hides it at 861px - one place
+        decides when the mobile menu exists.
+      {%- endcomment -%}
+      {% render 'abimra-menu-button' %}
 
       <a href="{{ routes.root_url }}" class="ab-logo">
         {{- section.settings.logo_text | default: shop.name | escape -}}
@@ -63,6 +60,15 @@
   </nav>
 
   {%- comment -%} Drawer: only reachable below 861px, where it is displayed. {%- endcomment -%}
+  {%- comment -%}
+    [abmira] The theme's own drawer, replaced by snippets/abimra-menu.liquid.
+    Left in place rather than deleted: its CSS is in assets/abmira.css
+    (.ab-drawer*, body.ab-drawer-open) and its JS is initDrawer() in
+    assets/abmira.js, and neither throws when this markup is absent -
+    initDrawer bails on its first querySelector. Delete all three together
+    when the new menu has been signed off.
+  {%- endcomment -%}
+  {%- if false -%}
   <div class="ab-drawer" id="AbmiraDrawer" data-abmira-drawer>
     <div class="ab-drawer-scrim" data-abmira-drawer-close></div>
 
@@ -104,6 +110,27 @@
       </div>
     </div>
   </div>
+  {%- endif -%}
+
+  {%- comment -%}
+    [abmira] Rendered once, last in the section. Nothing on the way up to
+    it sets transform, filter or contain, so position: fixed still resolves
+    against the viewport - checked before wiring it here.
+
+    breakpoint is 861 because that is where this theme swaps the pill for
+    the desktop links, not the 990 in the snippet's own default.
+  {%- endcomment -%}
+  {% render 'abimra-menu',
+    menu: section.settings.abimra_menu,
+    cta_label: section.settings.abimra_cta_label,
+    cta_link: section.settings.abimra_cta_link,
+    returns_link: section.settings.abimra_returns_link,
+    contact_link: section.settings.abimra_contact_link,
+    logo_mark: section.settings.abimra_logo_mark,
+    logo_text: section.settings.abimra_menu_logo,
+    logo_sub: section.settings.abimra_menu_logo_sub,
+    breakpoint: 861
+  %}
 </div>
 
 {% schema %}
@@ -144,10 +171,67 @@
       "type": "url",
       "id": "cta_link",
       "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Mobile menu"
+    },
+    {
+      "type": "link_list",
+      "id": "abimra_menu",
+      "label": "Menu links",
+      "default": "main-menu",
+      "info": "Top-level links only. Shown as the big outline words."
+    },
+    {
+      "type": "text",
+      "id": "abimra_cta_label",
+      "label": "Red button text",
+      "default": "Design your own"
+    },
+    {
+      "type": "url",
+      "id": "abimra_cta_link",
+      "label": "Red button link",
+      "info": "The Customify designer product page."
+    },
+    {
+      "type": "url",
+      "id": "abimra_returns_link",
+      "label": "Returns link",
+      "info": "Leave empty to use the store's refund policy."
+    },
+    {
+      "type": "url",
+      "id": "abimra_contact_link",
+      "label": "Contact us link",
+      "info": "Leave empty to use /pages/contact."
+    },
+    {
+      "type": "checkbox",
+      "id": "abimra_logo_mark",
+      "label": "Show the logo mark in the menu",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "abimra_menu_logo",
+      "label": "Menu wordmark",
+      "default": "Abimra",
+      "info": "Shown at the top of the mobile menu. The second word below is lighter."
+    },
+    {
+      "type": "text",
+      "id": "abimra_menu_logo_sub",
+      "label": "Menu wordmark, second word",
+      "default": "Studio",
+      "info": "Leave empty for a single word."
     }
   ],
   "enabled_on": {
-    "groups": ["header"]
+    "groups": [
+      "header"
+    ]
   }
 }
 {% endschema %}

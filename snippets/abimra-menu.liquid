@@ -1,0 +1,67 @@
+{%- comment -%}
+  Abimra Studio: mobile and tablet menu overlay. Render once per page, inside the header section:
+    {% render 'abimra-menu',
+      menu: section.settings.abimra_menu,
+      cta_label: section.settings.abimra_cta_label,
+      cta_link: section.settings.abimra_cta_link,
+      returns_link: section.settings.abimra_returns_link,
+      contact_link: section.settings.abimra_contact_link,
+      logo_mark: section.settings.abimra_logo_mark,
+      breakpoint: 990
+    %}
+  Open it with {% render 'abimra-menu-button' %}, placed where the theme's own mobile menu button sits.
+  All parameters are optional. menu accepts a link_list setting or a menu handle, and defaults to 'main-menu'.
+  Top-level links only; child links are not shown.
+{%- endcomment -%}
+{%- liquid
+  assign am_links = menu.links
+  unless am_links
+    assign am_handle = menu | default: 'main-menu'
+    assign am_links = linklists[am_handle].links
+  endunless
+  assign am_cta_label = cta_label | default: 'Design your own'
+  assign am_cta_link = cta_link | default: routes.all_products_collection_url
+  assign am_returns = returns_link | default: shop.refund_policy.url | default: '/policies/refund-policy'
+  assign am_contact = contact_link | default: '/pages/contact'
+  assign am_bp = breakpoint | default: 990
+-%}
+{{ 'abimra-menu.css' | asset_url | stylesheet_tag }}
+<div id="abimra-menu" class="am-menu" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true" data-breakpoint="{{ am_bp }}">
+  <i class="am-blade" aria-hidden="true"></i>
+  <div class="am-top">
+    <a class="am-logo" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}, home">
+      {%- unless logo_mark == false -%}
+        <svg viewBox="-20 -20 40 40" aria-hidden="true"><circle r="10" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M-18 0H18M0-18V18" stroke="currentColor" stroke-width="2.6"/><circle r="3.8" fill="#D42E12"/></svg>
+      {%- endunless -%}
+      {%- comment -%}
+        [abmira] Wordmark comes from the header settings so it can be
+        edited in the theme editor and cannot drift from the header's own
+        logo. Defaults keep the snippet working if rendered without them.
+      {%- endcomment -%}
+      <span>{{ logo_text | default: 'Abimra' | escape }}<b>{{ logo_sub | default: 'Studio' | escape }}</b></span>
+    </a>
+    <div class="am-top-r">
+      <a class="am-bag" href="{{ routes.cart_url }}" aria-label="Bag, {{ cart.item_count }} items" data-am-bag>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12.5H6.2Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8" stroke-linecap="round"/></svg>
+        <b data-am-count>{{ cart.item_count }}</b>
+      </a>
+      <button type="button" class="am-close" data-am-close aria-label="Close menu"></button>
+    </div>
+  </div>
+  <div class="am-body">
+    <nav class="am-links" aria-label="Main">
+      {%- for link in am_links -%}
+        <a class="am-link{% if link.active or link.child_active %} is-here{% endif %}" href="{{ link.url }}" style="--i:{{ forloop.index0 }}"{% if link.current %} aria-current="page"{% endif %}>
+          <i>{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</i><span>{{ link.title | escape }}</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+        </a>
+      {%- endfor -%}
+    </nav>
+    <a class="am-card am-fade" href="{{ am_cta_link }}">{{ am_cta_label | escape }}</a>
+    <div class="am-foot am-fade">
+      <a href="{{ am_returns }}">{{ returns_label | default: 'Returns' | escape }}</a>
+      <a href="{{ am_contact }}">{{ contact_label | default: 'Contact us' | escape }}</a>
+    </div>
+  </div>
+</div>
+<script src="{{ 'abimra-menu.js' | asset_url }}" defer></script>

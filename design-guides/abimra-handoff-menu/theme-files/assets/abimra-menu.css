@@ -1,0 +1,108 @@
+/* Abimra Studio: mobile and tablet menu ("am-").
+   A squeegee pulls a dark, full-screen menu down the page; huge outline links rise in and fill when tapped.
+   Tokens: reads --paper, --ink, --red, --graphite from the theme, with fallbacks.
+   --am-hdr: height of the menu's own top bar (match the theme header). --am-z: stacking level (above the header). */
+:root{
+  --am-paper:var(--paper,#EEEAE0);--am-ink:var(--ink,#191813);--am-red:var(--red,#D42E12);--am-graphite:var(--graphite,#5F5B52);
+  --am-e:cubic-bezier(.2,.8,.2,1);--am-pull:cubic-bezier(.7,0,.2,1)
+}
+
+/* ---------- the "Menu" button that lives in the theme header ---------- */
+.am-btn{display:inline-flex;align-items:center;gap:9px;height:40px;padding:0 14px 0 16px;margin:0;border-radius:999px;border:1px solid currentColor;
+  background:transparent;color:inherit;font:500 13px/1 'IBM Plex Mono',ui-monospace,monospace;letter-spacing:0;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;transition:background-color .25s,color .25s,transform .15s}
+.am-btn:active{transform:scale(.96)}
+.am-btn:focus-visible{outline:2px solid var(--am-red);outline-offset:3px}
+.am-btn__bars{position:relative;display:block;width:14px;height:10px;flex:none}
+.am-btn__bars::before,.am-btn__bars::after{content:'';position:absolute;left:0;height:2px;border-radius:2px;background:currentColor;transition:right .3s var(--am-e)}
+.am-btn__bars::before{top:1px;right:0}
+.am-btn__bars::after{bottom:1px;right:5px}
+
+/* ---------- the overlay ---------- */
+html.am-lock,html.am-lock body{overflow:hidden}
+.am-menu{position:fixed;inset:0;z-index:var(--am-z,1000);display:flex;flex-direction:column;background:var(--am-ink);color:var(--am-paper);
+  font-family:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;
+  clip-path:inset(0 0 100% 0);visibility:hidden;transition:clip-path .45s cubic-bezier(.7,0,.25,1),visibility 0s .45s}
+.am-menu *,.am-menu *::before,.am-menu *::after{box-sizing:border-box}
+.am-menu.is-open{clip-path:inset(0 0 0 0);visibility:visible;transition:clip-path .6s var(--am-pull),visibility 0s}
+.am-menu::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(238,234,224,.09) 1px,transparent 1px);background-size:14px 14px}
+.am-menu a{color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.am-menu a:focus-visible,.am-menu button:focus-visible{outline:2px solid var(--am-red);outline-offset:3px;border-radius:8px}
+
+/* the squeegee that pulls it down */
+.am-blade{position:absolute;left:-2%;right:-2%;top:0;height:18px;z-index:3;pointer-events:none;opacity:0;
+  background:linear-gradient(var(--am-paper) 0 50%,var(--am-red) 50% 100%);border-radius:0 0 12px 12px;box-shadow:0 16px 26px -12px rgba(0,0,0,.6)}
+.am-menu.is-open .am-blade{animation:am-blade .6s var(--am-pull) both}
+@keyframes am-blade{0%{top:0;opacity:1}90%{opacity:1}100%{top:100%;opacity:0}}
+
+/* top bar: logo, bag, close */
+.am-top{position:relative;z-index:2;flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  height:calc(var(--am-hdr,62px) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) var(--am-pad,20px) 0;border-bottom:1px solid rgba(238,234,224,.12)}
+.am-logo{display:inline-flex;align-items:center;gap:9px;font-size:15px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;white-space:nowrap}
+.am-logo b{font-weight:400;margin-left:.45em}
+.am-logo svg{width:22px;height:22px;flex:none}
+.am-top-r{display:flex;align-items:center;gap:6px}
+.am-bag{position:relative;display:grid;place-items:center;width:44px;height:44px;border-radius:50%}
+.am-bag svg{width:20px;height:20px}
+.am-bag b{position:absolute;right:4px;top:5px;display:grid;place-items:center;min-width:17px;height:17px;padding:0 4px;border-radius:999px;
+  background:var(--am-red);color:#fff;font:500 10px/1 'IBM Plex Mono',ui-monospace,monospace}
+.am-close{position:relative;width:44px;height:44px;margin:0 -2px 0 0;padding:0;border-radius:50%;border:1px solid rgba(238,234,224,.85);background:transparent;color:inherit;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;opacity:0;transform:rotate(-90deg) scale(.6);transition:opacity .2s,transform .2s,background-color .25s,color .25s}
+.am-close::before,.am-close::after{content:'';position:absolute;left:50%;top:50%;width:16px;height:2px;margin:-1px 0 0 -8px;border-radius:2px;background:currentColor}
+.am-close::before{transform:rotate(45deg)}
+.am-close::after{transform:rotate(-45deg)}
+.am-menu.is-open .am-close{opacity:1;transform:none;transition:opacity .3s .38s,transform .55s cubic-bezier(.3,1.5,.5,1) .38s,background-color .25s,color .25s}
+.am-menu.is-open .am-close:active{transform:scale(.92);transition-delay:0s}
+
+/* body */
+.am-body{position:relative;z-index:1;flex:1;min-height:0;display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;
+  padding:8px var(--am-pad,20px) max(24px,env(safe-area-inset-bottom,0px))}
+.am-links{display:flex;flex-direction:column}
+.am-link{display:grid;grid-template-columns:34px 1fr auto;align-items:center;padding:6px 0;overflow:hidden;border-bottom:1px solid rgba(238,234,224,.12)}
+.am-link i{align-self:start;padding-top:1.1em;font:500 12px/1 'IBM Plex Mono',ui-monospace,monospace;font-style:normal;color:var(--am-red)}
+.am-link span{display:block;font-size:clamp(40px,12.4vw,78px);line-height:.95;font-weight:800;text-transform:uppercase;letter-spacing:-.02em;
+  font-stretch:75%;font-variation-settings:'wdth' 75,'wght' 800;color:transparent;-webkit-text-stroke:1.4px var(--am-paper);
+  transform:translateY(105%);transition:color .25s,-webkit-text-stroke-color .25s}
+.am-link svg{width:22px;height:22px;color:var(--am-red);opacity:0;transform:translateX(-8px);transition:opacity .25s,transform .3s var(--am-e)}
+.am-link:focus-visible span,.am-link:active span{color:var(--am-paper)}
+.am-link:focus-visible svg,.am-link:active svg{opacity:1;transform:none}
+.am-link.is-here span{color:var(--am-red);-webkit-text-stroke-color:var(--am-red)}
+.am-menu.is-open .am-link span{transform:none;transition:transform .7s var(--am-e) calc(.28s + var(--i,0) * .05s),color .25s,-webkit-text-stroke-color .25s}
+
+/* the one call to action: just the words, centred, in red */
+.am-card{position:relative;display:grid;place-items:center;min-height:92px;margin-top:24px;padding:18px;border-radius:20px;overflow:hidden;
+  background:var(--am-red);color:#fff;text-align:center;font-size:clamp(26px,7.4vw,38px);line-height:1;font-weight:800;text-transform:uppercase;
+  letter-spacing:-.01em;font-stretch:78%;font-variation-settings:'wdth' 78,'wght' 800;transition:background-color .25s}
+.am-card::after{content:'';position:absolute;top:0;bottom:0;left:-40%;width:30%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.28),transparent);
+  transform:skewX(-18deg) translateX(-120%);pointer-events:none}
+.am-menu.is-open .am-card::after{animation:am-shine 1.1s var(--am-e) .85s}
+@keyframes am-shine{to{transform:skewX(-18deg) translateX(560%)}}
+.am-menu.is-open .am-card.am-fade:active{transform:scale(.98);transition-delay:0s}
+
+/* bottom links */
+.am-foot{display:flex;flex-wrap:wrap;gap:8px 26px;margin-top:auto;padding-top:28px;font-size:15px;color:rgba(238,234,224,.65)}
+.am-foot a{padding:6px 0}
+
+/* items after the links fade up once the wipe has passed */
+.am-fade{opacity:0;transform:translateY(10px);transition:opacity .4s var(--am-e),transform .5s var(--am-e)}
+.am-menu.is-open .am-fade{opacity:1;transform:none;transition-delay:.5s}
+.am-menu.is-open .am-foot.am-fade{transition-delay:.58s}
+
+/* hover effects only on devices that really hover, so a tap never leaves a stuck hover state */
+@media (hover:hover){
+  .am-btn:hover{background:var(--am-ink);color:var(--am-paper);border-color:var(--am-ink)}
+  .am-btn:hover .am-btn__bars::after{right:0}
+  .am-close:hover{background:var(--am-paper);color:var(--am-ink)}
+  .am-card:hover{background:#B8240E}
+  .am-foot a:hover{color:var(--am-paper);text-decoration:underline;text-underline-offset:4px}
+  .am-link:hover span{color:var(--am-paper)}
+  .am-link:hover svg{opacity:1;transform:none}
+}
+@media (min-width:600px){.am-link i{font-size:13px}.am-card{min-height:110px}}
+@media (prefers-reduced-motion:reduce){
+  .am-menu,.am-menu.is-open{clip-path:none;transition:opacity .2s,visibility 0s .2s;opacity:0}
+  .am-menu.is-open{opacity:1;transition:opacity .2s,visibility 0s}
+  .am-blade{display:none}
+  .am-link span,.am-fade,.am-close{transform:none!important;opacity:1}
+  .am-card::after{display:none}
+}
