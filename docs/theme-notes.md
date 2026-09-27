@@ -114,6 +114,18 @@ the wrong colour under the header on the story's red chapters.
 immediately, which is *before* other deferred scripts. If order matters,
 wait for `DOMContentLoaded`.
 
+**The print texture is painted by the band, not by a child.** The closing
+bands carry their dots on `.ab-band.ab-closer`, deliberately two classes:
+`.ab-band` sets `background` as a *shorthand*, which resets
+`background-image` to `none`, and a single-class rule cannot reliably beat
+it. `background-color` and `background-image` are also set separately for
+the same reason. An earlier version put the texture on a
+`.ab-closer-dots` child and it never appeared, with nothing in the
+cascade explaining why — that div is still in the markup, now empty. One
+token, `--ab-dots`, drives both the bands and the mobile menu; the menu's
+own hardcoded copy is pointed at it from `abmira.css` rather than edited
+in the supplied file.
+
 **`drop-shadow`, not `box-shadow`.** The contact shadow follows the
 image's alpha channel, which is the whole point on a cut-out. It is built
 in `snippets/abmira-shadow.liquid` and emitted as `--ab-shadow`, so zero
