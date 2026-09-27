@@ -1567,6 +1567,53 @@
   white-space: nowrap;
 }
 
+/* The second word, lighter - the same shape the menu's wordmark uses, so
+   the header and the open menu read as one logo rather than two. */
+.ab-logo b {
+  margin-left: 0.45em;
+  font-weight: 400;
+  font-variation-settings: 'wdth' 92, 'wght' 400;
+}
+
+/* Bag: the same icon and count badge as the menu's, replacing the old
+   "Bag (0)" text. Mirrors .am-bag so the two line up when the menu opens
+   over the header. */
+.ab-bag {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -8px;
+  border-radius: 50%;
+  color: var(--ink);
+}
+
+.ab-bag svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ab-bag b {
+  position: absolute;
+  right: 4px;
+  top: 5px;
+  display: grid;
+  place-items: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--red);
+  color: #fff;
+  font: 500 10px/1 var(--ab-f-mono);
+}
+
+.ab-bag:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
 .ab-nav-links {
   display: none;
   gap: 28px;

@@ -5,7 +5,7 @@
     "abmira-header": {
       "type": "abmira-header",
       "settings": {
-        "logo_text": "Abmira",
+        "logo_text": "Abimra",
         "menu": "main-menu",
         "cart_label": "Bag",
         "cta_label": "Design your own",
@@ -14,9 +14,8 @@
         "abimra_cta_link": "/collections/design-your-own",
         "abimra_returns_link": "/pages/returns",
         "abimra_contact_link": "/pages/contact",
-        "abimra_logo_mark": true,
-        "abimra_menu_logo": "Abimra",
-        "abimra_menu_logo_sub": "Studio"
+        "abimra_logo_mark": false,
+        "logo_sub": "Studio"
       }
     }
   },

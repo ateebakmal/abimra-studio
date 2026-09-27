@@ -31,6 +31,9 @@
 
       <a href="{{ routes.root_url }}" class="ab-logo">
         {{- section.settings.logo_text | default: shop.name | escape -}}
+        {%- if section.settings.logo_sub != blank -%}
+          <b>{{ section.settings.logo_sub | escape }}</b>
+        {%- endif -%}
       </a>
 
       {%- if menu != blank -%}
@@ -44,8 +47,13 @@
       {%- endif -%}
 
       <div class="ab-nav-r">
-        <a href="{{ routes.cart_url }}" class="ab-meta">
-          {{- section.settings.cart_label | default: 'Bag' | escape }} ({{ cart_count }})
+        <a
+          href="{{ routes.cart_url }}"
+          class="ab-bag"
+          aria-label="{{ section.settings.cart_label | default: 'Bag' | escape }}, {{ cart_count }} items"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12.5H6.2Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8" stroke-linecap="round"/></svg>
+          <b>{{ cart_count }}</b>
         </a>
         {%- if section.settings.cta_label != blank -%}
           <a
@@ -104,8 +112,13 @@
             {{- section.settings.cta_label | escape -}}
           </a>
         {%- endif -%}
-        <a href="{{ routes.cart_url }}" class="ab-meta">
-          {{- section.settings.cart_label | default: 'Bag' | escape }} ({{ cart_count }})
+        <a
+          href="{{ routes.cart_url }}"
+          class="ab-bag"
+          aria-label="{{ section.settings.cart_label | default: 'Bag' | escape }}, {{ cart_count }} items"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12.5H6.2Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8" stroke-linecap="round"/></svg>
+          <b>{{ cart_count }}</b>
         </a>
       </div>
     </div>
@@ -127,8 +140,8 @@
     returns_link: section.settings.abimra_returns_link,
     contact_link: section.settings.abimra_contact_link,
     logo_mark: section.settings.abimra_logo_mark,
-    logo_text: section.settings.abimra_menu_logo,
-    logo_sub: section.settings.abimra_menu_logo_sub,
+    logo_text: section.settings.logo_text,
+    logo_sub: section.settings.logo_sub,
     breakpoint: 861
   %}
 </div>
@@ -143,6 +156,13 @@
       "label": "Logo text",
       "default": "Abmira",
       "info": "Set in condensed caps with wide letter-spacing. Leave empty to use the store name."
+    },
+    {
+      "type": "text",
+      "id": "logo_sub",
+      "label": "Wordmark, second word",
+      "default": "Studio",
+      "info": "Set in a lighter weight beside the first. Used in the header and in the mobile menu, so they cannot disagree. Leave empty for one word."
     },
     {
       "type": "link_list",
@@ -212,20 +232,6 @@
       "id": "abimra_logo_mark",
       "label": "Show the logo mark in the menu",
       "default": true
-    },
-    {
-      "type": "text",
-      "id": "abimra_menu_logo",
-      "label": "Menu wordmark",
-      "default": "Abimra",
-      "info": "Shown at the top of the mobile menu. The second word below is lighter."
-    },
-    {
-      "type": "text",
-      "id": "abimra_menu_logo_sub",
-      "label": "Menu wordmark, second word",
-      "default": "Studio",
-      "info": "Leave empty for a single word."
     }
   ],
   "enabled_on": {
