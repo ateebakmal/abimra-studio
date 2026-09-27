@@ -67,18 +67,34 @@
     var runway = sec.querySelector('.as__runway');
     if (!runway) return;
 
+    // Read the scroll position BEFORE anything moves, and correct to an
+    // absolute target rather than a relative one.
+    //
+    // scrollBy adds to wherever the page happens to be at the instant it
+    // runs, and during a fast flick - trackpad momentum, or a phone still
+    // gliding - that is a moving target. The correction then lands
+    // somewhere unrelated to the measurement it was based on, which is
+    // how scrolling quickly past the story threw the visitor to the top.
+    var y = window.pageYOffset;
     var before = runway.getBoundingClientRect().height;
     if (typeof sec.__asDestroy === 'function') sec.__asDestroy();
     sec.classList.add('is-static');
     var after = runway.getBoundingClientRect().height;
 
-    // Six screens have just been removed from the page ABOVE the viewport.
-    // Taking the same distance off the scroll position in this same frame
-    // is what stops everything below appearing to leap upwards. The
-    // browser's own scroll anchoring is switched off for this section in
-    // abmira.css, or the change would be corrected twice.
+    // Six screens have just been removed from the page ABOVE the viewport,
+    // so the same distance comes off the scroll position and nothing
+    // appears to move. The browser's own scroll anchoring is switched off
+    // for this section in abmira.css, or the change would be corrected
+    // twice.
     var shrank = before - after;
-    if (shrank > 0) window.scrollBy(0, -shrank);
+    if (shrank > 0) {
+      // A floor, not just a clamp at zero: where the section now ends.
+      // Landing above this would drop the visitor back inside a story
+      // they have just finished watching, which is the worse failure of
+      // the two and the one actually reported.
+      var floor = sec.getBoundingClientRect().bottom + window.pageYOffset;
+      window.scrollTo(0, Math.max(floor, y - shrank));
+    }
 
     addReplay(sec);
   }
