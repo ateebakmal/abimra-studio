@@ -69,6 +69,14 @@
      red chapters, so the header gives up a pixel instead. */
   --ab-nav-h: 76px;
 
+  /* The printed-ink texture on dark grounds. Held as a token because it
+     appears on the mobile menu and on every closing band, and the two
+     were drifting: the menu at 9% on a 1px dot, the bands at 20% on a
+     1.2px one. These are the menu's values, since that is the one being
+     matched to. */
+  --ab-dots: radial-gradient(rgba(238, 234, 224, 0.09) 1px, transparent 1px);
+  --ab-dots-size: 14px 14px;
+
   --r-card: 20px;
   --r-band: 28px;
   --r-input: 8px;
@@ -1157,8 +1165,8 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: radial-gradient(rgba(238, 234, 224, 0.2) 1.2px, transparent 1.2px);
-  background-size: 14px 14px;
+  background-image: var(--ab-dots);
+  background-size: var(--ab-dots-size);
 }
 
 .ab-closer-in {
@@ -2210,7 +2218,10 @@ body.ab-drawer-open {
 
 .ab-prod-grid {
   display: grid;
-  gap: 14px;
+  /* Row gap is larger than the column gap on purpose: two cards side by
+     side read as a pair, and without the extra height between rows the
+     whole grid reads as one mass. */
+  gap: 26px 14px;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
   list-style: none;
   padding: 0;
@@ -2219,7 +2230,7 @@ body.ab-drawer-open {
 
 @media screen and (min-width: 641px) {
   .ab-prod-grid {
-    gap: 20px;
+    gap: 32px 20px;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
   }
 }
@@ -3926,4 +3937,12 @@ a.ab-detail-t:hover {
   .ab-nav-in .am-btn {
     display: none;
   }
+}
+
+/* The menu hardcodes its own copy of the texture. Pointed at the token
+   here rather than edited there, so the supplied file stays untouched and
+   one value still drives every dark ground in the theme. */
+.am-menu::before {
+  background-image: var(--ab-dots);
+  background-size: var(--ab-dots-size);
 }
