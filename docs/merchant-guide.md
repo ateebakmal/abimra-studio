@@ -146,6 +146,53 @@ second gives you control of the order.
 
 ---
 
+## The cart page
+
+Open it in the theme editor with something in your bag — an empty cart
+shows only the empty state and hides everything else.
+
+All the wording is a setting, under **Cart items**. Two of them are
+claims about the studio rather than decoration, so check them before
+launch:
+
+- **Small print** on the ticket says pieces are *dispatched in 2–4 days*.
+- **Line under the note** says *We read every note before we print.*
+
+Neither is enforced by anything. If they stop being true, change them.
+
+### The customer's design on the line
+
+**Card image for personalised items** decides what the little picture on
+each line shows:
+
+- **The customer's design** (the default) — what they made in the
+  designer. Someone who has just personalised three tees is looking for
+  three different designs, not three identical black ones.
+- **The product photo** — the plain garment shot.
+
+Either way it falls back to the product photo when there is no design, or
+when the design fails to load. Those pictures are hosted by the
+personalisation app rather than by Shopify, so they can vanish
+independently of your product.
+
+**View your design** opens the full picture. It only appears on lines
+that were personalised.
+
+### What's deliberately not there
+
+- **Express checkout** (Shop Pay, Apple Pay, Google Pay) is switched off
+  on the cart page, as agreed. It still appears at checkout itself.
+- **Discount codes and delivery** are entered at checkout, not here.
+  That is Shopify's behaviour, not a choice in this theme.
+
+### Cart footer
+
+There is a second section below called **Cart footer** with nothing to
+set. Do not remove it — Shopify's cart script updates it on every
+quantity change, and without it the cart quietly stops responding.
+
+---
+
 ## Pages
 
 - `/pages/contact` and `/pages/returns` use their own templates and are

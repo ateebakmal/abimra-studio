@@ -74,6 +74,8 @@ constantly and has its own scroll container.
 | `assets/pt-gallery-carousel.js` | Dot indicators for the dots carousel only. |
 | `assets/abimra-story.*` | The brand story. **Supplied, byte-identical, do not edit.** |
 | `assets/abmira-story-extras.js` | Collapse-on-completion and Watch again, layered on the story without touching it. |
+| `assets/abmira-cart.css` | The cart page. Namespaced `ab-cart-`. |
+| `assets/abmira-cart.js` | Cart preview dialog, undo toast, phone checkout bar, ticket. |
 
 ### Dawn files that were modified
 
@@ -179,6 +181,61 @@ removed; don't reach for it again.
 `overflow-anchor` is off on the section. Collapsing removes six screens
 from above the viewport and browsers correct for that on their own, which
 fought the correction in the script.
+
+---
+
+## The cart
+
+Everything a shopper sees is rendered by `sections/main-cart-items.liquid`.
+`main-cart-footer.liquid` is a near-empty stub. The design is a two-column
+grid with a sticky ticket, and two sibling Shopify sections cannot be made
+into one grid without wrapping them from the layout.
+
+**Both sections have to exist.** Dawn's `assets/cart.js` lists
+`main-cart-items` and `main-cart-footer` in `getSectionsToRender` and
+swaps each one's `.js-contents` on every quantity change. Delete the
+footer and the update throws part way through — the cart stops responding
+with nothing in the console that points at the cause.
+
+The hooks Dawn's script reaches for, all reproduced in the rewrite:
+`#main-cart-items`, `#main-cart-footer`, `.js-contents`, `<cart-items>`,
+`.cart-item`, `.cart-item__name`, `.cart-item__error-text`,
+`#cart-live-region-text`, `#shopping-cart-line-item-status`, `#cart-errors`,
+`<quantity-input>`, `<cart-remove-button>`, `CartNote`. Restyled, not
+replaced — Dawn still does all the talking to the Cart AJAX API.
+
+### The designer app's line item properties
+
+SB Product Designer appends `?ffuyg/uploads/Click here` to the preview
+URL before writing it as a property. Dawn's property renderer treats a
+value containing `/uploads/` as an uploaded file and prints a link, which
+is where `Preview Personalization Image: Click here` came from. `Jp(e,t)`
+in `pd-designer.js` builds it.
+
+The real URL is everything before that marker. We match on the property
+**value**, not its name, because the label is configurable inside the app
+and keying off it breaks the day someone renames it.
+
+`pd_personalization_id`, `product_id` and `_personalization_id` are
+suppressed from the printed list.
+
+Design images are hosted by the app, not Shopify. They can 404, so every
+one carries a `data-ab-fallback` to the product photo.
+
+### abmira-cart.js
+
+Delegated from `document`, because Dawn replaces the whole `.js-contents`
+subtree and any listener bound inside it is lost. A `MutationObserver` on
+that subtree re-runs the per-render setup.
+
+Namespaced `ab-cart-*`. The supplied reference used bare `.item`, `.price`
+and `.cart` — all three already mean something in Dawn.
+
+### Untested
+
+Written and pushed, but only the empty state has been seen rendered. The
+line item card, the preview dialog, the undo toast and the ticket need a
+bag with a personalised item in it.
 
 ---
 
