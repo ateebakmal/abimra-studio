@@ -1167,12 +1167,28 @@
   text-align: center;
 }
 
+/* The texture is painted by the band itself now, not by the
+   .ab-closer-dots child that used to carry it.
+
+   Two classes, so this beats both .ab-band and .ab-closer whichever order
+   they land in. That matters: .ab-band sets `background` as a shorthand,
+   which resets background-image to none, and a single-class rule cannot
+   reliably win against it. background-color and background-image are set
+   separately for the same reason - a shorthand later would wipe the
+   image again.
+
+   The child div stays in the markup, now empty. Removing it would mean
+   editing the section for no gain. */
+.ab-band.ab-closer {
+  background-color: var(--ink);
+  background-image: var(--ab-dots);
+  background-size: var(--ab-dots-size);
+}
+
 .ab-closer-dots {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: var(--ab-dots);
-  background-size: var(--ab-dots-size);
 }
 
 .ab-closer-in {
