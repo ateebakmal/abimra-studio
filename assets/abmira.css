@@ -3885,6 +3885,43 @@ a.ab-detail-t:hover {
   display: inline-flex;
 }
 
+/* Icon only: the word is hidden rather than removed from the snippet, so
+   the supplied file stays untouched and this is one line to undo. The
+   button keeps its aria-label, so nothing is lost to a screen reader.
+   Sized to 44px round to match the bag beside it - a pill shaped for
+   text looks stranded once the text has gone. */
+.ab-nav-in .am-btn > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ab-nav-in .am-btn {
+  justify-content: center;
+  gap: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+}
+
+/* A little larger now it is carrying the button on its own, and level
+   with the 20px bag icon next to it. */
+.ab-nav-in .am-btn .am-btn__bars {
+  width: 18px;
+  height: 12px;
+}
+
+.ab-nav-in .am-btn .am-btn__bars::after {
+  right: 6px;
+}
+
 @media screen and (min-width: 861px) {
   .ab-nav-in .am-btn {
     display: none;
