@@ -74,8 +74,14 @@
      were drifting: the menu at 9% on a 1px dot, the bands at 20% on a
      1.2px one. These are the menu's values, since that is the one being
      matched to. */
-  --ab-dots: radial-gradient(rgba(238, 234, 224, 0.09) 1px, transparent 1px);
-  --ab-dots-size: 14px 14px;
+  --ab-dots: radial-gradient(rgba(238, 234, 224, 0.22) 1.5px, transparent 1.5px);
+  --ab-dots-size: 16px 16px;
+
+  /* Radius does more work here than alpha. A 1px radial dot is 2px across
+     before antialiasing takes the edges, and on a high-DPI screen what
+     survives is a smudge no opacity can rescue. 1.5px is the smallest
+     that holds its shape; the grid widens to 16px so the bigger dots do
+     not close up into texture. */
 
   --r-card: 20px;
   --r-band: 28px;
