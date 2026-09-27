@@ -1,0 +1,83 @@
+/* Abimra Studio: "First pull" preloader. Colours come from the theme tokens (--paper, --ink, --red, --graphite). */
+html.apl-lock,html.apl-lock body{overflow:hidden}
+.apl-seen .apl{display:none!important}
+
+.apl{
+  --apl-paper:var(--paper,#EEEAE0);--apl-ink:var(--ink,#191813);--apl-red:var(--red,#D42E12);
+  --apl-graphite:var(--graphite,#5F5B52);--mis:1;
+  position:fixed;inset:0;z-index:2147483000;overflow:hidden;
+  background:var(--apl-paper);color:var(--apl-ink);
+  font-family:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  -webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:none;
+  /* if the script never runs, get out of the way after 9s */
+  animation:apl-failsafe 0s linear 9s forwards;
+}
+.apl[hidden]{display:none}
+@keyframes apl-failsafe{to{visibility:hidden;opacity:0;pointer-events:none}}
+
+.apl__bg,.apl__gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+.apl__gl{touch-action:none;cursor:default}
+.apl.has-gl .apl__gl{cursor:grab}
+.apl.has-gl .apl__gl.is-drag{cursor:grabbing}
+
+/* registration marks at the corners of the press bed; their three ink layers drift into register */
+.apl__frame{position:absolute;left:50%;top:44%;width:min(84vw,100vh,960px);height:min(60vh,58vw,620px);
+  transform:translate(-50%,-50%);pointer-events:none}
+.apl__mark{position:absolute;width:36px;height:36px;overflow:visible}
+.apl__mark:nth-child(1){left:0;top:0;translate:-50% -50%}
+.apl__mark:nth-child(2){right:0;top:0;translate:50% -50%}
+.apl__mark:nth-child(3){left:0;bottom:0;translate:-50% 50%}
+.apl__mark:nth-child(4){right:0;bottom:0;translate:50% 50%}
+.apl__mark g{fill:none;stroke-width:1.6;transform-box:view-box;transform-origin:0 0}
+.apl__mark .m1{stroke:var(--apl-red);transform:translate(calc(var(--mis)*-11px),calc(var(--mis)*8px)) rotate(calc(var(--mis)*-38deg))}
+.apl__mark .m2{stroke:var(--apl-graphite);transform:translate(calc(var(--mis)*10px),calc(var(--mis)*11px)) rotate(calc(var(--mis)*26deg))}
+.apl__mark .m3{stroke:var(--apl-ink);transform:translate(calc(var(--mis)*5px),calc(var(--mis)*-12px))}
+.apl.is-locked .apl__mark{animation:apl-snap .55s cubic-bezier(.3,1.7,.5,1)}
+@keyframes apl-snap{0%{scale:1.4}100%{scale:1}}
+
+.apl__ui{position:absolute;inset:0;pointer-events:none;display:grid;grid-template-rows:auto 1fr auto;
+  padding:max(20px,env(safe-area-inset-top,0px)) max(24px,env(safe-area-inset-right,0px)) max(22px,env(safe-area-inset-bottom,0px)) max(24px,env(safe-area-inset-left,0px))}
+.apl__top{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.apl__brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:-.01em;font-variation-settings:'wdth' 108}
+.apl__brand svg{width:24px;height:24px;flex:none}
+.apl__skip{pointer-events:auto;font:500 13px/1 'IBM Plex Mono',ui-monospace,monospace;color:var(--apl-ink);
+  background:transparent;border:1px solid color-mix(in srgb,var(--apl-ink) 30%,transparent);border-radius:999px;
+  padding:11px 16px;cursor:pointer;transition:background-color .2s,color .2s}
+.apl__skip:hover{background:var(--apl-ink);color:var(--apl-paper)}
+.apl__skip:focus-visible{outline:2px solid var(--apl-red);outline-offset:3px}
+
+.apl__bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+.apl__num{display:flex;align-items:flex-start;font-weight:800;font-size:clamp(84px,14vw,204px);line-height:.78;
+  letter-spacing:-.035em;font-variant-numeric:tabular-nums;font-variation-settings:'wdth' 62,'wght' 800}
+.apl__num sup{font-size:.25em;line-height:1;margin:.1em 0 0 .06em;font-weight:600;letter-spacing:0;font-variation-settings:'wdth' 100}
+.apl__status{display:flex;align-items:center;gap:10px;margin-top:16px;font:500 13px/1.2 'IBM Plex Mono',ui-monospace,monospace;color:var(--apl-graphite)}
+.apl__swatch{width:10px;height:10px;border-radius:50%;background:var(--apl-red);flex:none;animation:apl-pulse 1.4s ease-in-out infinite;transition:scale .3s}
+@keyframes apl-pulse{50%{scale:1.45;opacity:.55}}
+.apl__swatch.is-ok{animation:none;background:transparent;box-shadow:inset 0 0 0 2px var(--apl-red);scale:1.2}
+.apl__seg{display:flex;gap:4px;margin-top:12px;width:min(240px,60vw)}
+.apl__seg span{flex:1;height:3px;border-radius:2px;background:color-mix(in srgb,var(--apl-ink) 14%,transparent);overflow:hidden}
+.apl__seg i{display:block;height:100%;background:var(--apl-red);transform-origin:0 50%;transform:scaleX(0)}
+.apl__side{text-align:right;max-width:32ch}
+.apl__line{margin:0;font-size:clamp(15px,1.35vw,19px);font-weight:600;line-height:1.3;font-variation-settings:'wdth' 88}
+.apl__hint{margin:10px 0 0;font:400 12px/1.45 'IBM Plex Mono',ui-monospace,monospace;color:var(--apl-graphite);display:none}
+.apl.has-gl .apl__hint{display:block}
+
+/* the final pull: a squeegee blade that wipes the intro away */
+.apl__blade{position:absolute;left:-2vw;right:-2vw;top:0;height:24px;pointer-events:none;visibility:hidden;
+  background:linear-gradient(var(--apl-ink) 0 58%,var(--apl-red) 58% 100%);border-radius:0 0 16px 16px;
+  box-shadow:0 20px 34px -14px rgba(0,0,0,.4)}
+.apl.is-exit .apl__blade{visibility:visible}
+.apl__sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;margin:0}
+
+@media (max-width:720px){
+  .apl__frame{top:41%;height:min(50vh,96vw)}
+  .apl__bottom{flex-direction:column;align-items:flex-start;gap:14px}
+  .apl__side{text-align:left}
+  .apl__line{display:none}
+  .apl__hint{margin:0}
+  .apl__brand{font-size:17px}
+}
+@media (prefers-reduced-motion:reduce){
+  .apl__mark g{transform:none!important}
+  .apl.is-locked .apl__mark{animation:none}
+}

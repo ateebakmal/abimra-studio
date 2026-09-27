@@ -97,6 +97,82 @@
     ]
   },
   {
+    "name": "Intro preloader",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "abimra_preloader_enabled",
+        "label": "Show the intro",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "abimra_preloader_scope",
+        "label": "Where it can play",
+        "options": [
+          {
+            "value": "home",
+            "label": "Homepage only"
+          },
+          {
+            "value": "all",
+            "label": "Any page a visitor lands on first"
+          }
+        ],
+        "default": "home",
+        "info": "Homepage only is recommended: people arriving from an ad or a product link see the product straight away."
+      },
+      {
+        "type": "checkbox",
+        "id": "abimra_preloader_once",
+        "label": "Only once per visit",
+        "default": true,
+        "info": "Recommended. Later page views skip the intro."
+      },
+      {
+        "type": "range",
+        "id": "abimra_preloader_min",
+        "label": "Minimum length",
+        "min": 1500,
+        "max": 5000,
+        "step": 100,
+        "unit": "ms",
+        "default": 2400,
+        "info": "The intro waits for the page to load, but never plays for less than this."
+      },
+      {
+        "type": "text",
+        "id": "abimra_preloader_stage_1",
+        "label": "Stage 1 text",
+        "default": "Fetching your design"
+      },
+      {
+        "type": "text",
+        "id": "abimra_preloader_stage_2",
+        "label": "Stage 2 text",
+        "default": "Printing"
+      },
+      {
+        "type": "text",
+        "id": "abimra_preloader_stage_3",
+        "label": "Stage 3 text",
+        "default": "Shipping your order"
+      },
+      {
+        "type": "text",
+        "id": "abimra_preloader_done",
+        "label": "Finished text",
+        "default": "Ready to wear"
+      },
+      {
+        "type": "text",
+        "id": "abimra_preloader_line",
+        "label": "Line at the bottom right",
+        "default": "Custom tees and hoodies, printed to order in our own UK studio."
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.logo.name",
     "settings": [
       {
