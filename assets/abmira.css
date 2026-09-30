@@ -886,6 +886,49 @@
   z-index: 1;
 }
 
+/* Hover: the garment eases up off its ground and the card's hairline
+   darkens. No shadow and no lift on the card itself - the guide is
+   explicit that separation here comes from value and hairlines, and a
+   card that jumps is the templated move this system is avoiding.
+
+   Behind (hover: hover) so a touch screen, which fires :hover on tap
+   and then keeps it, never leaves a card stuck in the hovered state. */
+@media (hover: hover) {
+  .ab-prod {
+    transition: border-color 0.12s var(--ab-e);
+  }
+
+  .ab-prod-img img,
+  .ab-section .ab-prod-img img[width][height] {
+    transition: transform 0.35s var(--ab-e);
+  }
+
+  .ab-prod:hover {
+    border-color: var(--ink);
+  }
+
+  .ab-prod:hover .ab-prod-img img {
+    transform: translateY(-5px) scale(1.03);
+  }
+
+  /* Dawn colours h3 directly, so this needs to outrank a bare element
+     selector - two classes does it. */
+  .ab-prod:hover .ab-ttl a {
+    color: var(--red);
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: reduce) {
+  .ab-prod-img img,
+  .ab-section .ab-prod-img img[width][height] {
+    transition: none;
+  }
+
+  .ab-prod:hover .ab-prod-img img {
+    transform: none;
+  }
+}
+
 .ab-prod-b {
   padding: 12px 14px 16px;
   display: flex;

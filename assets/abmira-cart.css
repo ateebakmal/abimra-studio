@@ -263,13 +263,38 @@
   background: var(--red);
 }
 
+/* Stacked on a phone. Side by side, the quantity pill and Remove need
+   about 255px, and the info column has 202px at 390px wide - so Remove
+   ran past the edge and .ab-cart-item's overflow: hidden cut it off.
+   It goes under the quantity instead, which is where it was asked for
+   and where a thumb is less likely to hit it by accident.
+
+   The negative margin only cancels the link's own 6px of padding, so
+   its icon lines up with the left edge of the pill above it. */
 .ab-cart-row {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
   margin-top: auto;
   padding-top: 4px;
+}
+
+.ab-cart-row .ab-cart-remove {
+  margin-left: -6px;
+}
+
+@media screen and (min-width: 520px) {
+  .ab-cart-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .ab-cart-row .ab-cart-remove {
+    margin-left: 0;
+  }
 }
 
 /* ---- quantity: Dawn's element, restyled ---- */

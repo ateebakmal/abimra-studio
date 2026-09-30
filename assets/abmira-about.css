@@ -55,13 +55,18 @@
   pointer-events: none;
 }
 
+/* flex-start, not space-between. The hero is a full screen and the
+   content is shorter than it on a phone, so space-between handed the
+   leftover - about 140px at 390x844 - to the two gaps, and the headline
+   floated miles from its own intro. The content sits together at the
+   top now and only the cue is pushed down, by margin-top: auto. */
 .ab-about-hero > .ab-wrap {
   position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: clamp(24px, 4vh, 48px);
+  justify-content: flex-start;
+  gap: clamp(22px, 3.4vh, 44px);
   padding-top: clamp(24px, 6vh, 64px);
   padding-bottom: clamp(20px, 4vh, 40px);
 }
@@ -129,10 +134,24 @@
   gap: 10px;
 }
 
+/* Full width on a phone. Two content-width pills under a headline this
+   size read as an afterthought, and at 360px they wrap to two rows of
+   different widths anyway. */
+.ab-about-hero-cta .ab-btn {
+  flex: 1 1 100%;
+}
+
+@media screen and (min-width: 600px) {
+  .ab-about-hero-cta .ab-btn {
+    flex: 0 1 auto;
+  }
+}
+
 .ab-about-cue {
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-top: auto;
   font-size: 13px;
   color: var(--graphite);
 }
@@ -188,6 +207,19 @@
 /* ---------------------------------------------------------- *
  * 2. Process - a dark band whose heading holds while the steps pass
  * ---------------------------------------------------------- */
+
+/* Two classes, and deliberately so: .ab-band sets `background` as a
+   shorthand, which resets background-image to none, and a single-class
+   rule cannot reliably beat it. Same reason the closing band does it.
+
+   This used to reuse .ab-closer for the texture and inherited its
+   `text-align: center`, which centred the whole section. */
+.ab-band.ab-about-how {
+  background-color: var(--ink);
+  background-image: var(--ab-dots);
+  background-size: var(--ab-dots-size);
+  text-align: left;
+}
 
 .ab-about-how {
   position: relative;

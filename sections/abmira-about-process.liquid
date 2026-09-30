@@ -15,6 +15,10 @@
   overflow: hidden/auto/scroll or the heading stops holding; the band
   itself uses overflow: clip, which does not break sticky.
 
+  It does NOT borrow .ab-closer. That class was here for its dot texture
+  and brought `text-align: center` with it, which centred every word in
+  the section. The texture is painted below instead.
+
   The red rail is driven by --p, written by abmira-about.js.
 
   STEP 01 is mono because it is a number. The chips are not.
@@ -23,7 +27,7 @@
 <div class="ab-section ab-about">
   <section class="ab-sec" style="padding-bottom: 0;">
     <div class="ab-wrap">
-      <div class="ab-band ab-closer ab-about-how ab-rv">
+      <div class="ab-band ab-about-how ab-rv">
         <div class="ab-about-how-grid">
           <div class="ab-about-how-head">
             <h2 class="ab-d2">
