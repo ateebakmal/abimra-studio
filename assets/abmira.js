@@ -1,5 +1,5 @@
 /*
-  ABMIRA Studio — homepage behaviour.
+  ABIMRA Studio — homepage behaviour.
   Ported from design-guides/abmira-mockup.html, with the class names
   namespaced to `ab-` (see assets/abmira.css for why).
 

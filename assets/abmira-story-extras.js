@@ -1,5 +1,5 @@
 /*
-  Abmira: brand story extras.
+  Abimra: brand story extras.
 
   Two behaviours layered on top of abimra-story.js WITHOUT editing it, so
   the handoff files stay byte-identical and can be replaced wholesale if

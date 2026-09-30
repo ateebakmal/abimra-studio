@@ -1,5 +1,5 @@
 {%- comment -%}
-  ABMIRA footer.
+  ABIMRA footer.
 
   Three link columns beside a brand column, each driven by a Shopify
   navigation menu so the links are editable in Online Store > Navigation.
@@ -14,7 +14,22 @@
   assign columns = section.blocks | where: 'type', 'column'
   assign legal = section.blocks | where: 'type', 'legal'
   assign social = section.blocks | where: 'type', 'social'
+
+  # Only load the consent script when a block actually asks for it.
+  # `where` reads a property off the block itself, and this one lives in
+  # block.settings, so it has to be looked for by hand.
+  assign wants_cookies = false
+  for b in legal
+    if b.settings.policy == 'cookies' and b.settings.link == blank
+      assign wants_cookies = true
+      break
+    endif
+  endfor
 -%}
+
+{%- if wants_cookies -%}
+  <script src="{{ 'abmira-cookie-prefs.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
 
 <div class="ab-foot">
   <div class="ab-wrap">
@@ -125,7 +140,21 @@
                 endcase
               endif
             -%}
-            {%- if href != blank and block.settings.label != blank -%}
+            {%- if block.settings.policy == 'cookies' and block.settings.link == blank -%}
+              {%- comment -%}
+                Cookie preferences is not a page. It reopens Shopify's consent
+                banner, which only exists once that banner is switched on under
+                Settings > Customer privacy. So the button ships hidden and
+                abmira-cookie-prefs.js reveals it only after it has found a
+                consent API to call - a store with no banner shows no control
+                at all, rather than one that does nothing.
+              {%- endcomment -%}
+              {%- if block.settings.label != blank -%}
+                <button type="button" class="ab-foot-cookies" data-ab-cookie-prefs hidden {{ block.shopify_attributes }}>
+                  {{- block.settings.label | escape -}}
+                </button>
+              {%- endif -%}
+            {%- elsif href != blank and block.settings.label != blank -%}
               <a href="{{ href }}" {{ block.shopify_attributes }}>{{ block.settings.label | escape }}</a>
             {%- endif -%}
           {%- endfor -%}
@@ -137,13 +166,13 @@
 
 {% schema %}
 {
-  "name": "Abmira footer",
+  "name": "Abimra footer",
   "settings": [
     {
       "type": "text",
       "id": "logo_text",
       "label": "Logo text",
-      "default": "Abmira",
+      "default": "Abimra",
       "info": "Leave empty to use the store name."
     },
     {
@@ -224,10 +253,11 @@
             { "value": "terms", "label": "Terms of service" },
             { "value": "refund", "label": "Refund policy" },
             { "value": "shipping", "label": "Shipping policy" },
-            { "value": "contact", "label": "Contact information" }
+            { "value": "contact", "label": "Contact information" },
+            { "value": "cookies", "label": "Cookie preferences (reopens the consent banner)" }
           ],
           "default": "privacy",
-          "info": "Points at the policy written under Settings > Policies. The link disappears until that policy has something in it, so it can never be a dead link."
+          "info": "Points at the policy written under Settings > Policies. The link disappears until that policy has something in it, so it can never be a dead link. Cookie preferences is different: it reopens the consent banner, and only shows once that banner is switched on under Settings > Customer privacy."
         },
         {
           "type": "url",

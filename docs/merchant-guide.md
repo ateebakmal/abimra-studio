@@ -1,4 +1,4 @@
-# Running the Abmira store
+# Running the Abimra store
 
 Written for whoever looks after this shop day to day. No code required —
 everything here is done in the Shopify admin or the theme editor.
@@ -105,7 +105,7 @@ collections marked in the admin*.
 
 ## Changing how cards and product images look
 
-**Theme editor → Theme settings → ABMIRA.** These apply across the whole
+**Theme editor → Theme settings → ABIMRA.** These apply across the whole
 store, so everything stays consistent.
 
 | Setting | What it does |
@@ -129,16 +129,16 @@ its own backdrop**. Most specific wins.
 Everything on the homepage is a section you can reorder, hide or remove
 in the theme editor.
 
-- **Abmira hero** — the opening screen. It is sized to fill exactly one
+- **Abimra hero** — the opening screen. It is sized to fill exactly one
   screen, so anything you switch on competes for that space. The line
   above the headline and the ratings row are both optional for that
   reason.
 - **Brand story** — the scroll animation. *Scroll length* controls how
   many screens it lasts; lower it if it feels long.
-- **Abmira categories** ("Customise apparel") — either every product in a
+- **Abimra categories** ("Customise apparel") — either every product in a
   collection, or cards you add by hand.
-- **Abmira product rail** ("Studio Originals") — same choice.
-- **Abmira testimonials**, **closing band**, etc.
+- **Abimra product rail** ("Studio Originals") — same choice.
+- **Abimra testimonials**, **closing band**, etc.
 
 Where a section offers *Everything in a collection* versus *Only the ones
 I pick*, the first keeps itself up to date as you add products and the

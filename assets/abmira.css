@@ -1,5 +1,5 @@
 /* ============================================================
-   ABMIRA Studio — design system
+   ABIMRA Studio — design system
    Ported from design-guides/abmira-tokens.css + abmira-mockup.html.
 
    TWO DELIBERATE DEPARTURES FROM THE SOURCE FILES:
@@ -3107,7 +3107,7 @@ body.ab-drawer-open {
 
 
 /* The product page is Dawn's markup on Dawn's colour scheme, which now
-   carries the Abmira palette. These keep the pieces that set their own
+   carries the Abimra palette. These keep the pieces that set their own
    ground in step with it. */
 .product .product__info-container > * + * {
   margin-top: 0;
@@ -3710,17 +3710,35 @@ a.ab-detail-t:hover {
   gap: 8px 20px;
 }
 
-.ab-foot-legal a {
+/* Cookie preferences is a <button>, not a link, because it reopens the
+   consent banner rather than going anywhere. It is styled to sit level
+   with its siblings: a button carries the browser's own font, padding,
+   border and background, all of which have to be cleared. */
+.ab-foot-legal a,
+.ab-foot-legal .ab-foot-cookies {
   color: inherit;
   text-decoration: none;
   transition: color 0.12s var(--ab-e);
 }
 
-.ab-foot-legal a:hover {
+.ab-foot-legal .ab-foot-cookies {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  cursor: pointer;
+}
+
+.ab-foot-legal a:hover,
+.ab-foot-legal .ab-foot-cookies:hover {
   color: var(--paper);
 }
 
-.ab-foot-legal a:focus-visible {
+.ab-foot-legal a:focus-visible,
+.ab-foot-legal .ab-foot-cookies:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
 }

@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
@@ -31,19 +40,48 @@
         "f3"
       ],
       "settings": {
+        "show_eyebrow": false,
         "eyebrow": "Printed to order. Delivered across the UK.",
         "accent_word": "Design",
         "headline_line_1": "it,",
         "headline_line_2": "wear it.",
         "subheading": "Upload your artwork, add text, design it however you like. We print it and send it to you.",
         "cta_primary_label": "Design your own",
+        "cta_primary_link": "shopify://collections/design-your-own",
         "cta_secondary_label": "Shop Studio Originals",
+        "cta_secondary_link": "shopify://collections/studio-originals",
+        "show_proof": false,
         "avatar_initials": "HM, DO, PR, +",
         "rating_text": "4.9 from 126 orders",
         "collage_image": "shopify://shop_images/hero-image.png",
-        "collage_mat_color": "#F3EFE5",
-        "show_eyebrow": false,
-        "show_proof": false
+        "collage_mat_color": "#f3efe5"
+      }
+    },
+    "brand_story": {
+      "type": "abimra-brand-story",
+      "settings": {
+        "blank": "Start blank.",
+        "caption_1": "Nothing on it yet. That’s the exciting part.",
+        "catch": "Abimra Club",
+        "phrases": "Birthdays\nEvents\nBranding\nClass of 2026\nYour club\nPersonal\nTeam kits\nHen do\nStag do\nBand merch\nStaff uniforms\nWeddings\nCharity runs\nGifts\nLaunch party",
+        "caption_2": "Birthdays, leavers, launches, club nights. If it’s worth saying, it’s worth wearing.",
+        "card_1": "Holiday, 2019",
+        "card_2": "Her sketch",
+        "card_3": "Club badge",
+        "card_4": "The band",
+        "caption_3": "Add your pictures too. Photos, sketches, logos, whatever you’ve got.",
+        "inked_a": "Pulled",
+        "inked_b": "in ink.",
+        "caption_4": "Then we print it in our own studio and send it out in 2–4 days.",
+        "tagline": "Made to be admired.",
+        "cta_label": "Design your own",
+        "cta_link": "/collections/design-your-own",
+        "cta2_label": "Shop Studio Originals",
+        "cta2_link": "/collections/studio-originals",
+        "scroll_length": 7,
+        "scroll_length_mobile": 6,
+        "header_offset": 76,
+        "sr_title": "What Abimra Studio prints"
       }
     },
     "marquee": {
@@ -153,6 +191,7 @@
         "heading": "Designed by you, printed by us",
         "body": "Upload your artwork, add your text, choose your garment. See it on the real thing before you order.",
         "cta_label": "Start designing",
+        "cta_link": "shopify://collections/design-your-own",
         "cta_note": "No account needed to try it."
       }
     },
@@ -203,27 +242,40 @@
         "c1": {
           "type": "category",
           "settings": {
+            "collection": "",
+            "product": "sb-product-designer-example",
             "heading": "T-shirts",
+            "link": "",
             "caption": "From £24.99",
-            "background": "#E8E2D4",
+            "use_bg": false,
+            "background": "#e8e2d4",
             "invert": false
           }
         },
         "c2": {
           "type": "category",
           "settings": {
+            "collection": "",
+            "product": "hoodie",
             "heading": "Hoodies",
+            "link": "",
+            "image": "shopify://shop_images/black-hoodie-front.png",
             "caption": "From £44.99",
-            "background": "#DFE7DC",
+            "use_bg": false,
+            "background": "#dfe7dc",
             "invert": false
           }
         },
         "c3": {
           "type": "category",
           "settings": {
+            "collection": "",
+            "product": "sweatshirt",
             "heading": "Sweatshirts",
+            "link": "",
             "caption": "From £39.99",
-            "background": "#E3EAF6",
+            "use_bg": false,
+            "background": "#e3eaf6",
             "invert": false
           }
         }
@@ -235,20 +287,36 @@
       ],
       "settings": {
         "heading": "Customise apparel",
+        "body": "",
         "source": "manual",
         "collection": "design-your-own",
-        "link_label": "View all"
+        "products_to_show": 6,
+        "backdrop_mode": "theme",
+        "backdrop_color": "#e8e2d4",
+        "shadow_mode": "theme",
+        "shadow": 45,
+        "link_label": "View all",
+        "link_url": ""
       }
     },
     "originals": {
       "type": "abmira-originals",
       "settings": {
         "heading": "Studio Originals",
-        "products_to_show": 6,
-        "show_badge": true,
-        "badge_label": "Design your own",
+        "source": "collection",
         "collection": "studio-originals",
-        "link_label": "View all"
+        "products_to_show": 6,
+        "link_label": "View all",
+        "link_url": "",
+        "backdrop_mode": "theme",
+        "backdrop_color": "#e8e2d4",
+        "shadow_mode": "theme",
+        "shadow": 0,
+        "pad_mode": "theme",
+        "pad": 48,
+        "show_badge": false,
+        "badge_label": "Design your own",
+        "badge_tag": "customizable"
       }
     },
     "testimonials": {
@@ -295,27 +363,20 @@
       ],
       "settings": {
         "heading": "Worn and reviewed",
-        "link_label": "Read all reviews",
+        "link_label": "",
+        "link": "",
         "hint": "Tap or swipe for the next"
       }
     },
     "closer": {
       "type": "abmira-closer",
       "settings": {
+        "align": "center",
         "show_mark": true,
         "heading": "What will\nyou make?",
         "body": "Your name. Your artwork. Your message.\nBlack, bone or navy — tee or hoodie, printed to order.",
-        "cta_label": "Design your own"
-      }
-    },
-    "brand_story": {
-      "type": "abimra-brand-story",
-      "settings": {
-        "header_offset": 76,
-        "scroll_length": 7,
-        "scroll_length_mobile": 6,
-        "cta_link": "/collections/design-your-own",
-        "cta2_link": "/collections/studio-originals"
+        "cta_label": "Design your own",
+        "cta_link": "shopify://collections/design-your-own"
       }
     }
   },

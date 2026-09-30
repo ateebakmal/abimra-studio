@@ -15,9 +15,9 @@
           "type": "detail",
           "settings": {
             "icon": "mail",
-            "title": "hello@abmira.studio",
+            "title": "hello@abimra.studio",
             "text": "Best for order questions and artwork help.",
-            "link": "mailto:hello@abmira.studio"
+            "link": "mailto:hello@abimra.studio"
           }
         },
         "phone": {
@@ -42,7 +42,7 @@
           "type": "note",
           "settings": {
             "heading": "The studio",
-            "body": "<p>ABMIRA Studio Ltd<br/>Unit 4, Hatton Works<br/>1 Example Street<br/>Manchester M1 1AA<br/>United Kingdom</p><p>Visits by appointment — we print here, so it's not a shop. Email first and we'll find a time.</p>"
+            "body": "<p>ABIMRA Studio Ltd<br/>Unit 4, Hatton Works<br/>1 Example Street<br/>Manchester M1 1AA<br/>United Kingdom</p><p>Visits by appointment — we print here, so it's not a shop. Email first and we'll find a time.</p>"
           }
         }
       },
@@ -61,7 +61,7 @@
         "optional_word": "— optional",
         "label_message": "Message",
         "ph_message": "Tell us what happened. If it's a print problem, a photo helps more than a description.",
-        "attach_note": "<p>Got a photo? Email it to hello@abmira.studio with your order number and we'll match it to this message.</p>",
+        "attach_note": "<p>Got a photo? Email it to hello@abimra.studio with your order number and we'll match it to this message.</p>",
         "submit": "Send message",
         "small_print": "<p>We'll only use your details to answer this message.</p>",
         "success": "Thanks — that's with us. You'll hear back within one working day.",

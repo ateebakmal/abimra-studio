@@ -1,5 +1,5 @@
 /*
-  Abmira cart behaviour.
+  Abimra cart behaviour.
 
   Layered on top of Dawn's cart, which keeps doing the actual work:
   <cart-items> handles quantity and removal through the Cart AJAX API and

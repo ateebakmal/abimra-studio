@@ -9,6 +9,9 @@
  */
 {
   "current": {
+    "abmira_shadow": 100,
+    "abmira_card_backdrop_mode": "single",
+    "abmira_card_pad": 30,
     "logo_width": 90,
     "type_header_font": "assistant_n4",
     "heading_scale": 100,

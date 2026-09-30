@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "name": "Footer",
   "type": "footer",
@@ -5,29 +14,6 @@
     "abmira-footer": {
       "type": "abmira-footer",
       "blocks": {
-        "col1": {
-          "type": "column",
-          "settings": {
-            "heading": "Shop",
-            "menu": "main-menu"
-          }
-        },
-        "col2": {
-          "type": "column",
-          "settings": {
-            "heading": "Help",
-            "menu": "",
-            "links": "Contact us | /pages/contact\nReturns & exchanges | /pages/returns"
-          }
-        },
-        "privacy": {
-          "type": "legal",
-          "settings": {
-            "label": "Privacy",
-            "policy": "privacy",
-            "link": ""
-          }
-        },
         "ig": {
           "type": "social",
           "settings": {
@@ -42,28 +28,44 @@
             "link": "#"
           }
         },
+        "col1": {
+          "type": "column",
+          "settings": {
+            "heading": "Shop",
+            "links": "",
+            "menu": "main-menu"
+          }
+        },
+        "col2": {
+          "type": "column",
+          "settings": {
+            "heading": "Help",
+            "links": "Contact us | /pages/contact\nReturns & exchanges | /pages/return-and-exchange",
+            "menu": ""
+          }
+        },
+        "legal_iYHjNH": {
+          "type": "legal",
+          "settings": {
+            "label": "Privacy",
+            "policy": "privacy",
+            "link": ""
+          }
+        },
         "terms2": {
           "type": "legal",
           "settings": {
             "label": "Terms",
-            "policy": "none",
-            "link": "#"
+            "policy": "terms",
+            "link": ""
           }
         },
         "cookies": {
           "type": "legal",
           "settings": {
             "label": "Cookie preferences",
-            "policy": "none",
-            "link": "#"
-          }
-        },
-        "a11y": {
-          "type": "legal",
-          "settings": {
-            "label": "Accessibility",
-            "policy": "none",
-            "link": "#"
+            "policy": "cookies",
+            "link": ""
           }
         }
       },
@@ -72,17 +74,17 @@
         "tt",
         "col1",
         "col2",
-        "privacy",
+        "legal_iYHjNH",
         "terms2",
-        "cookies",
-        "a11y"
+        "cookies"
       ],
       "settings": {
-        "logo_text": "Abmira",
+        "logo_text": "Abimra",
         "blurb": "Wear it. Make it yours.\nDesigned and printed in the United Kingdom.",
         "show_colour_bar": false,
+        "legal_details": "Abimra Studio Ltd, registered in England and Wales, company no. 00000000. Registered office: 1 Example Street, Manchester M1 1AA. VAT no. GB 000 0000 00.",
         "copyright_suffix": "Studio",
-        "legal_details": "Abmira Studio Ltd, registered in England and Wales, company no. 00000000. Registered office: 1 Example Street, Manchester M1 1AA. VAT no. GB 000 0000 00."
+        "legal_text_unused": "Privacy · Terms · Accessibility"
       }
     }
   },
