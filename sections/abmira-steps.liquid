@@ -24,6 +24,14 @@
             >
               <span class="ab-step-n ab-num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
 
+              {%- liquid
+                # See abmira-hero.liquid: a piped default inside a filter
+                # argument applies to the tag, not to the argument.
+                assign step_alt = block.settings.image.alt
+                if step_alt == blank
+                  assign step_alt = block.settings.heading
+                endif
+              -%}
               <div class="ab-step-img">
                 {%- if block.settings.image != blank -%}
                   {{
@@ -33,7 +41,7 @@
                       loading: 'lazy',
                       widths: '186, 248, 372, 496, 600',
                       sizes: '(min-width: 861px) 30vw, (min-width: 401px) 168px, 186px',
-                      alt: block.settings.image.alt | default: block.settings.heading
+                      alt: step_alt
                   }}
                 {%- else -%}
                   {{ 'image' | placeholder_svg_tag: 'ab-placeholder' }}

@@ -1858,10 +1858,13 @@ body.ab-drawer-open {
   color: var(--paper);
 }
 
+/* The gap above the icons is deliberately larger than the one above the
+   blurb: it separates the studio's details from the social row, rather
+   than reading as one more line of the same paragraph. */
 .ab-foot-social {
   display: flex;
   gap: 10px;
-  margin: 22px 0 0;
+  margin: 34px 0 0;
   padding: 0;
   list-style: none;
 }

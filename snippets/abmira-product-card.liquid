@@ -119,6 +119,16 @@
     tabindex="-1"
     aria-hidden="true"
   >
+    {%- liquid
+      # See sections/abmira-hero.liquid: a piped default inside a filter
+      # argument applies to the tag, not to the argument. Shopify fills a
+      # product image's alt with the product title, but a card_image
+      # metafield points at a theme file, which has none.
+      assign card_alt = card_image.alt
+      if card_alt == blank
+        assign card_alt = card_product.title
+      endif
+    -%}
     {%- if card_image != blank -%}
       {{
         card_image
@@ -127,7 +137,7 @@
           widths: '210, 320, 480, 700',
           sizes: '(min-width: 1025px) 25vw, (min-width: 641px) 33vw, 50vw',
           loading: loading,
-          alt: card_image.alt | default: card_product.title
+          alt: card_alt
       }}
     {%- else -%}
       <svg viewBox="0 0 300 340" width="150" style="--g: #191813;" aria-hidden="true">

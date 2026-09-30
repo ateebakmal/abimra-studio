@@ -65,6 +65,15 @@
               One <a> wraps the whole card, with the title inside it, rather
               than a div with a nested link.
             {%- endcomment -%}
+            {%- liquid
+              # See abmira-hero.liquid: a piped default inside a filter
+              # argument applies to the tag, not to the argument. A
+              # collection image has no alt unless one was typed in.
+              assign coll_alt = image.alt
+              if coll_alt == blank
+                assign coll_alt = title
+              endif
+            -%}
             <a
               class="ab-coll-card"
               href="{{ collection.url | default: '#' }}"
@@ -78,7 +87,7 @@
                     widths: '400, 600, 900, 1200',
                     sizes: '(min-width: 1025px) 46vw, 92vw',
                     loading: loading,
-                    alt: image.alt | default: title
+                    alt: coll_alt
                 }}
               {%- endif -%}
 

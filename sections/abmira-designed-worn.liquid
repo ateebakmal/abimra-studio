@@ -27,6 +27,14 @@
       {%- if photos.size > 0 -%}
         <div class="ab-worn-row ab-rv ab-rv-1">
           {%- for block in photos -%}
+            {%- liquid
+              # See abmira-hero.liquid: a piped default inside a filter
+              # argument applies to the tag, not to the argument.
+              assign worn_alt = block.settings.image.alt
+              if worn_alt == blank
+                assign worn_alt = block.settings.name
+              endif
+            -%}
             <figure class="ab-ph" {{ block.shopify_attributes }}>
               {%- if block.settings.image != blank -%}
                 {{
@@ -36,7 +44,7 @@
                     loading: 'lazy',
                     widths: '300, 450, 600, 900',
                     sizes: '(min-width: 641px) 30vw, 92vw',
-                    alt: block.settings.image.alt | default: block.settings.name
+                    alt: worn_alt
                 }}
               {%- else -%}
                 {{ 'lifestyle-1' | placeholder_svg_tag: 'ab-placeholder' }}

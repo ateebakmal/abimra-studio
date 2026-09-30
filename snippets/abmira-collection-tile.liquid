@@ -28,6 +28,14 @@
   {% render 'abmira-collection-tile', url: c.url, title: c.title, image: c.image %}
 {% endcomment %}
 
+{%- liquid
+  # See sections/abmira-hero.liquid: a piped default inside a filter
+  # argument applies to the tag, not to the argument.
+  assign tile_alt = image.alt
+  if tile_alt == blank
+    assign tile_alt = title
+  endif
+-%}
 <a
   class="ab-coll-tile{% if image != blank %} ab-has-img{% endif %}"
   href="{{ url | default: '#' }}"
@@ -42,7 +50,7 @@
         widths: '210, 320, 480, 700',
         sizes: '(min-width: 641px) 25vw, 92vw',
         loading: 'lazy',
-        alt: image.alt | default: title
+        alt: tile_alt
     }}
     <span class="ab-coll-tile-scrim" aria-hidden="true"></span>
   {%- endif -%}
