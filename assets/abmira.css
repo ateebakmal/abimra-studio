@@ -1896,6 +1896,27 @@ body.ab-drawer-open {
   fill: currentColor;
 }
 
+/* Theme editor only: a block whose link is still empty. Dashed and dim so
+   it reads as an unfinished slot rather than a working icon, and no
+   pointer, because there is nothing to click yet. Shoppers never see it -
+   the section only renders this branch in design mode. */
+.ab-foot-social-todo span {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px dashed var(--rule-inv);
+  border-radius: 50%;
+  color: rgba(238, 234, 224, 0.34);
+  cursor: default;
+}
+
+.ab-foot-social-todo svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
 /* Company registration details: legally required on a UK limited company's
    website, and read only when someone is looking for them. */
 .ab-foot-reg {

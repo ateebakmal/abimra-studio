@@ -67,6 +67,14 @@
             "policy": "cookies",
             "link": ""
           }
+        },
+        "refunds": {
+          "type": "legal",
+          "settings": {
+            "label": "Refunds",
+            "policy": "refund",
+            "link": ""
+          }
         }
       },
       "block_order": [
@@ -75,6 +83,7 @@
         "col1",
         "col2",
         "legal_iYHjNH",
+        "refunds",
         "terms2",
         "cookies"
       ],

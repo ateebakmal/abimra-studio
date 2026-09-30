@@ -54,14 +54,20 @@
 
         {%- comment -%}
           An icon with no link behind it is worse than no icon: it says the
-          studio is on Instagram and then goes nowhere. So a block is only
-          drawn once it has a real address, the same rule the policy links
-          follow. "#" counts as empty - it is what the theme editor leaves
-          when someone adds the block and does not fill it in.
+          studio is on Instagram and then goes nowhere. So on the
+          storefront a block is only drawn once it has a real address, the
+          same rule the policy links follow. "#" counts as empty - it is
+          what the theme editor leaves when someone adds the block and
+          does not fill it in.
+
+          In the theme editor they always show, greyed. Hiding them there
+          too meant whoever was meant to fill them in could not see they
+          existed, and an empty block with nothing on screen is not
+          something anyone goes looking for.
         {%- endcomment -%}
         {%- assign social_shown = 0 -%}
         {%- for block in social -%}
-          {%- if block.settings.link != blank and block.settings.link != '#' -%}
+          {%- if block.settings.link != blank and block.settings.link != '#' or request.design_mode -%}
             {%- assign social_shown = social_shown | plus: 1 -%}
           {%- endif -%}
         {%- endfor -%}
@@ -69,7 +75,25 @@
         {%- if social_shown > 0 -%}
           <ul class="ab-foot-social" role="list">
             {%- for block in social -%}
+              {%- assign has_link = false -%}
               {%- if block.settings.link != blank and block.settings.link != '#' -%}
+                {%- assign has_link = true -%}
+              {%- endif -%}
+
+              {%- if has_link == false and request.design_mode -%}
+                <li class="ab-foot-social-todo" {{ block.shopify_attributes }}>
+                  <span
+                    role="img"
+                    aria-label="{{ block.settings.network | capitalize }} — no link set yet"
+                    title="Add a link to this block and the icon goes live."
+                  >
+                    {%- liquid
+                      assign icon = 'icon-' | append: block.settings.network | append: '.svg'
+                    -%}
+                    {{ icon | inline_asset_content }}
+                  </span>
+                </li>
+              {%- elsif has_link -%}
                 {%- liquid
                   assign icon = 'icon-' | append: block.settings.network | append: '.svg'
                 -%}
