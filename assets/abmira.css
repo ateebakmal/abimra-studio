@@ -886,13 +886,42 @@
   z-index: 1;
 }
 
-/* Hover: the garment eases up off its ground and the card's hairline
-   darkens. No shadow and no lift on the card itself - the guide is
-   explicit that separation here comes from value and hairlines, and a
-   card that jumps is the templated move this system is avoiding.
+/* Hover.
+
+   Two things happen, and both have to read the same on a cut-out PNG
+   sitting on a coloured ground and on a photograph filling the tile
+   edge to edge, because a card can be either.
+
+   The image scales, and only scales. An earlier version lifted it with
+   translateY, which is fine on a cut-out and wrong on a fill image:
+   the picture already covers the tile exactly, so moving it up opened
+   a strip of background along the bottom. Scale can never do that.
+
+   Then a hairline of press red draws across the foot of the tile, left
+   to right. That one is drawn on the tile rather than the picture, so
+   it reads identically whatever the image is - and on a fill image,
+   where a 4% zoom is nearly invisible, it is the part you actually
+   notice.
+
+   No shadow and no lift on the card itself: separation in this system
+   is value and hairlines, and a card that jumps is the templated move
+   the whole thing is avoiding.
 
    Behind (hover: hover) so a touch screen, which fires :hover on tap
    and then keeps it, never leaves a card stuck in the hovered state. */
+.ab-prod-img::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  height: 2px;
+  background: var(--red);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
 @media (hover: hover) {
   .ab-prod {
     transition: border-color 0.12s var(--ab-e);
@@ -900,7 +929,11 @@
 
   .ab-prod-img img,
   .ab-section .ab-prod-img img[width][height] {
-    transition: transform 0.35s var(--ab-e);
+    transition: transform 0.4s var(--ab-e);
+  }
+
+  .ab-prod-img::after {
+    transition: transform 0.4s var(--ab-e);
   }
 
   .ab-prod:hover {
@@ -908,19 +941,24 @@
   }
 
   .ab-prod:hover .ab-prod-img img {
-    transform: translateY(-5px) scale(1.03);
+    transform: scale(1.045);
   }
 
-  /* Dawn colours h3 directly, so this needs to outrank a bare element
-     selector - two classes does it. */
+  .ab-prod:hover .ab-prod-img::after {
+    transform: scaleX(1);
+  }
+
+  /* Dawn colours h3 directly, so this has to outrank a bare element
+     selector. Two classes does it. */
   .ab-prod:hover .ab-ttl a {
     color: var(--red);
   }
 }
 
-@media (hover: hover) and (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) {
   .ab-prod-img img,
-  .ab-section .ab-prod-img img[width][height] {
+  .ab-section .ab-prod-img img[width][height],
+  .ab-prod-img::after {
     transition: none;
   }
 
