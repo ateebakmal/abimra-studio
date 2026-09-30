@@ -4007,9 +4007,12 @@ a.ab-detail-t:hover {
   position: relative;
 }
 
+/* Desktop only. Below 861 the mobile menu carries its own search bar, and
+   two ways into the same search in a 44px-tall row is one too many.
+   Written mobile-first to match every other breakpoint in this file. */
 .ab-search-toggle {
+  display: none;
   position: relative;
-  display: grid;
   place-items: center;
   width: 44px;
   height: 44px;
@@ -4048,6 +4051,13 @@ a.ab-detail-t:hover {
 .ab-search-toggle:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
+  box-shadow: none;
+}
+
+@media screen and (min-width: 861px) {
+  .ab-search-toggle {
+    display: grid;
+  }
 }
 
 /* ---- the panel ---- */
@@ -4097,11 +4107,12 @@ a.ab-detail-t:hover {
   border: 1px solid var(--rule);
   border-radius: var(--r-pill);
   background: var(--paper-raised);
-  transition: border-color 0.12s var(--ab-e);
+  transition: border-color 0.12s var(--ab-e), box-shadow 0.12s var(--ab-e);
 }
 
 .ab-search-field:focus-within {
   border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(27, 79, 160, 0.16);
 }
 
 .ab-search-glass {
@@ -4131,8 +4142,18 @@ a.ab-detail-t:hover {
   opacity: 0.85;
 }
 
-.ab-search-input:focus {
+/* Dawn puts an outline AND a two-layer box-shadow on every *:focus-visible.
+   Inside our pill that draws as a pale rectangle around the input, which
+   is what this looked like. Resetting only `outline` is not enough - the
+   shadow is what you see. The indicator moves to the pill below, so the
+   field still shows focus clearly.
+
+   Both pseudo-classes: a browser treats a focused text input as
+   focus-visible whether it was clicked or tabbed to. */
+.ab-search-input:focus,
+.ab-search-input:focus-visible {
   outline: 0;
+  box-shadow: none;
 }
 
 /* Safari draws its own clear button on type=search, which would sit next
@@ -4194,6 +4215,7 @@ a.ab-detail-t:hover {
 .ab-search-go:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
+  box-shadow: none;
 }
 
 /* ---- results, inside the panel ---- */
@@ -4303,8 +4325,11 @@ predictive-search[loading] .ab-search-spinner {
   background: rgba(255, 255, 255, 0.06);
 }
 
+/* A blue-tinted ring vanishes on the menu's near-black ground, so the
+   dark field states its focus in paper instead. */
 .am-search .ab-search-field:focus-within {
   border-color: var(--paper);
+  box-shadow: 0 0 0 3px rgba(238, 234, 224, 0.14);
 }
 
 .am-search .ab-search-glass,
