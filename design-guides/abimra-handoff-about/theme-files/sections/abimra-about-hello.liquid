@@ -1,0 +1,93 @@
+{%- comment -%} Abimra Studio: About page, say hello. Styles: assets/abimra-about.css. Motion: assets/abimra-about.js. {%- endcomment -%}
+{{ 'abimra-about.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'abimra-about.js' | asset_url }}" defer></script>
+<section class="abt abt-sec"{% if section.settings.tight_top %} style="padding-top:0"{% endif %}>
+  <div class="abt-wrap">
+    <div class="abt-sec-head abt-rv"><h2 class="abt-d">{{ section.settings.heading | escape }}</h2>{%- if section.settings.intro != blank -%}<p class="abt-lede">{{ section.settings.intro | escape }}</p>{%- endif -%}</div>
+    <div class="abt-hello abt-rv">
+      {%- for block in section.blocks -%}
+        <a class="abt-card" href="{{ block.settings.link | default: '#' }}" {{ block.shopify_attributes }}>
+          <span class="abt-mono">{{ block.settings.label | escape }}</span>
+          <b{% if block.settings.plain %} class="abt-plain"{% endif %}>{{ block.settings.value | escape | replace: '[', '<mark class="abt-fill">[' | replace: ']', ']</mark>' }}</b>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "About: say hello",
+  "tag": "div",
+  "class": "section-abt-hello",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Say hello"
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro",
+      "default": "Questions about a print, a bulk order or an idea you’re not sure about? We’d love to hear it."
+    },
+    {
+      "type": "checkbox",
+      "id": "tight_top",
+      "label": "Less space above",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Contact card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Small label",
+          "default": "Email"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Big text",
+          "default": "[hello@yourdomain]"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "For email, use mailto:you@yourdomain"
+        },
+        {
+          "type": "checkbox",
+          "id": "plain",
+          "label": "Keep lowercase (for emails and handles)",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About: say hello",
+      "blocks": [
+        {
+          "type": "card"
+        },
+        {
+          "type": "card"
+        },
+        {
+          "type": "card"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

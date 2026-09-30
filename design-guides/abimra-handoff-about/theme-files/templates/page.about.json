@@ -1,0 +1,145 @@
+{
+  "sections": {
+    "hero": {
+      "type": "abimra-about-hero",
+      "settings": {}
+    },
+    "process": {
+      "type": "abimra-about-process",
+      "settings": {},
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "title": "You design it",
+            "text": "Upload artwork or add text in the designer, pick the garment and colour, and put it front, back, chest or sleeve.",
+            "chip": "Live preview"
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "title": "We check it",
+            "text": "Your artwork’s resolution is checked as you scale it, and the background is removed for you, so nothing prints blurry or boxy.",
+            "chip": "Resolution check"
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "title": "We print it",
+            "text": "Printed to order in our own studio, DTF on washed cotton, one piece at a time.",
+            "chip": "Printed in-house"
+          }
+        },
+        "step_4": {
+          "type": "step",
+          "settings": {
+            "title": "We send it",
+            "text": "Folded, packed and dispatched in 2–4 days, delivered anywhere in the UK.",
+            "chip": "2–4 day dispatch"
+          }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3",
+        "step_4"
+      ]
+    },
+    "facts": {
+      "type": "abimra-about-facts",
+      "settings": {},
+      "blocks": {
+        "fact_1": {
+          "type": "fact",
+          "settings": {
+            "value": "In-house",
+            "text": "Printed in our own UK studio"
+          }
+        },
+        "fact_2": {
+          "type": "fact",
+          "settings": {
+            "value": "2–4 days",
+            "text": "From order to dispatch"
+          }
+        },
+        "fact_3": {
+          "type": "fact",
+          "settings": {
+            "value": "No min.",
+            "text": "One shirt or fifty"
+          }
+        },
+        "fact_4": {
+          "type": "fact",
+          "settings": {
+            "value": "UK-wide",
+            "text": "Delivered anywhere in the UK"
+          }
+        }
+      },
+      "block_order": [
+        "fact_1",
+        "fact_2",
+        "fact_3",
+        "fact_4"
+      ]
+    },
+    "story": {
+      "type": "abimra-about-story",
+      "settings": {}
+    },
+    "hello": {
+      "type": "abimra-about-hello",
+      "settings": {},
+      "blocks": {
+        "card_1": {
+          "type": "card",
+          "settings": {
+            "label": "Email",
+            "value": "[hello@yourdomain]",
+            "link": "mailto:hello@yourdomain",
+            "plain": true
+          }
+        },
+        "card_2": {
+          "type": "card",
+          "settings": {
+            "label": "Instagram",
+            "value": "[@yourhandle]",
+            "plain": true
+          }
+        },
+        "card_3": {
+          "type": "card",
+          "settings": {
+            "label": "Contact",
+            "value": "Send us a message",
+            "link": "/pages/contact",
+            "plain": false
+          }
+        }
+      },
+      "block_order": [
+        "card_1",
+        "card_2",
+        "card_3"
+      ]
+    },
+    "closer": {
+      "type": "abimra-about-closer",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "process",
+    "facts",
+    "story",
+    "hello",
+    "closer"
+  ]
+}

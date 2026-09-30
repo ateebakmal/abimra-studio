@@ -1,0 +1,106 @@
+{{ 'abmira-about.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'abmira-about.js' | asset_url }}" defer="defer"></script>
+
+{%- comment -%}
+  Abimra About: how we print.
+
+  A dark band, which in this theme means a rounded card inside .ab-wrap
+  rather than a full-bleed strip - the closing band and every other dark
+  panel work that way, and the handoff's edge-to-edge version would have
+  been the only one that didn't.
+
+  From 861px the heading holds while the steps pass it. Sticky can only
+  travel inside its own parent's box, so the heading's column is the
+  parent and it is as tall as the list beside it. Nothing above may set
+  overflow: hidden/auto/scroll or the heading stops holding; the band
+  itself uses overflow: clip, which does not break sticky.
+
+  The red rail is driven by --p, written by abmira-about.js.
+
+  STEP 01 is mono because it is a number. The chips are not.
+{%- endcomment -%}
+
+<div class="ab-section ab-about">
+  <section class="ab-sec" style="padding-bottom: 0;">
+    <div class="ab-wrap">
+      <div class="ab-band ab-closer ab-about-how ab-rv">
+        <div class="ab-about-how-grid">
+          <div class="ab-about-how-head">
+            <h2 class="ab-d2">
+              {{- section.settings.heading_1 | escape }}
+              {% if section.settings.heading_2 != blank %}
+                <br>{{ section.settings.heading_2 | escape }}
+              {% endif %}
+              {%- if section.settings.heading_accent != blank -%}
+                <span class="ab-accent">{{ section.settings.heading_accent | escape }}</span>
+              {%- endif -%}
+            </h2>
+            {%- if section.settings.intro != blank -%}
+              <p>{{ section.settings.intro | escape }}</p>
+            {%- endif -%}
+          </div>
+
+          {%- if section.blocks.size > 0 -%}
+            <ol class="ab-about-steps">
+              {%- for block in section.blocks -%}
+                <li class="ab-about-step" {{ block.shopify_attributes }}>
+                  <span class="ab-num">
+                    {{- section.settings.step_word | default: 'Step' | escape }}
+                    {% if forloop.index < 10 %}0{% endif %}{{ forloop.index -}}
+                  </span>
+                  {%- if block.settings.title != blank -%}
+                    <h3 class="ab-d3">{{ block.settings.title | escape }}</h3>
+                  {%- endif -%}
+                  {%- if block.settings.text != blank -%}
+                    <p>{{ block.settings.text | escape }}</p>
+                  {%- endif -%}
+                  {%- if block.settings.chip != blank -%}
+                    <span class="ab-chip">{{ block.settings.chip | escape }}</span>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ol>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "About: how we print",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "The heading is split so the last part can take the accent colour. Only one word on the page should be red."
+    },
+    { "type": "text", "id": "heading_1", "label": "Heading, line 1", "default": "From your screen" },
+    { "type": "text", "id": "heading_2", "label": "Heading, line 2", "default": "to your" },
+    { "type": "text", "id": "heading_accent", "label": "Accent word", "default": "shoulders." },
+    {
+      "type": "text",
+      "id": "intro",
+      "label": "Intro",
+      "default": "What happens between you pressing order and the parcel landing."
+    },
+    { "type": "text", "id": "step_word", "label": "Word before the number", "default": "Step" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "You design it" },
+        { "type": "textarea", "id": "text", "label": "Text" },
+        { "type": "text", "id": "chip", "label": "Tag", "info": "A short label under the step. Leave empty to hide." }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "enabled_on": {
+    "templates": ["page"]
+  }
+}
+{% endschema %}

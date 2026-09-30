@@ -1,0 +1,130 @@
+{{ 'abmira-about.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'abmira-about.js' | asset_url }}" defer="defer"></script>
+
+{%- comment -%}
+  Abimra About: hero.
+
+  One screen under the header, the same trick the homepage hero uses,
+  sized against both axes so a short wide window cannot push the buttons
+  off the bottom.
+
+  The headline is printed in two inks: each line carries a red copy of
+  itself, offset and multiplied, that slides almost into register. That
+  is why the text is repeated in data-t - a CSS ::before needs its own
+  copy of the string, and attr() is the only way to give it one without
+  a second visible element for a screen reader to read twice.
+
+  The eyebrow is sentence case in graphite rather than tracked-out mono.
+  The design guide is explicit about both: mono is functional only, and
+  a tracked-out caps label above every heading is the clearest template
+  tell.
+{%- endcomment -%}
+
+{%- liquid
+  assign l1 = section.settings.line_1
+  assign l2 = section.settings.line_2
+  assign l3 = section.settings.line_3
+  assign spoken = l1 | append: ' ' | append: l2 | append: ' ' | append: l3 | strip
+-%}
+
+<div class="ab-section ab-about">
+  <section class="ab-about-hero">
+    <div class="ab-wrap">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="ab-meta">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+
+        {%- comment -%}
+          One h1, read as one sentence. The lines are presentational, so
+          the spoken version comes from aria-label and the spans are
+          hidden from the accessibility tree.
+        {%- endcomment -%}
+        <h1 class="ab-d1 ab-about-reg" aria-label="{{ spoken | escape }}">
+          {%- if l1 != blank -%}
+            <span data-t="{{ l1 | escape }}" aria-hidden="true">{{ l1 | escape }}</span>
+          {%- endif -%}
+          {%- if l2 != blank -%}
+            <span data-t="{{ l2 | escape }}" aria-hidden="true">{{ l2 | escape }}</span>
+          {%- endif -%}
+          {%- if l3 != blank -%}
+            <span data-t="{{ l3 | escape }}" aria-hidden="true">{{ l3 | escape }}</span>
+          {%- endif -%}
+        </h1>
+      </div>
+
+      <div class="ab-about-hero-grid">
+        {%- if section.settings.intro != blank -%}
+          <p>{{ section.settings.intro | escape }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.button_1_label != blank or section.settings.button_2_label != blank -%}
+          <div class="ab-about-hero-cta">
+            {%- if section.settings.button_1_label != blank -%}
+              <a
+                class="ab-btn ab-btn-p"
+                href="{{ section.settings.button_1_link | default: routes.all_products_collection_url }}"
+              >
+                {{- section.settings.button_1_label | escape -}}
+              </a>
+            {%- endif -%}
+            {%- if section.settings.button_2_label != blank -%}
+              <a
+                class="ab-btn ab-btn-s"
+                href="{{ section.settings.button_2_link | default: routes.all_products_collection_url }}"
+              >
+                {{- section.settings.button_2_label | escape -}}
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.show_cue -%}
+        <p class="ab-about-cue" aria-hidden="true">
+          <i></i>{{ section.settings.cue_label | default: 'Scroll' | escape }}
+        </p>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "About: hero",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Label above the headline", "default": "About Abimra Studio" },
+    {
+      "type": "paragraph",
+      "content": "The headline is three lines, each printed in two inks. Keep them short — they are sized to fill the screen."
+    },
+    { "type": "text", "id": "line_1", "label": "Line 1", "default": "We print" },
+    { "type": "text", "id": "line_2", "label": "Line 2", "default": "what you" },
+    { "type": "text", "id": "line_3", "label": "Line 3", "default": "make." },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro",
+      "default": "Abimra Studio is a small print studio in the UK. You bring the idea: a name, a photo, a sketch, a logo, the in-joke only your lot will get. We turn it into a tee or hoodie made just for you."
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    { "type": "text", "id": "button_1_label", "label": "First button", "default": "Design your own" },
+    { "type": "url", "id": "button_1_link", "label": "First link" },
+    { "type": "text", "id": "button_2_label", "label": "Second button", "default": "Shop Studio Originals" },
+    { "type": "url", "id": "button_2_link", "label": "Second link" },
+    {
+      "type": "header",
+      "content": "Scroll cue"
+    },
+    { "type": "checkbox", "id": "show_cue", "label": "Show the scroll cue", "default": true },
+    { "type": "text", "id": "cue_label", "label": "Cue text", "default": "Scroll" }
+  ],
+  "enabled_on": {
+    "templates": ["page"]
+  }
+}
+{% endschema %}

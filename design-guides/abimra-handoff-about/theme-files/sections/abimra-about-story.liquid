@@ -1,0 +1,79 @@
+{%- comment -%} Abimra Studio: About page, story. Styles: assets/abimra-about.css. Motion: assets/abimra-about.js. {%- endcomment -%}
+{{ 'abimra-about.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'abimra-about.js' | asset_url }}" defer></script>
+<section class="abt abt-sec"{% if section.settings.tight_top %} style="padding-top:0"{% endif %}>
+  <div class="abt-wrap abt-story">
+    <div class="abt-story-img abt-rv">
+      {%- if section.settings.image -%}
+        {{ section.settings.image | image_url: width: 2000 | image_tag: widths: '400, 700, 1000, 1400, 2000', sizes: '(min-width: 900px) 45vw, 100vw', loading: 'lazy', alt: section.settings.image.alt | default: section.settings.heading }}
+      {%- else -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag }}
+        <span class="abt-note">Add a 5:4 photo of the studio, 2000 × 1600</span>
+      {%- endif -%}
+    </div>
+    <div class="abt-story-copy abt-rv">
+      <h2 class="abt-d">{{ section.settings.heading | escape }}</h2>
+      {{ section.settings.text | replace: '[', '<mark class="abt-fill">[' | replace: ']', ']</mark>' }}
+      {%- if section.settings.sign_name != blank -%}
+        <div class="abt-sign"><i>{{ section.settings.sign_initials | escape }}</i><div><b>{{ section.settings.sign_name | escape | replace: '[', '<mark class="abt-fill">[' | replace: ']', ']</mark>' }}</b><span>{{ section.settings.sign_role | escape }}</span></div></div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "About: how it started",
+  "tag": "div",
+  "class": "section-abt-story",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Photo",
+      "info": "5:4 landscape, 2000 × 1600 px."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How it started"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Story",
+      "info": "Anything still in [square brackets] is highlighted in red on the page until you replace it.",
+      "default": "<p>Abimra Studio started in [year] in [town or city], when [founder’s name] [one line on why: for example, couldn’t find anywhere to print one good tee without ordering fifty].</p><p>So we set up our own press. Today we print tees, hoodies and sweatshirts for birthdays, leavers, teams, bands, small businesses and anyone with an idea worth wearing, one order at a time.</p><p>[A line about the team today, or what’s next for the studio.]</p>"
+    },
+    {
+      "type": "text",
+      "id": "sign_initials",
+      "label": "Signature initials",
+      "default": "AS"
+    },
+    {
+      "type": "text",
+      "id": "sign_name",
+      "label": "Signature name",
+      "default": "[Founder’s name]"
+    },
+    {
+      "type": "text",
+      "id": "sign_role",
+      "label": "Signature role",
+      "default": "Founder, Abimra Studio"
+    },
+    {
+      "type": "checkbox",
+      "id": "tight_top",
+      "label": "Less space above",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "About: how it started"
+    }
+  ]
+}
+{% endschema %}

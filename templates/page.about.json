@@ -1,0 +1,153 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "abmira-about-hero",
+      "settings": {
+        "eyebrow": "About Abimra Studio",
+        "line_1": "We print",
+        "line_2": "what you",
+        "line_3": "make.",
+        "intro": "Abimra Studio is a small print studio in the UK. You bring the idea: a name, a photo, a sketch, a logo, the in-joke only your lot will get. We turn it into a tee or hoodie made just for you.",
+        "button_1_label": "Design your own",
+        "button_1_link": "shopify://collections/design-your-own",
+        "button_2_label": "Shop Studio Originals",
+        "button_2_link": "shopify://collections/studio-originals",
+        "show_cue": true,
+        "cue_label": "Scroll"
+      }
+    },
+    "process": {
+      "type": "abmira-about-process",
+      "settings": {
+        "heading_1": "From your screen",
+        "heading_2": "to your",
+        "heading_accent": "shoulders.",
+        "intro": "What happens between you pressing order and the parcel landing.",
+        "step_word": "Step"
+      },
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "title": "You design it",
+            "text": "Upload artwork or add text in the designer, pick the garment and colour, and put it front, back, chest or sleeve.",
+            "chip": "Live preview"
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "title": "We check it",
+            "text": "Your artwork's resolution is checked as you scale it, and the background is removed for you, so nothing prints blurry or boxy.",
+            "chip": "Resolution check"
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "title": "We print it",
+            "text": "Printed to order in our own studio, DTF on washed cotton, one piece at a time.",
+            "chip": "Printed in-house"
+          }
+        },
+        "step_4": {
+          "type": "step",
+          "settings": {
+            "title": "We send it",
+            "text": "Folded, packed and dispatched in 2–4 days, delivered anywhere in the UK.",
+            "chip": "2–4 day dispatch"
+          }
+        }
+      },
+      "block_order": ["step_1", "step_2", "step_3", "step_4"]
+    },
+    "facts": {
+      "type": "abmira-about-facts",
+      "settings": {},
+      "blocks": {
+        "fact_1": {
+          "type": "fact",
+          "settings": { "value": "In-house", "text": "Printed in our own UK studio" }
+        },
+        "fact_2": {
+          "type": "fact",
+          "settings": { "value": "2–4 days", "text": "From order to dispatch" }
+        },
+        "fact_3": {
+          "type": "fact",
+          "settings": { "value": "No min.", "text": "One shirt or fifty" }
+        },
+        "fact_4": {
+          "type": "fact",
+          "settings": { "value": "UK-wide", "text": "Delivered anywhere in the UK" }
+        }
+      },
+      "block_order": ["fact_1", "fact_2", "fact_3", "fact_4"]
+    },
+    "story": {
+      "type": "abmira-about-story",
+      "settings": {
+        "heading": "How it started",
+        "text": "<p>Abimra Studio started in [year] in [town or city], when [founder's name] [one line on why: for example, couldn't find anywhere to print one good tee without ordering fifty].</p><p>So we set up our own press. Today we print tees, hoodies and sweatshirts for birthdays, leavers, teams, bands, small businesses and anyone with an idea worth wearing, one order at a time.</p><p>[A line about the team today, or what's next for the studio.]</p>",
+        "sign_initials": "AS",
+        "sign_name": "[Founder's name]",
+        "sign_role": "Founder, Abimra Studio",
+        "tight_top": true
+      }
+    },
+    "hello": {
+      "type": "abmira-about-hello",
+      "settings": {
+        "heading": "Say hello",
+        "intro": "Questions about a print, a bulk order or an idea you're not sure about? We'd love to hear it.",
+        "tight_top": true
+      },
+      "blocks": {
+        "card_1": {
+          "type": "card",
+          "settings": {
+            "label": "Email",
+            "value": "[hello@yourdomain]",
+            "link": "mailto:hello@abimra.studio",
+            "plain": true
+          }
+        },
+        "card_2": {
+          "type": "card",
+          "settings": { "label": "Instagram", "value": "[@yourhandle]", "plain": true }
+        },
+        "card_3": {
+          "type": "card",
+          "settings": {
+            "label": "Contact",
+            "value": "Send us a message",
+            "link": "/pages/contact",
+            "plain": false
+          }
+        }
+      },
+      "block_order": ["card_1", "card_2", "card_3"]
+    },
+    "closer": {
+      "type": "abmira-closer",
+      "settings": {
+        "align": "center",
+        "show_mark": true,
+        "heading": "What will\nyou make?",
+        "body": "Your name. Your artwork. Your message. On a tee or a hoodie, printed and posted from our studio.",
+        "cta_label": "Design your own",
+        "cta_link": "shopify://collections/design-your-own"
+      }
+    }
+  },
+  "order": ["hero", "process", "facts", "story", "hello", "closer"]
+}

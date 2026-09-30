@@ -77,6 +77,8 @@ constantly and has its own scroll container.
 | `assets/abmira-cart.css` | The cart page. Namespaced `ab-cart-`. |
 | `assets/abmira-cart.js` | Cart preview dialog, undo toast, phone checkout bar, ticket. |
 | `assets/abmira-search.js` | Opens and closes the header search panel. Nothing else. |
+| `assets/abmira-about.css` | The About page. Namespaced `ab-about-`. |
+| `assets/abmira-about.js` | Two-ink slide and the process rail. Reveals are the theme's. |
 
 ### Dawn files that were modified
 
@@ -295,6 +297,58 @@ per section that asks for it, so `#ab-tee`, `#ab-hood`, `#ab-regmark`,
 `#ab-mark` and `#ab-tick` appear four times in the homepage document.
 `<use>` resolves to the first, so nothing is broken, but the ids are
 duplicated.
+
+---
+
+## The About page
+
+`sections/abmira-about-*.liquid` (five), `assets/abmira-about.css`,
+`assets/abmira-about.js`, `templates/page.about.json`.
+
+It arrived as a finished handoff in `design-guides/abimra-handoff-about/`
+with its own `abt-` namespace, tokens, reveal system and breakpoints.
+**It was rebuilt on the theme's system rather than installed**, on the
+instruction that it should follow the site. The handoff is kept as the
+design reference; none of its files are in the theme.
+
+What that decision bought, concretely: the handoff's headings would have
+inherited Dawn's `h1–h5 { font-family: var(--font-heading-family) }`,
+which `theme.liquid` resets *after* `abmira.css` to Dawn's own font — one
+with no width axis. `.abt-d` sets `font-variation-settings: 'wdth' 76`
+but not `font-family`, so every giant headline on the page would have
+rendered uncompressed. Using `.ab-d1`/`.ab-d2`/`.ab-d3` avoids it,
+because those already state the family. See the typography note above.
+
+### Where it differs from the reference
+
+- **The process band is a rounded card inside `.ab-wrap`**, not a
+  full-bleed strip. Every other dark band in the theme is.
+- **There is no sixth section.** The design's red closing panel is
+  `sections/abmira-closer.liquid`, whose default copy was already "What
+  will you make?".
+- **Labels are sentence case in graphite**, not tracked-out mono. Mono
+  survives only on `STEP 01`, where it is carrying a number.
+- Reveals are the theme's `.ab-rv`, not a second observer.
+
+### Two things to leave alone
+
+**The process heading is `position: sticky`.** Nothing above it may take
+`overflow: hidden | auto | scroll`. The band itself uses `overflow: clip`,
+which does not break sticky — don't "fix" it to `hidden`.
+
+**The facts are sized in container query units.** `container-type:
+inline-size` on `.ab-about-facts`, `font-size: clamp(26px, 11cqw, 54px)`
+on the word. That is what keeps all four the same size and stops the
+longest one overflowing its cell. Swapping `cqw` for `vw` reintroduces
+the "1fr will not shrink below content" bug the design guide warns about.
+
+### Known and accepted
+
+Each of the five sections emits its own `<link>` to `abmira-about.css`,
+so the page carries five identical tags. That is Shopify's own idiom —
+a section has to be self-sufficient because a merchant can add one on
+its own — and the browser fetches once. The JS is emitted three times
+and guards on `window.__abAbout`, so the later copies only refresh.
 
 ---
 

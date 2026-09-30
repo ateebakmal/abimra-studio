@@ -234,6 +234,59 @@ search useful.
 
 ---
 
+## The About page
+
+Six sections on the `page.about` template: hero, how we print, facts,
+how it started, say hello, and the closing band.
+
+### Getting it onto the site
+
+1. **Online Store → Pages → Add page**, call it About.
+2. Set **Theme template** to `page.about`.
+3. In the theme editor, fill in the placeholders and add the photo.
+
+**The template won't be in the dropdown until this theme is published.**
+The admin only lists templates from the live theme. Create the page now
+on the default template if you like, then switch it after publishing.
+
+### Placeholders — the red text
+
+Anything left in [square brackets] shows **in red with a dashed line
+under it**, on the live site as well as in the editor. That is on
+purpose: a placeholder that looks like ordinary text is one nobody
+notices for a year.
+
+There are five, all in *How it started* and *Say hello*:
+
+| Where | What to put |
+|---|---|
+| Story | the year, the town, the founder's name, one line on why |
+| Signature | the founder's name again |
+| Say hello | your email address and your Instagram handle |
+
+Also set the **Email** card's link to `mailto:` and your real address —
+the text and the link are separate fields.
+
+### The photo
+
+*How it started* wants a **5:4 landscape photo, about 2000 × 1600** — the
+studio, the press, or the people. Until you add one it shows an empty
+frame saying so, rather than a stock photo nobody chose.
+
+### What each section lets you change
+
+- **Hero** — the label, three headline lines, the intro, both buttons and
+  the scroll cue. Keep the headline lines short: they are sized to fill
+  the screen, so a long line shrinks all three.
+- **How we print** — the heading (in three parts, the last one red), the
+  intro, and up to six steps. Steps can be reordered, added and removed.
+- **Facts** — up to four. Keep the big words to one or two short words.
+- **Say hello** — up to three cards. *Keep it as typed* should stay on
+  for addresses and handles, which shouldn't be shouted in capitals.
+- **Closing band** — the same section the homepage uses.
+
+---
+
 ## Pages
 
 - `/pages/contact` and `/pages/returns` use their own templates and are

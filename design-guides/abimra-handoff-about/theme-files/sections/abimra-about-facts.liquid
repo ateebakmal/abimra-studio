@@ -1,0 +1,62 @@
+{%- comment -%} Abimra Studio: About page, facts. Styles: assets/abimra-about.css. Motion: assets/abimra-about.js. {%- endcomment -%}
+{{ 'abimra-about.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'abimra-about.js' | asset_url }}" defer></script>
+<div class="abt abt-sec abt-facts">
+  <div class="abt-wrap">
+    <ul class="abt-specs abt-rv">
+      {%- for block in section.blocks -%}
+        {%- assign v = block.settings.value | escape -%}
+        <li class="abt-spec" style="--i:{{ forloop.index0 }}" {{ block.shopify_attributes }}><b class="abt-spec-v" data-t="{{ v }}">{{ v }}</b><span class="abt-spec-d">{{ block.settings.text | escape }}</span></li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "About: facts",
+  "tag": "div",
+  "class": "section-abt-facts",
+  "max_blocks": 4,
+  "settings": [],
+  "blocks": [
+    {
+      "type": "fact",
+      "name": "Fact",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Big word",
+          "default": "In-house",
+          "info": "Keep it short, around 8 characters."
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Line underneath",
+          "default": "Printed in our own UK studio"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About: facts",
+      "blocks": [
+        {
+          "type": "fact"
+        },
+        {
+          "type": "fact"
+        },
+        {
+          "type": "fact"
+        },
+        {
+          "type": "fact"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

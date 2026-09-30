@@ -1,0 +1,596 @@
+/* ============================================================
+   ABOUT PAGE
+   ============================================================
+
+   The design came in as a self-contained handoff with its own `abt-`
+   namespace, its own tokens, its own reveal system and its own
+   breakpoints. It is rebuilt here on the theme's system instead: the
+   same tokens, the same type scale, the same .ab-rv reveals, the same
+   breakpoints. Two parallel design systems in one theme is how a store
+   starts looking like two stores.
+
+   What that changed, and why:
+
+   - Dark bands are rounded cards inside .ab-wrap here, not full-bleed
+     strips. Every other dark band in the theme is, so the process
+     section is too.
+   - The closing panel is not in this file. The theme already has
+     sections/abmira-closer.liquid, and its default copy is already
+     "What will you make?" - the same words the design finishes on.
+     A seventh near-identical section would have been a copy of a
+     component we own.
+   - Labels are sentence case in graphite, not tracked-out mono. The
+     guide is explicit: mono is functional only, and tracked-out caps
+     labels are the clearest template tell. Mono survives where it is
+     carrying digits - STEP 01.
+   - No shadows anywhere. Separation is value and hairlines.
+
+   Everything is prefixed ab-about-. Motion lives in abmira-about.js.
+   ============================================================ */
+
+/* ---------------------------------------------------------- *
+ * 1. Hero - one screen under the header, printed in two inks
+ * ---------------------------------------------------------- */
+
+.ab-about-hero {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  /* Two declarations, not one: svh is what a phone's collapsing address
+     bar actually leaves, and vh is the fallback where it is unsupported. */
+  min-height: calc(100vh - var(--ab-nav-h));
+  min-height: calc(100svh - var(--ab-nav-h));
+}
+
+/* Halftone behind the headline - Appendix A, print furniture. Masked so
+   it fades out rather than ending on a hard edge. */
+.ab-about-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(25, 24, 19, 0.09) 1.1px, transparent 1.3px);
+  background-size: 18px 18px;
+  -webkit-mask: radial-gradient(ellipse at 78% 28%, #000 0, transparent 60%);
+  mask: radial-gradient(ellipse at 78% 28%, #000 0, transparent 60%);
+  pointer-events: none;
+}
+
+.ab-about-hero > .ab-wrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(24px, 4vh, 48px);
+  padding-top: clamp(24px, 6vh, 64px);
+  padding-bottom: clamp(20px, 4vh, 40px);
+}
+
+/* Sized against BOTH axes. Width alone lets a short, wide window scale
+   the headline until it pushes the buttons off the bottom - the same
+   failure the homepage hero had. */
+.ab-about-reg {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  margin: 14px 0 0;
+  font-size: clamp(46px, min(16.5vw, 18svh), 200px);
+  line-height: 0.86;
+}
+
+.ab-about-reg span {
+  display: block;
+  position: relative;
+}
+
+/* The second ink. A copy of the line in red, sitting behind the black
+   one and multiplied into it, offset like a press out of register. It
+   slides almost - not quite - home. Landing it exactly would just look
+   like a shadow that failed. */
+.ab-about-reg span::before {
+  content: attr(data-t);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  color: var(--red);
+  mix-blend-mode: multiply;
+  transform: translate(0.06em, 0.04em);
+  transition: transform 1.4s cubic-bezier(0.6, 0, 0.2, 1) 0.3s;
+}
+
+.ab-about-reg span:nth-child(2)::before {
+  transform: translate(-0.05em, 0.05em);
+}
+
+.ab-about-reg span:nth-child(3)::before {
+  transform: translate(0.04em, -0.05em);
+}
+
+.ab-about-hero.ab-in .ab-about-reg span::before {
+  transform: translate(0.012em, 0.008em);
+}
+
+.ab-about-hero-grid {
+  display: grid;
+  gap: 22px;
+}
+
+.ab-about-hero-grid p {
+  margin: 0;
+  max-width: 44ch;
+  font-size: clamp(17px, 1.6vw, 20px);
+  line-height: 1.5;
+  color: var(--graphite);
+}
+
+.ab-about-hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ab-about-cue {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--graphite);
+}
+
+.ab-about-cue i {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 34px;
+  background: var(--rule);
+  overflow: hidden;
+}
+
+.ab-about-cue i::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 14px;
+  background: var(--red);
+  animation: ab-about-cue 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes ab-about-cue {
+  from {
+    transform: translateY(-14px);
+  }
+  to {
+    transform: translateY(34px);
+  }
+}
+
+/* A phone on its side has no room for a scroll cue under a headline
+   that is already filling the screen. */
+@media screen and (max-height: 560px) and (orientation: landscape) {
+  .ab-about-cue {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 861px) {
+  .ab-about-hero-grid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    align-items: end;
+  }
+
+  .ab-about-hero-cta {
+    justify-content: flex-end;
+  }
+}
+
+/* ---------------------------------------------------------- *
+ * 2. Process - a dark band whose heading holds while the steps pass
+ * ---------------------------------------------------------- */
+
+.ab-about-how {
+  position: relative;
+  /* clip, not hidden: it contains the rail without breaking the sticky
+     heading inside. overflow:hidden on an ancestor kills position:sticky. */
+  overflow: clip;
+  padding: clamp(40px, 6vw, 72px) clamp(20px, 4vw, 56px);
+}
+
+.ab-about-how-grid {
+  display: grid;
+  gap: 40px;
+}
+
+.ab-about-how-head p {
+  margin: 14px 0 0;
+  max-width: 44ch;
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(238, 234, 224, 0.62);
+}
+
+.ab-about-how-head .ab-accent {
+  color: var(--red);
+}
+
+/* The steps, and the rail they hang off */
+.ab-about-steps {
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 34px;
+  list-style: none;
+}
+
+.ab-about-steps::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 7px;
+  width: 1px;
+  background: var(--rule-inv);
+}
+
+/* The red fill. --p is 0-1, written by abmira-about.js from scroll
+   position; transform-origin top so it grows downward. */
+.ab-about-steps::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 7px;
+  width: 1px;
+  background: var(--red);
+  transform: scaleY(var(--p, 0));
+  transform-origin: top;
+}
+
+.ab-about-step {
+  position: relative;
+  padding: 0 0 clamp(36px, 7vh, 64px);
+  opacity: 0.42;
+  transition: opacity 0.35s var(--ab-e);
+}
+
+.ab-about-step:last-child {
+  padding-bottom: 0;
+}
+
+.ab-about-step.ab-on {
+  opacity: 1;
+}
+
+/* The dot on the rail. Hollow until the fill reaches it. */
+.ab-about-step::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: -34px;
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid var(--rule-inv);
+  border-radius: 50%;
+  background: var(--ink);
+  transition: background-color 0.35s var(--ab-e), border-color 0.35s var(--ab-e);
+}
+
+.ab-about-step.ab-on::before {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.ab-about-step .ab-num {
+  display: block;
+  color: rgba(238, 234, 224, 0.52);
+}
+
+.ab-about-step h3 {
+  margin: 6px 0 8px;
+  color: var(--paper);
+}
+
+.ab-about-step p {
+  margin: 0;
+  max-width: 46ch;
+  line-height: 1.6;
+  color: rgba(238, 234, 224, 0.72);
+}
+
+.ab-about-step .ab-chip {
+  margin-top: 14px;
+  border: 1px solid var(--rule-inv);
+  color: rgba(238, 234, 224, 0.82);
+}
+
+@media screen and (min-width: 861px) {
+  .ab-about-how-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 56px;
+  }
+
+  /* Sticky can only travel inside its own parent's box, so the column
+     is the parent and it is as tall as the steps beside it. */
+  .ab-about-how-head {
+    position: sticky;
+    top: calc(var(--ab-nav-h) + 48px);
+    align-self: start;
+  }
+
+  /* Enough height that a step is the only one on screen when the rail
+     reaches it. Below this the list just runs down the page. */
+  .ab-about-step {
+    min-height: 46vh;
+  }
+}
+
+/* ---------------------------------------------------------- *
+ * 3. Facts - a hairline strip of four
+ * ---------------------------------------------------------- */
+
+.ab-about-facts {
+  /* Container query units size the words against the strip rather than
+     the viewport, so all four match at any width and none can overflow
+     its own cell. */
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.ab-about-fact {
+  padding: clamp(20px, 3vw, 30px) clamp(14px, 2vw, 24px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.ab-about-fact:nth-child(odd) {
+  border-right: 1px solid var(--rule);
+}
+
+.ab-about-fact:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.ab-about-fact-v {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  margin: 0;
+  font-size: clamp(26px, 11cqw, 54px);
+  line-height: 0.92;
+}
+
+/* Same two-ink device as the hero, one beat per fact. */
+.ab-about-fact-v::before {
+  content: attr(data-t);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  color: var(--red);
+  mix-blend-mode: multiply;
+  transform: translate(0.055em, 0.04em);
+  transition: transform 0.9s cubic-bezier(0.6, 0, 0.2, 1);
+  transition-delay: calc(var(--i, 0) * 0.12s);
+}
+
+.ab-about-facts.ab-in .ab-about-fact-v::before {
+  transform: translate(0.012em, 0.008em);
+}
+
+.ab-about-fact p {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--graphite);
+}
+
+@media screen and (min-width: 1025px) {
+  .ab-about-facts {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .ab-about-fact {
+    border-bottom: 0;
+    border-right: 1px solid var(--rule);
+  }
+
+  .ab-about-fact:last-child {
+    border-right: 0;
+  }
+
+  .ab-about-fact-v {
+    font-size: clamp(26px, 5.4cqw, 54px);
+  }
+}
+
+/* ---------------------------------------------------------- *
+ * 4. Story
+ * ---------------------------------------------------------- */
+
+.ab-about-story {
+  display: grid;
+  gap: clamp(28px, 5vw, 56px);
+  align-items: start;
+}
+
+.ab-about-story-img {
+  position: relative;
+  aspect-ratio: 5 / 4;
+  border-radius: var(--r-card);
+  overflow: hidden;
+  background: var(--b-sand);
+}
+
+.ab-about-story-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* No photo yet: an honest empty frame with the size it wants, rather
+   than a stock image nobody chose. */
+.ab-about-story-ph {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  height: 100%;
+  padding: 20px;
+  text-align: center;
+  color: var(--graphite);
+}
+
+.ab-about-story-ph svg {
+  width: 44px;
+  height: 44px;
+  opacity: 0.4;
+}
+
+.ab-about-story-t > :first-child {
+  margin-top: 0;
+}
+
+.ab-about-story-t p {
+  margin: 0 0 16px;
+  max-width: 54ch;
+  line-height: 1.7;
+}
+
+.ab-about-story-t p:last-child {
+  margin-bottom: 0;
+}
+
+.ab-about-sign {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+}
+
+.ab-about-sign b {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex: none;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  font-size: 15px;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+}
+
+.ab-about-sign span {
+  display: block;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+}
+
+.ab-about-sign em {
+  display: block;
+  font-style: normal;
+  font-size: 14px;
+  color: var(--graphite);
+}
+
+@media screen and (min-width: 861px) {
+  .ab-about-story {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+/* ---------------------------------------------------------- *
+ * 5. Say hello
+ * ---------------------------------------------------------- */
+
+.ab-about-cards {
+  display: grid;
+  gap: 14px;
+}
+
+.ab-about-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 150px;
+  padding: 20px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-card);
+  background: var(--paper-raised);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.12s var(--ab-e), background-color 0.12s var(--ab-e);
+}
+
+a.ab-about-card:hover {
+  border-color: var(--ink);
+  background: #fff;
+}
+
+.ab-about-card-v {
+  margin: 0 auto 0 0;
+}
+
+/* An email address is not a heading, so it is not shouted. It keeps the
+   case it was typed in, because Hello@ and hello@ are not the same thing
+   to read even where they are to a mail server. */
+.ab-about-card-v.ab-about-plain {
+  text-transform: none;
+  font-size: clamp(19px, 2.2vw, 24px);
+  letter-spacing: -0.01em;
+  word-break: break-word;
+}
+
+.ab-about-card svg {
+  width: 18px;
+  height: 18px;
+  margin-left: auto;
+  color: var(--red);
+}
+
+@media screen and (min-width: 861px) {
+  .ab-about-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ---------------------------------------------------------- *
+ * Unfinished copy
+ * ---------------------------------------------------------- */
+
+/* Anything still in [square brackets] is marked, so a placeholder
+   cannot quietly ship. Red on paper is only safe at 16px and up, which
+   is why this is never applied to small text. */
+.ab-about mark,
+mark.ab-fill {
+  background: none;
+  padding: 0 0.1em;
+  color: var(--red);
+  border-bottom: 1.5px dashed var(--red);
+}
+
+/* ---------------------------------------------------------- *
+ * Reduced motion
+ * ---------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-about-reg span::before,
+  .ab-about-fact-v::before {
+    transform: translate(0.012em, 0.008em);
+    transition: none;
+  }
+
+  .ab-about-cue i::after {
+    animation: none;
+  }
+
+  .ab-about-step {
+    opacity: 1;
+    transition: none;
+  }
+
+  .ab-about-step::before {
+    transition: none;
+  }
+}

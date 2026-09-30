@@ -1,0 +1,152 @@
+/* Abimra Studio: About page sections (abimra-about-*). Everything is scoped under .abt and prefixed abt-.
+   Tokens: reads --paper, --ink, --red, --graphite from the theme, with fallbacks.
+   --abt-top: height of the theme's sticky header (used for the first-screen hero and the pinned process heading). */
+.abt{
+  --paper-raised:#F7F5EF;--card:#FBF9F4;--red-deep:#B8240E;--rule:rgba(25,24,19,.14);--b-sand:#E8E2D4;--b-butter:#EDE3C9;
+  --f-d:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;--f-m:'IBM Plex Mono',ui-monospace,monospace;--e:cubic-bezier(.2,.8,.2,1);
+  --pm:clamp(18px,4vw,48px);--hdr:var(--abt-top,0px);
+  background:var(--paper,#EEEAE0);color:var(--ink,#191813);font-family:var(--f-d);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  }
+.abt *,.abt *::before,.abt *::after{box-sizing:border-box}
+.abt a{color:inherit;text-decoration:none}
+.abt img,.abt svg{display:block;max-width:100%}
+.abt :focus-visible{outline:2px solid var(--red,#D42E12);outline-offset:3px;border-radius:6px}
+.abt .abt-wrap{max-width:1240px;margin:0 auto;padding:0 var(--pm)}
+.abt .abt-d{margin:0;font-weight:800;text-transform:uppercase;letter-spacing:-.025em;line-height:.88;font-stretch:76%;font-variation-settings:'wdth' 76,'wght' 800}
+.abt .abt-mono{font-family:var(--f-m);font-size:12px;font-weight:500;letter-spacing:.04em}
+.abt .abt-lede{font-size:clamp(17px,1.6vw,21px);line-height:1.5;color:var(--graphite,#5F5B52)}
+.abt p{margin-top:0}
+/* anything still in [square brackets] is unfinished copy: highlighted so it can't be missed */
+.abt mark.abt-fill{background:none;color:var(--red,#D42E12);border-bottom:1.5px dashed var(--red,#D42E12);padding:0 .1em}
+
+.abt .abt-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:999px;font-weight:600;font-size:16px;border:1.5px solid var(--ink,#191813);transition:background-color .2s,color .2s,transform .15s}
+.abt .abt-btn:active{transform:scale(.98)}
+.abt .abt-btn-p{background:var(--red,#D42E12);border-color:var(--red,#D42E12);color:#fff}
+.abt .abt-btn-i{background:var(--paper,#EEEAE0);border-color:var(--paper,#EEEAE0);color:var(--ink,#191813)}
+@media(hover:hover){.abt .abt-btn-p:hover{background:var(--red-deep);border-color:var(--red-deep)}.abt .abt-btn-s:hover{background:var(--ink,#191813);color:var(--paper,#EEEAE0)}.abt .abt-btn-i:hover{background:#fff}}
+
+/* ---------- 1. hero: fills the screen under the header; the headline prints in two inks and slides into register ---------- */
+.abt-hero{position:relative;overflow:hidden;display:flex;min-height:calc(100vh - var(--hdr));min-height:calc(100svh - var(--hdr))}
+.abt-hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(25,24,19,.09) 1.1px,transparent 1.3px);background-size:18px 18px;
+  -webkit-mask:radial-gradient(ellipse at 80% 30%,#000 0,transparent 60%);mask:radial-gradient(ellipse at 80% 30%,#000 0,transparent 60%);pointer-events:none}
+.abt-hero>.abt-wrap{position:relative;width:100%;display:flex;flex-direction:column;justify-content:space-between;gap:clamp(24px,4vh,48px);padding-top:clamp(24px,6vh,72px);padding-bottom:clamp(20px,4vh,40px)}
+.abt-hero .abt-mono{color:var(--red,#D42E12)}
+/* sized by the smaller of width and height, so the headline always fits the first screen */
+.abt-reg{position:relative;isolation:isolate;display:block;margin:14px 0 0;font-size:clamp(52px,min(17.5vw,19svh),220px)}
+.abt-reg span{display:block;position:relative}
+.abt-reg span::before{content:attr(data-t);position:absolute;inset:0;color:var(--red,#D42E12);mix-blend-mode:multiply;z-index:-1;transform:translate(.06em,.04em);transition:transform 1.4s cubic-bezier(.6,0,.2,1) .3s}
+.abt-reg span:nth-child(2)::before{transform:translate(-.05em,.05em)}
+.abt-reg span:nth-child(3)::before{transform:translate(.04em,-.05em)}
+.abt-in .abt-reg span::before{transform:translate(.012em,.008em)}
+.abt-hero-grid{display:grid;gap:22px}
+.abt-hero-grid .abt-lede{margin:0;max-width:44ch}
+.abt-hero-ctas{display:flex;flex-wrap:wrap;gap:10px}
+.abt-hero-ctas .abt-btn{flex:1 1 auto}
+.abt-cue{display:flex;align-items:center;gap:12px;font:500 11px var(--f-m);letter-spacing:.12em;color:var(--graphite,#5F5B52)}
+.abt-cue i{position:relative;width:1px;height:34px;background:var(--rule);overflow:hidden}
+.abt-cue i::after{content:'';position:absolute;left:0;top:0;width:1px;height:14px;background:var(--red,#D42E12);animation:cue 1.8s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes cue{0%{transform:translateY(-14px)}100%{transform:translateY(34px)}}
+@media(min-width:600px){.abt-hero-ctas .abt-btn{flex:0 0 auto}}
+@media(min-width:900px){.abt-hero-grid{grid-template-columns:1.1fr .9fr;align-items:end}.abt-hero-ctas{justify-content:flex-end}}
+@media(max-height:560px) and (orientation:landscape){.abt-cue{display:none}}
+
+/* ---------- sections ---------- */
+.abt-sec{padding:clamp(64px,11vh,130px) 0}
+.abt-sec-head{display:grid;gap:14px;margin-bottom:clamp(28px,5vh,56px)}
+.abt-sec-head .abt-d{font-size:clamp(40px,7vw,84px)}
+.abt-sec-head .abt-lede{margin:0;max-width:48ch}
+
+/* ---------- 3. how we print: a vertical run of steps with a red line that fills as you scroll ---------- */
+.abt-how{background:var(--ink,#191813);color:var(--paper,#EEEAE0);position:relative;overflow:clip}
+.abt-how::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(238,234,224,.07) 1px,transparent 1px);background-size:14px 14px;pointer-events:none}
+.abt-how .abt-sec-head .abt-lede{color:rgba(238,234,224,.65)}
+.abt-how .abt-sec-head .abt-d em{font-style:normal;color:var(--red,#D42E12)}
+.abt-how-grid{position:relative;display:grid;gap:8px}
+.abt-steps{--p:0;position:relative;list-style:none;margin:0;padding:0 0 0 38px;display:grid;gap:clamp(40px,7vh,72px)}
+.abt-steps::before,.abt-steps::after{content:'';position:absolute;left:9px;top:10px;bottom:10px;width:2px;background:rgba(238,234,224,.18);border-radius:2px}
+.abt-steps::after{background:var(--red,#D42E12);transform-origin:top;transform:scaleY(var(--p))}
+.abt-step{position:relative;opacity:.38;transition:opacity .45s var(--e)}
+.abt-step.abt-on{opacity:1}
+.abt-step::before{content:'';position:absolute;left:-38px;top:2px;width:20px;height:20px;border-radius:50%;background:var(--ink,#191813);border:2px solid rgba(238,234,224,.35);
+  transition:background-color .3s,border-color .3s,transform .3s var(--e);z-index:1}
+.abt-step.abt-on::before{background:var(--red,#D42E12);border-color:var(--red,#D42E12);transform:scale(1.15)}
+.abt-step .abt-mono{color:rgba(238,234,224,.55)}
+.abt-step h3{margin:6px 0 10px;font-size:clamp(34px,5vw,64px)}
+.abt-step p{margin:0;max-width:44ch;color:rgba(238,234,224,.72);font-size:clamp(15.5px,1.3vw,18px)}
+.abt-step .abt-chip{display:inline-flex;margin-top:14px;padding:6px 12px;border-radius:999px;border:1px solid rgba(238,234,224,.25);font:500 12px var(--f-m);color:var(--paper,#EEEAE0)}
+/* desktop: the heading stays pinned on the left while you scroll down through the steps on the right */
+@media(min-width:900px){
+  .abt-how-grid{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:64px;align-items:start}
+  .abt-how-grid .abt-sec-head{position:sticky;top:calc(var(--hdr) + 48px);margin:0}
+  .abt-steps{padding-left:52px;gap:0}
+  .abt-steps::before,.abt-steps::after{left:11px}
+  .abt-step{min-height:46vh;padding-bottom:40px}
+  .abt-step:last-child{min-height:0;padding-bottom:0}
+  .abt-step::before{left:-52px;width:24px;height:24px;top:4px}
+}
+
+/* ---------- 4. four facts: a simple strip, each word overprinted in red ---------- */
+.abt-specs{container-type:inline-size;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--ink,#191813);border-bottom:1px solid var(--ink,#191813)}
+.abt-spec{display:flex;flex-direction:column;gap:8px;padding:22px 16px 22px 0}
+.abt-spec:nth-child(even){padding:22px 0 22px 16px;border-left:1px solid var(--rule)}
+.abt-spec:nth-child(n+3){border-top:1px solid var(--rule)}
+.abt-spec-v{position:relative;isolation:isolate;display:block;font-size:clamp(28px,9.2cqw,76px);line-height:.88;font-weight:800;text-transform:uppercase;letter-spacing:-.03em;
+  font-stretch:74%;font-variation-settings:'wdth' 74,'wght' 800;white-space:nowrap}
+.abt-spec-v::before{content:attr(data-t);position:absolute;inset:0;z-index:-1;color:var(--red,#D42E12);mix-blend-mode:multiply;transform:translate(.07em,.05em);
+  transition:transform 1.2s cubic-bezier(.6,0,.2,1) calc(.15s + var(--i,0) * .12s)}
+.abt-specs.abt-in .abt-spec-v::before{transform:translate(.014em,.01em)}
+.abt-spec-d{font-size:14px;line-height:1.4;color:var(--graphite,#5F5B52)}
+@media(min-width:1000px){
+  .abt-specs{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .abt-spec,.abt-spec:nth-child(even){padding:30px 24px}
+  .abt-spec:first-child{padding-left:0}.abt-spec:last-child{padding-right:0}
+  .abt-spec+.abt-spec{border-left:1px solid var(--rule)}
+  .abt-spec:nth-child(n+3){border-top:0}
+  .abt-spec-d{font-size:15px}
+  .abt-spec-v{font-size:clamp(28px,4.8cqw,76px)}
+}
+@media(prefers-reduced-motion:reduce){.abt-spec-v::before{transform:translate(.014em,.01em)!important}}
+
+/* ---------- 5. the story ---------- */
+.abt-story{display:grid;gap:36px}
+.abt-story-img{position:relative;border-radius:24px;overflow:hidden;background:var(--b-sand);aspect-ratio:5/4;box-shadow:0 30px 60px -40px rgba(25,24,19,.6)}
+.abt-story-img img{width:100%;height:100%;object-fit:cover}
+.abt-story-img .abt-note{position:absolute;left:14px;bottom:14px;padding:8px 12px;border-radius:999px;background:rgba(251,249,244,.94);font:500 11px var(--f-m);color:var(--graphite,#5F5B52)}
+.abt-story-copy .abt-d{font-size:clamp(40px,6.5vw,76px);margin-bottom:22px}
+.abt-story-copy p{margin:0 0 16px;font-size:clamp(16px,1.4vw,18.5px);line-height:1.6;color:var(--graphite,#5F5B52);max-width:52ch}
+.abt-story-copy p:first-of-type{color:var(--ink,#191813);font-size:clamp(19px,1.9vw,24px);line-height:1.45}
+.abt-sign{display:flex;align-items:center;gap:14px;margin-top:26px}
+.abt-sign i{width:48px;height:48px;border-radius:50%;background:var(--b-butter);display:grid;place-items:center;font:600 15px var(--f-d);font-style:normal}
+.abt-sign b{display:block;font-size:16px}.abt-sign span{font-size:13.5px;color:var(--graphite,#5F5B52)}
+@media(min-width:900px){.abt-story{grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:64px;align-items:center}}
+
+/* ---------- 6. say hello ---------- */
+.abt-hello{display:grid;gap:14px}
+.abt-hello a.abt-card{display:flex;flex-direction:column;justify-content:space-between;gap:30px;min-height:170px;padding:22px;border-radius:22px;border:1px solid var(--rule);background:var(--paper-raised);transition:background-color .25s,color .25s,transform .25s var(--e)}
+.abt-hello a.abt-card .abt-mono{color:var(--graphite,#5F5B52)}
+.abt-hello a.abt-card b.abt-plain{text-transform:none;letter-spacing:-.01em;font-stretch:90%;font-variation-settings:"wdth" 90,"wght" 700}
+.abt-hello a.abt-card b{font-size:clamp(24px,3.4vw,34px);line-height:1;text-transform:uppercase;letter-spacing:-.02em;font-stretch:78%;font-variation-settings:'wdth' 78,'wght' 800;word-break:break-word}
+.abt-hello a.abt-card svg{width:22px;height:22px;align-self:flex-end;color:var(--red,#D42E12);transition:transform .3s var(--e)}
+@media(hover:hover){.abt-hello a.abt-card:hover{background:var(--ink,#191813);color:var(--paper,#EEEAE0);transform:translateY(-4px)}.abt-hello a.abt-card:hover .abt-mono{color:rgba(238,234,224,.6)}.abt-hello a.abt-card:hover svg{transform:translate(4px,-4px)}}
+@media(min-width:900px){.abt-hello{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* ---------- 7. closer ---------- */
+.abt-closer{position:relative;overflow:hidden;margin:0 0 clamp(40px,8vh,80px);padding:clamp(56px,10vh,110px) 22px;border-radius:32px;background:var(--red,#D42E12);color:#fff;text-align:center}
+.abt-closer::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.14) 1.2px,transparent 1.4px);background-size:16px 16px;pointer-events:none}
+.abt-closer .abt-d{position:relative;font-size:clamp(52px,12vw,150px);color:var(--paper,#EEEAE0)}
+.abt-closer p{position:relative;margin:18px auto 28px;max-width:40ch;font-size:clamp(16px,1.5vw,19px);color:rgba(255,255,255,.85)}
+.abt-closer .abt-btn{position:relative}
+
+
+/* reveal */
+.abt-js .abt-rv{opacity:0;transform:translateY(24px)}
+.abt-rv.abt-in{opacity:1;transform:none;transition:opacity .8s var(--e),transform .9s var(--e)}
+.abt-js .abt-hero .abt-rv{transition-delay:.15s}
+
+@media(prefers-reduced-motion:reduce){
+  .abt *,.abt *::before,.abt *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .abt-reg span::before{transform:none!important}
+  .abt-steps{--p:1!important}
+  .abt-step{opacity:1!important}
+  .abt-js .abt-rv{opacity:1;transform:none}
+}

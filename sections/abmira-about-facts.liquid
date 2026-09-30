@@ -1,0 +1,69 @@
+{{ 'abmira-about.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'abmira-about.js' | asset_url }}" defer="defer"></script>
+
+{%- comment -%}
+  Abimra About: facts.
+
+  Four short claims between two hairlines. Two up on phones and tablets,
+  four in a row from 1025px.
+
+  The words are sized in container query units, against the strip rather
+  than the viewport, which is what keeps all four the same size and stops
+  any one of them overflowing its own cell. "1fr will not shrink below
+  content" is the recurring bug in this design system; cqw sidesteps it
+  rather than fighting it, and every track is minmax(0, 1fr) as well.
+{%- endcomment -%}
+
+<div class="ab-section ab-about">
+  <section class="ab-sec">
+    <div class="ab-wrap">
+      {%- if section.blocks.size > 0 -%}
+        <div class="ab-about-facts ab-rv">
+          {%- for block in section.blocks -%}
+            <div class="ab-about-fact" {{ block.shopify_attributes }}>
+              {%- if block.settings.value != blank -%}
+                <p
+                  class="ab-d2 ab-about-fact-v"
+                  data-t="{{ block.settings.value | escape }}"
+                  style="--i: {{ forloop.index0 }};"
+                >
+                  {{- block.settings.value | escape -}}
+                </p>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <p>{{ block.settings.text | escape }}</p>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "About: facts",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Keep the big words to one or two short words. Four reads best; fewer works, more crowds the row."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "fact",
+      "name": "Fact",
+      "settings": [
+        { "type": "text", "id": "value", "label": "Big word", "default": "In-house" },
+        { "type": "text", "id": "text", "label": "Line underneath", "default": "Printed in our own UK studio" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "enabled_on": {
+    "templates": ["page"]
+  }
+}
+{% endschema %}

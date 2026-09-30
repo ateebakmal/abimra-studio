@@ -1,0 +1,98 @@
+{%- comment -%} Abimra Studio: About page, process. Styles: assets/abimra-about.css. Motion: assets/abimra-about.js. {%- endcomment -%}
+{{ 'abimra-about.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'abimra-about.js' | asset_url }}" defer></script>
+<section class="abt abt-sec abt-how">
+  <div class="abt-wrap abt-how-grid">
+    <div class="abt-sec-head abt-rv">
+      <h2 class="abt-d">{{ section.settings.heading_1 | escape }}<br>{{ section.settings.heading_2 | escape }} <em>{{ section.settings.heading_accent | escape }}</em></h2>
+      {%- if section.settings.intro != blank -%}<p class="abt-lede">{{ section.settings.intro | escape }}</p>{%- endif -%}
+    </div>
+    <ol class="abt-steps">
+      {%- for block in section.blocks -%}
+        <li class="abt-step" {{ block.shopify_attributes }}>
+          <span class="abt-mono">STEP {% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+          <h3 class="abt-d">{{ block.settings.title | escape }}</h3>
+          <p>{{ block.settings.text | escape }}</p>
+          {%- if block.settings.chip != blank -%}<span class="abt-chip">{{ block.settings.chip | escape }}</span>{%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ol>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "About: how we print",
+  "tag": "div",
+  "class": "section-abt-process",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading_1",
+      "label": "Heading, line 1",
+      "default": "From your screen"
+    },
+    {
+      "type": "text",
+      "id": "heading_2",
+      "label": "Heading, line 2",
+      "default": "to your"
+    },
+    {
+      "type": "text",
+      "id": "heading_accent",
+      "label": "Heading, red word",
+      "default": "shoulders."
+    },
+    {
+      "type": "text",
+      "id": "intro",
+      "label": "Intro",
+      "default": "What happens between you pressing order and the parcel landing."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "You design it"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text"
+        },
+        {
+          "type": "text",
+          "id": "chip",
+          "label": "Small tag"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About: how we print",
+      "blocks": [
+        {
+          "type": "step"
+        },
+        {
+          "type": "step"
+        },
+        {
+          "type": "step"
+        },
+        {
+          "type": "step"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

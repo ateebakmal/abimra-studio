@@ -1,0 +1,111 @@
+{{ 'abmira-about.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Abimra About: say hello.
+
+  Up to three contact cards, stacked on phones and in a row from 861px.
+
+  A card with a link is an <a>; one without is a <div>. Wrapping a card
+  in an anchor that goes nowhere gives a keyboard a stop with no purpose
+  and a screen reader a link with no destination.
+
+  "Keep it as typed" is on for addresses and handles. Display type in
+  this system is uppercase, and an email address in caps is a different
+  string to read even where it is the same one to a mail server.
+{%- endcomment -%}
+
+<div class="ab-section ab-about">
+  <section class="ab-sec"{% if section.settings.tight_top %} style="padding-top: 0;"{% endif %}>
+    <div class="ab-wrap">
+      <div class="ab-sec-head ab-rv">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="ab-d2">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.intro != blank -%}
+          <p>{{ section.settings.intro | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="ab-about-cards ab-rv ab-rv-1">
+          {%- for block in section.blocks -%}
+            {%- liquid
+              assign value = block.settings.value | escape | replace: '[', '<mark class="ab-fill">[' | replace: ']', ']</mark>'
+              assign vclass = 'ab-d3 ab-about-card-v'
+              if block.settings.plain
+                assign vclass = vclass | append: ' ab-about-plain'
+              endif
+            -%}
+            {%- if block.settings.link != blank -%}
+              <a class="ab-about-card" href="{{ block.settings.link }}" {{ block.shopify_attributes }}>
+            {%- else -%}
+              <div class="ab-about-card" {{ block.shopify_attributes }}>
+            {%- endif -%}
+
+            {%- if block.settings.label != blank -%}
+              <span class="ab-meta">{{ block.settings.label | escape }}</span>
+            {%- endif -%}
+            {%- if block.settings.value != blank -%}
+              <p class="{{ vclass }}">{{ value }}</p>
+            {%- endif -%}
+            {%- if block.settings.link != blank -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 17 17 7M9 7h8v8"/>
+              </svg>
+            {%- endif -%}
+
+            {%- if block.settings.link != blank -%}
+              </a>
+            {%- else -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "About: say hello",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Say hello" },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro",
+      "default": "Questions about a print, a bulk order or an idea you're not sure about? We'd love to hear it."
+    },
+    {
+      "type": "checkbox",
+      "id": "tight_top",
+      "label": "Remove the space above",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Contact card",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Email" },
+        { "type": "text", "id": "value", "label": "Text", "default": "[hello@yourdomain]" },
+        { "type": "url", "id": "link", "label": "Link", "info": "For email use mailto:you@yourdomain. Leave empty and the card is not clickable." },
+        {
+          "type": "checkbox",
+          "id": "plain",
+          "label": "Keep it as typed",
+          "default": true,
+          "info": "On for addresses and handles, which should not be shouted in capitals."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 3,
+  "enabled_on": {
+    "templates": ["page"]
+  }
+}
+{% endschema %}
