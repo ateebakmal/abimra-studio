@@ -259,11 +259,14 @@ for another theme — there is a black bar at the bottom of the screen with
 the theme's name. Click the ✕ on it, or open the store in a private
 window.
 
-**Why the social icons aren't on the live site.** An icon with no link
-behind it tells people you're on Instagram and then goes nowhere, so the
-footer only shows one once it has a real address. In the theme editor
-they always show, as dashed grey circles, so you can find the blocks and
-fill them in. Add a link and the icon goes live.
+**Why the social icons aren't on the live site.** Under **Footer →
+Social** there is a switch and an address box for Instagram, Facebook, X
+and TikTok. All four are switched on to begin with, but an icon needs
+*both* — switched on and given an address. An icon with no link tells
+people you're on Instagram and then goes nowhere, which is worse than no
+icon, so those are left off the live site. In the theme editor they show
+as dashed grey circles, so you can see which ones are still waiting.
+Switch a platform off to drop it for good.
 
 **Why a policy link is missing from the footer.** Terms, Refunds and so on
 only appear once that policy has text in it, under **Settings →

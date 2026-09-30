@@ -14,20 +14,6 @@
     "abmira-footer": {
       "type": "abmira-footer",
       "blocks": {
-        "ig": {
-          "type": "social",
-          "settings": {
-            "network": "instagram",
-            "link": "#"
-          }
-        },
-        "tt": {
-          "type": "social",
-          "settings": {
-            "network": "tiktok",
-            "link": "#"
-          }
-        },
         "col1": {
           "type": "column",
           "settings": {
@@ -78,8 +64,6 @@
         }
       },
       "block_order": [
-        "ig",
-        "tt",
         "col1",
         "col2",
         "legal_iYHjNH",
@@ -93,7 +77,15 @@
         "show_colour_bar": false,
         "legal_details": "Abimra Studio Ltd, registered in England and Wales, company no. 00000000. Registered office: 1 Example Street, Manchester M1 1AA. VAT no. GB 000 0000 00.",
         "copyright_suffix": "Studio",
-        "legal_text_unused": "Privacy · Terms · Accessibility"
+        "legal_text_unused": "Privacy · Terms · Accessibility",
+        "show_instagram": true,
+        "instagram_link": "",
+        "show_facebook": true,
+        "facebook_link": "",
+        "show_twitter": true,
+        "twitter_link": "",
+        "show_tiktok": true,
+        "tiktok_link": ""
       }
     }
   },

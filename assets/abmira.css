@@ -3794,7 +3794,7 @@ a.ab-detail-t:hover {
   font-weight: 500;
   font-variation-settings: 'wdth' 100, 'wght' 500;
   letter-spacing: 0.01em;
-  color: rgba(238, 234, 224, 0.62);
+  color: rgba(238, 234, 224, 0.82);
   cursor: pointer;
   text-decoration: underline;
   text-decoration-color: transparent;
@@ -3849,6 +3849,11 @@ a.ab-detail-t:hover {
      height, which is why it is only set here. */
   .as__end .ab-story-replay {
     flex-basis: 100%;
+    /* Sized up on desktop, where 13px next to a 17px pill and a 16px link
+       read as an afterthought rather than as the quietest of three. Still
+       the smallest of the three, which is the point. */
+    font-size: 15px;
+    padding: 8px 4px;
   }
 }
 

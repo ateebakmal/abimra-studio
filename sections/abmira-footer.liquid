@@ -13,7 +13,6 @@
 {%- liquid
   assign columns = section.blocks | where: 'type', 'column'
   assign legal = section.blocks | where: 'type', 'legal'
-  assign social = section.blocks | where: 'type', 'social'
 
   # Only load the consent script when a block actually asks for it.
   # `where` reads a property off the block itself, and this one lives in
@@ -53,60 +52,64 @@
         {%- endif -%}
 
         {%- comment -%}
-          An icon with no link behind it is worse than no icon: it says the
-          studio is on Instagram and then goes nowhere. So on the
-          storefront a block is only drawn once it has a real address, the
-          same rule the policy links follow. "#" counts as empty - it is
-          what the theme editor leaves when someone adds the block and
-          does not fill it in.
+          Four fixed platforms, each with its own switch and address in
+          the theme editor. A fixed list rather than blocks because the
+          set does not change and a merchant should not have to know that
+          an icon is a "block" to add one.
 
-          In the theme editor they always show, greyed. Hiding them there
-          too meant whoever was meant to fill them in could not see they
-          existed, and an empty block with nothing on screen is not
-          something anyone goes looking for.
+          On the storefront an icon needs both: switched on AND given an
+          address. An icon with no link behind it says the studio is on
+          Instagram and then goes nowhere, which is worse than no icon.
+          In the theme editor a switched-on platform always shows, dashed
+          and dim, so whoever is filling them in can see what is left.
         {%- endcomment -%}
-        {%- assign social_shown = 0 -%}
-        {%- for block in social -%}
-          {%- if block.settings.link != blank and block.settings.link != '#' or request.design_mode -%}
-            {%- assign social_shown = social_shown | plus: 1 -%}
-          {%- endif -%}
-        {%- endfor -%}
+        {%- liquid
+          assign networks = 'instagram,facebook,twitter,tiktok' | split: ','
+          assign net_names = 'Instagram,Facebook,X,TikTok' | split: ','
+
+          assign social_shown = 0
+          for net in networks
+            assign on_key = 'show_' | append: net
+            assign url_key = net | append: '_link'
+            assign is_on = section.settings[on_key]
+            assign url = section.settings[url_key]
+            if is_on
+              if url != blank or request.design_mode
+                assign social_shown = social_shown | plus: 1
+              endif
+            endif
+          endfor
+        -%}
 
         {%- if social_shown > 0 -%}
           <ul class="ab-foot-social" role="list">
-            {%- for block in social -%}
-              {%- assign has_link = false -%}
-              {%- if block.settings.link != blank and block.settings.link != '#' -%}
-                {%- assign has_link = true -%}
-              {%- endif -%}
-
-              {%- if has_link == false and request.design_mode -%}
-                <li class="ab-foot-social-todo" {{ block.shopify_attributes }}>
-                  <span
-                    role="img"
-                    aria-label="{{ block.settings.network | capitalize }} — no link set yet"
-                    title="Add a link to this block and the icon goes live."
-                  >
-                    {%- liquid
-                      assign icon = 'icon-' | append: block.settings.network | append: '.svg'
-                    -%}
-                    {{ icon | inline_asset_content }}
-                  </span>
-                </li>
-              {%- elsif has_link -%}
-                {%- liquid
-                  assign icon = 'icon-' | append: block.settings.network | append: '.svg'
-                -%}
-                <li {{ block.shopify_attributes }}>
-                  <a
-                    href="{{ block.settings.link }}"
-                    aria-label="{{ block.settings.network | capitalize }}"
-                    rel="noopener"
-                    target="_blank"
-                  >
-                    {{ icon | inline_asset_content }}
-                  </a>
-                </li>
+            {%- for net in networks -%}
+              {%- liquid
+                assign on_key = 'show_' | append: net
+                assign url_key = net | append: '_link'
+                assign is_on = section.settings[on_key]
+                assign url = section.settings[url_key]
+                assign name = net_names[forloop.index0]
+                assign icon = 'icon-' | append: net | append: '.svg'
+              -%}
+              {%- if is_on -%}
+                {%- if url != blank -%}
+                  <li>
+                    <a href="{{ url }}" aria-label="{{ name }}" rel="noopener" target="_blank">
+                      {{ icon | inline_asset_content }}
+                    </a>
+                  </li>
+                {%- elsif request.design_mode -%}
+                  <li class="ab-foot-social-todo">
+                    <span
+                      role="img"
+                      aria-label="{{ name }} — no link set yet"
+                      title="Add a link for {{ name }} and the icon goes live."
+                    >
+                      {{ icon | inline_asset_content }}
+                    </span>
+                  </li>
+                {%- endif -%}
               {%- endif -%}
             {%- endfor -%}
           </ul>
@@ -234,6 +237,62 @@
       "info": "Print furniture. The guide allows two such devices per page."
     },
     {
+      "type": "header",
+      "content": "Social"
+    },
+    {
+      "type": "paragraph",
+      "content": "Switch a platform off to remove its icon. A platform that is on but has no address shows here in the editor, dashed, and is left out of the live site — an icon that goes nowhere is worse than no icon."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_instagram",
+      "label": "Instagram",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "instagram_link",
+      "label": "Instagram address",
+      "info": "e.g. https://instagram.com/yourstudio"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_facebook",
+      "label": "Facebook",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "facebook_link",
+      "label": "Facebook address",
+      "info": "e.g. https://facebook.com/yourstudio"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_twitter",
+      "label": "X (Twitter)",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "twitter_link",
+      "label": "X (Twitter) address",
+      "info": "e.g. https://x.com/yourstudio"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tiktok",
+      "label": "TikTok",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "tiktok_link",
+      "label": "TikTok address",
+      "info": "e.g. https://tiktok.com/@yourstudio"
+    },
+    {
       "type": "textarea",
       "id": "legal_details",
       "label": "Company details",
@@ -257,27 +316,6 @@
     }
   ],
   "blocks": [
-    {
-      "type": "social",
-      "name": "Social link",
-      "settings": [
-        {
-          "type": "select",
-          "id": "network",
-          "label": "Network",
-          "options": [
-            { "value": "instagram", "label": "Instagram" },
-            { "value": "tiktok", "label": "TikTok" },
-            { "value": "facebook", "label": "Facebook" },
-            { "value": "youtube", "label": "YouTube" },
-            { "value": "pinterest", "label": "Pinterest" },
-            { "value": "twitter", "label": "X" }
-          ],
-          "default": "instagram"
-        },
-        { "type": "url", "id": "link", "label": "Link" }
-      ]
-    },
     {
       "type": "legal",
       "name": "Legal link",
