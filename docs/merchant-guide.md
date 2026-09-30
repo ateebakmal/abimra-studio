@@ -193,6 +193,47 @@ quantity change, and without it the cart quietly stops responding.
 
 ---
 
+## Search
+
+Three places, all wired to the same results page.
+
+- **The icon in the header** opens a panel with live results as you type.
+- **The bar in the mobile menu** submits to the results page. No live
+  dropdown there on purpose — a dropdown inside a full-screen menu
+  fights the menu's own scrolling.
+- **The results page** repeats the search box, because a search that
+  found nothing is exactly when someone wants to retype.
+
+**Theme editor → Header → Search** turns the icon on or off and sets the
+placeholder.
+
+**Live results need one setting:** *Theme settings → Search input →
+Search suggestions*. With it off, the panel still works but only submits.
+
+### When nothing matches
+
+The results page shows "Nothing matched that" and up to three buttons you
+choose — edit them in the theme editor on the search page, under
+**Dead-end suggestion** blocks. Point them wherever you'd rather people
+went.
+
+One thing that will look odd: **Shopify sometimes returns products even
+for nonsense searches.** Typing `qqqqxyz` currently returns three. Those
+are recommendations Shopify substitutes when a word search finds nothing,
+and the theme has no way to tell them apart from real matches — so they
+are counted and shown as results. That behaviour is Shopify's search, not
+the theme. If you don't want it, it's turned off in Shopify's search
+settings (the Search & Discovery app).
+
+### Making search find the right things
+
+Search reads the product **title, description, type, vendor and tags**.
+Products with no description and no type — which is all of them right now
+— can only be found by their exact name. Filling those in is what makes
+search useful.
+
+---
+
 ## Pages
 
 - `/pages/contact` and `/pages/returns` use their own templates and are

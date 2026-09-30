@@ -1,0 +1,277 @@
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-facets.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'facets.js' | asset_url }}" defer="defer"></script>
+
+{%- comment -%}
+  Abimra search results.
+
+  Deliberately the same page as sections/abmira-collection.liquid, down to
+  the grid, the facets and the card: a shopper who searches and a shopper
+  who browses a collection are doing the same thing and should not be shown
+  two different shops. Dawn's main-search.liquid rendered card-product, so
+  results used to look like a different theme.
+
+  Search returns more than products. Shopify puts pages and articles in the
+  same result set, so those are listed separately underneath rather than
+  forced into a product grid.
+
+  Filtering on a search results page only works when the Search & Discovery
+  app has filters configured; with none, `search.filters` is empty and the
+  facets snippet renders the sort control alone.
+{%- endcomment -%}
+
+{%- liquid
+  assign show_filters = false
+  if search.performed and search.results_count > 0
+    if section.settings.enable_filtering or section.settings.enable_sorting
+      assign show_filters = true
+    endif
+  endif
+-%}
+
+<div class="ab-section">
+  <section class="ab-sec ab-coll-page ab-search-page">
+    <div class="ab-wrap">
+      {%- if section.settings.show_breadcrumb -%}
+        <nav class="ab-crumbs" aria-label="Breadcrumb">
+          <a href="{{ routes.root_url }}">Home</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Search</span>
+        </nav>
+      {%- endif -%}
+
+      <div class="ab-coll-head">
+        <div>
+          {%- if search.performed -%}
+            <h1 class="ab-d2">
+              {{- section.settings.heading | default: 'Results for' | escape }}
+              <em>{{ search.terms | escape }}</em>
+            </h1>
+          {%- else -%}
+            <h1 class="ab-d2">{{ section.settings.blank_heading | default: 'Search' | escape }}</h1>
+          {%- endif -%}
+        </div>
+        {%- if search.performed and search.results_count > 0 -%}
+          <span class="ab-meta ab-coll-count">
+            {{- search.results_count }}
+            {% if search.results_count == 1 %}result{% else %}results{% endif -%}
+          </span>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%}
+        The form is repeated here, not only in the header, because a search
+        that found nothing is exactly the moment someone wants to retype -
+        and on a phone the header's panel has closed by now.
+      {%- endcomment -%}
+      <div class="ab-search-onpage">
+        {% render 'abmira-search-form',
+          input_id: 'AbimraSearchPage',
+          predictive: false,
+          variant: 'page',
+          placeholder: section.settings.placeholder
+        %}
+      </div>
+
+      {%- if search.performed -%}
+        {%- paginate search.results by section.settings.results_per_page -%}
+          {%- if show_filters -%}
+            <div class="ab-facets" id="main-search-filters" data-id="{{ section.id }}">
+              {% render 'facets',
+                results: search,
+                enable_filtering: section.settings.enable_filtering,
+                enable_sorting: section.settings.enable_sorting,
+                filter_type: section.settings.filter_type,
+                paginate: paginate
+              %}
+            </div>
+          {%- endif -%}
+
+          {%- comment -%}
+            Inside the paginate block on purpose: search.results is the
+            current page here, and the whole result set outside it.
+          {%- endcomment -%}
+          {%- assign products = search.results | where: 'object_type', 'product' -%}
+
+          {%- if search.results_count > 0 -%}
+            {%- if products.size > 0 -%}
+              <ul class="ab-prod-grid" role="list">
+                {%- for product in products -%}
+                  {%- liquid
+                    assign lazy = true
+                    if forloop.index <= 4
+                      assign lazy = false
+                    endif
+                  -%}
+                  <li>
+                    {% render 'abmira-product-card',
+                      card_product: product,
+                      index: forloop.index0,
+                      lazy: lazy,
+                      color_option: section.settings.color_option_name
+                    %}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+
+            {%- comment -%}
+              Pages and articles. Listed rather than gridded: there is no
+              image to carry a card, and a card with no picture next to
+              cards with pictures reads as a broken one.
+            {%- endcomment -%}
+            {%- assign other = 0 -%}
+            {%- for item in search.results -%}
+              {%- unless item.object_type == 'product' -%}
+                {%- assign other = other | plus: 1 -%}
+              {%- endunless -%}
+            {%- endfor -%}
+
+            {%- if other > 0 -%}
+              <div class="ab-search-pages">
+                <h2 class="ab-meta ab-search-pages-h">
+                  {{- section.settings.pages_heading | default: 'Also on the site' | escape -}}
+                </h2>
+                <ul role="list">
+                  {%- for item in search.results -%}
+                    {%- unless item.object_type == 'product' -%}
+                      <li>
+                        <a href="{{ item.url }}">
+                          <span class="ab-search-pages-t">{{ item.title | escape }}</span>
+                          {%- if item.content != blank -%}
+                            <span class="ab-search-pages-x">
+                              {{- item.content | strip_html | truncatewords: 26 -}}
+                            </span>
+                          {%- endif -%}
+                        </a>
+                      </li>
+                    {%- endunless -%}
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+
+            {%- if paginate.pages > 1 -%}
+              {% render 'pagination', paginate: paginate %}
+            {%- endif -%}
+          {%- else -%}
+            <div class="ab-search-none">
+              <h2 class="ab-d3">{{ section.settings.empty_heading | default: 'Nothing matched that.' | escape }}</h2>
+              {%- if section.settings.empty_body != blank -%}
+                <p class="ab-search-none-b">{{ section.settings.empty_body | escape }}</p>
+              {%- endif -%}
+
+              {%- comment -%}
+                Blocks, so the studio can point a dead end at whatever it
+                is actually selling that month rather than at a fixed list.
+              {%- endcomment -%}
+              {%- if section.blocks.size > 0 -%}
+                <ul class="ab-search-sugg" role="list">
+                  {%- for block in section.blocks -%}
+                    {%- if block.settings.label != blank -%}
+                      <li {{ block.shopify_attributes }}>
+                        <a class="ab-btn ab-btn-s ab-btn-sm" href="{{ block.settings.link | default: routes.all_products_collection_url }}">
+                          {{- block.settings.label | escape -}}
+                        </a>
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endpaginate -%}
+      {%- else -%}
+        <p class="ab-search-none-b ab-search-idle">
+          {{- section.settings.idle_body | default: 'Type what you are after — a garment, a colour, a word from the print.' | escape -}}
+        </p>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Abimra search",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Show breadcrumb",
+      "default": true
+    },
+    { "type": "text", "id": "heading", "label": "Heading before the search term", "default": "Results for" },
+    { "type": "text", "id": "blank_heading", "label": "Heading with no search term", "default": "Search" },
+    { "type": "text", "id": "placeholder", "label": "Search box placeholder", "default": "Search tees, hoodies, colours" },
+    {
+      "type": "text",
+      "id": "idle_body",
+      "label": "Text before anything is searched",
+      "default": "Type what you are after — a garment, a colour, a word from the print."
+    },
+    {
+      "type": "range",
+      "id": "results_per_page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "label": "Results per page",
+      "default": 24
+    },
+    {
+      "type": "text",
+      "id": "color_option_name",
+      "label": "Colour option name",
+      "default": "Color",
+      "info": "Products with more than one value for this option show colour swatches on their card."
+    },
+    { "type": "text", "id": "pages_heading", "label": "Heading above page results", "default": "Also on the site" },
+    {
+      "type": "header",
+      "content": "Nothing found"
+    },
+    { "type": "text", "id": "empty_heading", "label": "Heading", "default": "Nothing matched that." },
+    {
+      "type": "textarea",
+      "id": "empty_body",
+      "label": "Text",
+      "default": "Try a shorter word, or a garment rather than a design. Or start from one of these."
+    },
+    {
+      "type": "header",
+      "content": "Filtering and sorting"
+    },
+    {
+      "type": "paragraph",
+      "content": "Filters on search results come from the free Shopify Search & Discovery app. With none configured only the sort control appears."
+    },
+    { "type": "checkbox", "id": "enable_filtering", "label": "Enable filtering", "default": true },
+    {
+      "type": "select",
+      "id": "filter_type",
+      "label": "Filter layout",
+      "options": [
+        { "value": "horizontal", "label": "Horizontal" },
+        { "value": "vertical", "label": "Vertical" },
+        { "value": "drawer", "label": "Drawer" }
+      ],
+      "default": "horizontal"
+    },
+    { "type": "checkbox", "id": "enable_sorting", "label": "Enable sorting", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "suggestion",
+      "name": "Dead-end suggestion",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Shop everything" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "templates": ["search"]
+  }
+}
+{% endschema %}

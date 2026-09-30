@@ -10,26 +10,47 @@
 {
   "sections": {
     "main": {
-      "type": "main-search",
+      "type": "abmira-search",
+      "blocks": {
+        "sugg1": {
+          "type": "suggestion",
+          "settings": {
+            "label": "Design your own",
+            "link": "shopify://collections/design-your-own"
+          }
+        },
+        "sugg2": {
+          "type": "suggestion",
+          "settings": {
+            "label": "Studio Originals",
+            "link": "shopify://collections/studio-originals"
+          }
+        },
+        "sugg3": {
+          "type": "suggestion",
+          "settings": {
+            "label": "Shop everything",
+            "link": "shopify://collections/all"
+          }
+        }
+      },
+      "block_order": ["sugg1", "sugg2", "sugg3"],
       "settings": {
-        "columns_desktop": 4,
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": false,
-        "show_vendor": false,
-        "show_rating": false,
+        "show_breadcrumb": true,
+        "heading": "Results for",
+        "blank_heading": "Search",
+        "placeholder": "Search tees, hoodies, colours",
+        "idle_body": "Type what you are after — a garment, a colour, a word from the print.",
+        "results_per_page": 24,
+        "color_option_name": "Color",
+        "pages_heading": "Also on the site",
+        "empty_heading": "Nothing matched that.",
+        "empty_body": "Try a shorter word, or a garment rather than a design. Or start from one of these.",
         "enable_filtering": true,
         "filter_type": "horizontal",
-        "enable_sorting": true,
-        "article_show_date": true,
-        "article_show_author": false,
-        "columns_mobile": "2",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "enable_sorting": true
       }
     }
   },
-  "order": [
-    "main"
-  ]
+  "order": ["main"]
 }

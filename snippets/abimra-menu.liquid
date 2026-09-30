@@ -49,6 +49,25 @@
     </div>
   </div>
   <div class="am-body">
+    {%- unless show_search == false -%}
+      {%- comment -%}
+        [abmira] A plain form, not the predictive one. Dawn's results
+        section hardcodes id="predictive-search-results", so a second live
+        instance would duplicate that id in the document; and a dropdown
+        inside a full-screen overlay fights the overlay's own scrolling.
+        This submits to the results page, which is the whole design.
+        The header's search icon is still there for live results.
+      {%- endcomment -%}
+      <div class="am-search am-fade">
+        {% render 'abmira-search-form',
+          input_id: 'AbimraSearchMenu',
+          predictive: false,
+          variant: 'menu',
+          placeholder: search_placeholder
+        %}
+      </div>
+    {%- endunless -%}
+
     <nav class="am-links" aria-label="Main">
       {%- for link in am_links -%}
         <a class="am-link{% if link.active or link.child_active %} is-here{% endif %}" href="{{ link.url }}" style="--i:{{ forloop.index0 }}"{% if link.current %} aria-current="page"{% endif %}>

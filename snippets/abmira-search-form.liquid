@@ -1,0 +1,100 @@
+{%- comment -%}
+  Abimra search form.
+
+  Accepts:
+  - input_id:   {String}  unique id for the input (required - two forms on
+                          one page must not share it)
+  - predictive: {Boolean} true wraps it in Dawn's <predictive-search>, which
+                          fetches live results into [data-predictive-search].
+                          false gives a plain form that submits to /search.
+  - placeholder:{String}  placeholder text
+  - variant:    {String}  'panel' or 'menu', for styling only
+
+  Only one predictive form should exist per page. Dawn's results section
+  hardcodes id="predictive-search-results", so a second instance would put
+  a duplicate id in the document and the input's aria-owns would point at
+  whichever came first. The header panel is the predictive one; the mobile
+  menu uses the plain form and submits to the results page.
+
+  The element names, data attributes and aria wiring below are what
+  assets/predictive-search.js looks for. They are Dawn's, kept verbatim -
+  only the classes around them are ours.
+{%- endcomment -%}
+
+{%- liquid
+  assign ph = placeholder | default: 'Search tees, hoodies, colours'
+  assign live = false
+  if predictive and settings.predictive_search_enabled
+    assign live = true
+  endif
+-%}
+
+{%- if live -%}
+  <predictive-search class="ab-search ab-search--{{ variant | default: 'panel' }}" data-loading-text="{{ 'accessibility.loading' | t }}">
+{%- else -%}
+  <search-form class="ab-search ab-search--{{ variant | default: 'panel' }}">
+{%- endif -%}
+
+<form action="{{ routes.search_url }}" method="get" role="search" class="ab-search-form">
+  <div class="ab-search-field">
+    <svg class="ab-search-glass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>
+    </svg>
+
+    <label class="visually-hidden" for="{{ input_id }}">{{ 'general.search.search' | t }}</label>
+    <input
+      class="ab-search-input"
+      id="{{ input_id }}"
+      type="search"
+      name="q"
+      value="{{ search.terms | escape }}"
+      placeholder="{{ ph | escape }}"
+      {%- if live %}
+        role="combobox"
+        aria-expanded="false"
+        aria-owns="predictive-search-results"
+        aria-controls="predictive-search-results"
+        aria-haspopup="listbox"
+        aria-autocomplete="list"
+        autocorrect="off"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+      {%- endif %}
+    >
+    {%- comment -%}
+      Without this Shopify matches whole words only, so "hood" finds
+      nothing. It is what makes typing feel like searching.
+    {%- endcomment -%}
+    <input type="hidden" name="options[prefix]" value="last">
+
+    <button
+      type="reset"
+      class="ab-search-clear{% if search.terms == blank %} hidden{% endif %}"
+      aria-label="{{ 'general.search.reset' | t }}"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M18 6 6 18M6 6l12 12"/>
+      </svg>
+    </button>
+
+    <button type="submit" class="ab-search-go" aria-label="{{ 'general.search.search' | t }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M5 12h13M12 5l7 7-7 7"/>
+      </svg>
+    </button>
+  </div>
+
+  {%- if live -%}
+    <div class="ab-search-results predictive-search" tabindex="-1" data-predictive-search>
+      <div class="ab-search-spinner" aria-hidden="true"></div>
+    </div>
+    <span class="predictive-search-status visually-hidden" role="status" aria-hidden="true"></span>
+  {%- endif -%}
+</form>
+
+{%- if live -%}
+  </predictive-search>
+{%- else -%}
+  </search-form>
+{%- endif -%}

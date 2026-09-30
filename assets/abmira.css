@@ -3989,3 +3989,444 @@ a.ab-detail-t:hover {
   background-image: var(--ab-dots);
   background-size: var(--ab-dots-size);
 }
+
+/* ============================================================
+   SEARCH
+   The icon in the header, the panel it opens, the bar in the mobile
+   menu, and Dawn's predictive results restyled inside both.
+
+   Dawn's component-predictive-search.css is loaded first and these sit
+   on top of it, the same arrangement the facets use. Its structural
+   rules - the open/closed display switch, the loading states, the
+   keyboard-selected row - are worth keeping.
+   ============================================================ */
+
+/* The panel hangs off the nav rather than pushing it down, so opening
+   search never moves the page under the reader's cursor. */
+.ab-nav {
+  position: relative;
+}
+
+.ab-search-toggle {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.ab-search-toggle svg {
+  grid-area: 1 / 1;
+  width: 20px;
+  height: 20px;
+  transition: opacity 0.14s var(--ab-e), transform 0.18s var(--ab-e);
+}
+
+/* Both glyphs are stacked in one grid cell and cross-faded, so the button
+   never changes size and the row never reflows as it is pressed. */
+.ab-search-toggle-x {
+  opacity: 0;
+  transform: rotate(-45deg);
+}
+
+.ab-search-toggle.is-open .ab-search-toggle-glass {
+  opacity: 0;
+  transform: rotate(45deg);
+}
+
+.ab-search-toggle.is-open .ab-search-toggle-x {
+  opacity: 1;
+  transform: none;
+}
+
+.ab-search-toggle:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* ---- the panel ---- */
+
+/* The attribute has to be restated: the rules below set `display`, which
+   would otherwise beat the browser's own [hidden] rule and leave a panel
+   on screen that the script believes is closed. */
+.ab-search-panel[hidden] {
+  display: none;
+}
+
+.ab-search-panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  z-index: 60;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  box-shadow: 0 22px 44px -28px rgba(25, 24, 19, 0.5);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.16s var(--ab-e), transform 0.22s var(--ab-e);
+}
+
+.ab-search-panel.is-open {
+  opacity: 1;
+  transform: none;
+}
+
+.ab-search-panel-in {
+  height: auto;
+  padding-top: 18px;
+  padding-bottom: 20px;
+  display: block;
+}
+
+/* ---- the field, shared by the panel and the menu ---- */
+
+.ab-search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 6px 0 16px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-pill);
+  background: var(--paper-raised);
+  transition: border-color 0.12s var(--ab-e);
+}
+
+.ab-search-field:focus-within {
+  border-color: var(--ink);
+}
+
+.ab-search-glass {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  color: var(--graphite);
+}
+
+.ab-search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-family: var(--ab-f);
+  /* 16px exactly: iOS Safari zooms the page on focus at anything smaller,
+     and the header is sticky, so the zoom leaves it hanging mid-screen. */
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+.ab-search-input::placeholder {
+  color: var(--graphite);
+  opacity: 0.85;
+}
+
+.ab-search-input:focus {
+  outline: 0;
+}
+
+/* Safari draws its own clear button on type=search, which would sit next
+   to ours. */
+.ab-search-input::-webkit-search-cancel-button,
+.ab-search-input::-webkit-search-decoration {
+  appearance: none;
+}
+
+.ab-search-clear,
+.ab-search-go {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.ab-search-clear {
+  width: 30px;
+  height: 30px;
+  background: none;
+  color: var(--graphite);
+}
+
+.ab-search-clear svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ab-search-clear:hover {
+  color: var(--ink);
+}
+
+/* Dawn's SearchForm toggles this class as the input empties and fills. */
+.ab-search-clear.hidden {
+  display: none;
+}
+
+.ab-search-go {
+  width: 40px;
+  height: 40px;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.ab-search-go svg {
+  width: 17px;
+  height: 17px;
+}
+
+.ab-search-go:hover {
+  background: var(--red);
+}
+
+.ab-search-clear:focus-visible,
+.ab-search-go:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* ---- results, inside the panel ---- */
+
+/* Dawn floats this over the page from a positioned ancestor. In the panel
+   it belongs in the flow, under the field. */
+.ab-search .predictive-search {
+  position: static;
+  margin-top: 16px;
+  max-height: min(58vh, 480px);
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.ab-search .predictive-search__results-groups-wrapper {
+  gap: 0 40px;
+}
+
+.ab-search .predictive-search__heading {
+  margin: 0 0 6px;
+  padding: 0 4px;
+  font-family: var(--ab-f-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 8px;
+}
+
+.ab-search .predictive-search__item {
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: var(--ink);
+  transition: background-color 0.1s var(--ab-e);
+}
+
+.ab-search .predictive-search__item:hover,
+.ab-search .predictive-search__list-item[aria-selected='true'] .predictive-search__item {
+  background: rgba(25, 24, 19, 0.055);
+}
+
+.ab-search .predictive-search__item-heading {
+  margin: 0;
+  font-family: var(--ab-f);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.ab-search .predictive-search__image {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  background: var(--b-sand);
+  object-fit: contain;
+}
+
+.ab-search .predictive-search .price {
+  font-family: var(--ab-f-mono);
+  font-size: 13px;
+  color: var(--graphite);
+}
+
+/* The "Search for X" row that closes the list. */
+.ab-search .predictive-search__item--term {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.ab-search-spinner {
+  display: none;
+  width: 22px;
+  height: 22px;
+  margin: 22px auto;
+  border: 2px solid var(--rule);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+  animation: ab-search-spin 0.7s linear infinite;
+}
+
+predictive-search[loading] .ab-search-spinner {
+  display: block;
+}
+
+@keyframes ab-search-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---- the bar in the mobile menu ---- */
+
+/* The menu is ink-on-dark, so the field inverts. */
+.am-search {
+  margin: 0 0 26px;
+}
+
+.am-search .ab-search-field {
+  height: 50px;
+  border-color: var(--rule-inv);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.am-search .ab-search-field:focus-within {
+  border-color: var(--paper);
+}
+
+.am-search .ab-search-glass,
+.am-search .ab-search-clear {
+  color: rgba(238, 234, 224, 0.62);
+}
+
+.am-search .ab-search-input {
+  color: var(--paper);
+}
+
+.am-search .ab-search-input::placeholder {
+  color: rgba(238, 234, 224, 0.52);
+}
+
+.am-search .ab-search-go {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.am-search .ab-search-go:hover {
+  background: var(--red);
+  color: var(--paper);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-search-panel,
+  .ab-search-toggle svg {
+    transition: none;
+  }
+
+  .ab-search-spinner {
+    animation: none;
+  }
+}
+
+/* ---- the results page ---- */
+
+.ab-search-page .ab-coll-head h1 em {
+  font-style: normal;
+  color: var(--red);
+}
+
+/* Narrower than the grid: a search box the full width of a 1200px page
+   reads as a form to fill in, not a box to correct a typo in. */
+.ab-search-onpage {
+  max-width: 520px;
+  margin: 0 0 32px;
+}
+
+.ab-search-idle {
+  max-width: 46ch;
+}
+
+.ab-search-none {
+  padding: 40px 0 8px;
+  max-width: 54ch;
+}
+
+.ab-search-none-b {
+  margin: 12px 0 0;
+  color: var(--graphite);
+  line-height: 1.6;
+}
+
+.ab-search-sugg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ab-search-pages {
+  margin: 48px 0 0;
+  padding-top: 26px;
+  border-top: 1px solid var(--rule);
+}
+
+.ab-search-pages-h {
+  margin: 0 0 14px;
+  font-family: var(--ab-f-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+
+.ab-search-pages ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 2px;
+}
+
+.ab-search-pages a {
+  display: block;
+  padding: 14px 16px;
+  margin: 0 -16px;
+  border-radius: 12px;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 0.1s var(--ab-e);
+}
+
+.ab-search-pages a:hover {
+  background: rgba(25, 24, 19, 0.05);
+}
+
+.ab-search-pages-t {
+  display: block;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.ab-search-pages-x {
+  display: block;
+  margin-top: 3px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--graphite);
+}

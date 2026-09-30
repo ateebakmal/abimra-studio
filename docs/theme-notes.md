@@ -76,6 +76,7 @@ constantly and has its own scroll container.
 | `assets/abmira-story-extras.js` | Collapse-on-completion and Watch again, layered on the story without touching it. |
 | `assets/abmira-cart.css` | The cart page. Namespaced `ab-cart-`. |
 | `assets/abmira-cart.js` | Cart preview dialog, undo toast, phone checkout bar, ticket. |
+| `assets/abmira-search.js` | Opens and closes the header search panel. Nothing else. |
 
 ### Dawn files that were modified
 
@@ -236,6 +237,56 @@ and `.cart` — all three already mean something in Dawn.
 Written and pushed, but only the empty state has been seen rendered. The
 line item card, the preview dialog, the undo toast and the ticket need a
 bag with a personalised item in it.
+
+---
+
+## Search
+
+`sections/abmira-search.liquid` is the results page and is deliberately a
+copy of `abmira-collection.liquid`: same grid, same facets, same card.
+Someone who searches and someone who browses a collection are doing the
+same thing. Dawn's `main-search.liquid` is still in the theme, unused.
+
+`snippets/abmira-search-form.liquid` is the form, rendered three times.
+
+**Only one form may be predictive.** Dawn's `sections/predictive-search.liquid`
+hardcodes `id="predictive-search-results"`, and the input points at it
+with `aria-owns`. A second live instance puts a duplicate id in the
+document and the two inputs fight over it. The header panel is the
+predictive one; the menu and the results page use plain `<search-form>`.
+
+**`search-form.js` must load before `predictive-search.js`.** The latter
+opens with `class PredictiveSearch extends SearchForm`, which throws on
+parse if the base class is not defined. Both are deferred, which
+preserves document order.
+
+**`options[prefix]=last` is not optional.** Without that hidden input
+Shopify matches whole words only, so "hood" finds nothing and the live
+panel looks broken.
+
+Dawn's `component-predictive-search.css` is loaded and then overridden in
+`abmira.css`, the same arrangement the facets use. It owns the
+open/closed display switch (`predictive-search[open] .predictive-search`),
+the loading states and the keyboard-selected row; ours owns everything
+visible.
+
+### Shopify pads empty searches
+
+A word search that matches nothing can still come back with products —
+recommendations Shopify substitutes — so `search.results_count` is
+non-zero and the theme's empty state never runs. There is no way to tell
+them apart from Liquid. The `_ss=r` marker on the product URLs looks like
+a discriminator and is not: real matches carry it too. Verified, so don't
+build on it. A numeric query (`7777777`) does return nothing, which is
+how to test the empty state.
+
+### Known, pre-existing
+
+`snippets/abmira-symbols.liquid` renders its `<symbol>` definitions once
+per section that asks for it, so `#ab-tee`, `#ab-hood`, `#ab-regmark`,
+`#ab-mark` and `#ab-tick` appear four times in the homepage document.
+`<use>` resolves to the first, so nothing is broken, but the ids are
+duplicated.
 
 ---
 

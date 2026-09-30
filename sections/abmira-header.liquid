@@ -18,6 +18,28 @@
   assign cart_count = cart.item_count
 -%}
 
+{%- if section.settings.show_search -%}
+  {%- comment -%}
+    [abmira] Dawn's own machinery does the searching. search-form.js has to
+    load first: PredictiveSearch extends SearchForm, and the subclass file
+    throws on parse if the base class is not defined yet. Both are deferred,
+    which preserves that order.
+
+    Dawn's stylesheet is loaded and then overridden in assets/abmira.css,
+    the same arrangement the facets use - it carries structural rules worth
+    keeping, and re-deriving them would be trading working CSS for risk.
+  {%- endcomment -%}
+  {{ 'component-search.css' | asset_url | stylesheet_tag }}
+  {%- if settings.predictive_search_enabled -%}
+    {{ 'component-predictive-search.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+  {%- else -%}
+    <script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
+  {%- endif -%}
+  <script src="{{ 'abmira-search.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
 <div class="ab-section">
   <nav class="ab-nav" aria-label="Main navigation">
     <div class="ab-nav-in">
@@ -47,6 +69,28 @@
       {%- endif -%}
 
       <div class="ab-nav-r">
+        {%- if section.settings.show_search -%}
+          {%- comment -%}
+            [abmira] The panel lives outside this row, below the nav, so it
+            can span the full width. The button only toggles it.
+          {%- endcomment -%}
+          <button
+            type="button"
+            class="ab-search-toggle"
+            data-ab-search-toggle
+            aria-expanded="false"
+            aria-controls="ab-search-panel"
+            aria-label="{{ 'general.search.search' | t }}"
+          >
+            <svg class="ab-search-toggle-glass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>
+            </svg>
+            <svg class="ab-search-toggle-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        {%- endif -%}
+
         <a
           href="{{ routes.cart_url }}"
           class="ab-bag"
@@ -65,6 +109,23 @@
         {%- endif -%}
       </div>
     </div>
+
+    {%- if section.settings.show_search -%}
+      {%- comment -%}
+        [abmira] Inside <nav> so it moves with the sticky header, and
+        `hidden` until opened so a keyboard never lands in a closed panel.
+      {%- endcomment -%}
+      <div class="ab-search-panel" id="ab-search-panel" data-ab-search-panel hidden>
+        <div class="ab-nav-in ab-search-panel-in">
+          {% render 'abmira-search-form',
+            input_id: 'AbimraSearchHeader',
+            predictive: true,
+            variant: 'panel',
+            placeholder: section.settings.search_placeholder
+          %}
+        </div>
+      </div>
+    {%- endif -%}
   </nav>
 
   {%- comment -%} Drawer: only reachable below 861px, where it is displayed. {%- endcomment -%}
@@ -142,6 +203,8 @@
     logo_mark: section.settings.abimra_logo_mark,
     logo_text: section.settings.logo_text,
     logo_sub: section.settings.logo_sub,
+    show_search: section.settings.show_search,
+    search_placeholder: section.settings.search_placeholder,
     breakpoint: 861
   %}
 </div>
@@ -175,6 +238,23 @@
       "id": "cart_label",
       "label": "Cart label",
       "default": "Bag"
+    },
+    {
+      "type": "header",
+      "content": "Search"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show the search icon",
+      "default": true,
+      "info": "Opens a panel under the header. Live results need Search suggestions switched on under Theme settings > Search input."
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Placeholder",
+      "default": "Search tees, hoodies, colours"
     },
     {
       "type": "header",
