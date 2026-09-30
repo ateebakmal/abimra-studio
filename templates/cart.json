@@ -12,34 +12,36 @@
     "cart-items": {
       "type": "main-cart-items",
       "settings": {
-        "color_scheme": "scheme-1",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "heading": "Your bag",
+        "back_label": "Keep shopping",
+        "thumb_source": "design",
+        "tag_label": "Personalised",
+        "kind_custom": "Personalised",
+        "kind_stock": "Studio Original",
+        "design_label": "View your design",
+        "remove_label": "Remove",
+        "warning": "<p>Personalised pieces are printed just for you, so check the spelling and sizes one last time with \"View your design\".</p>",
+        "note_label": "Add a note for the studio",
+        "note_placeholder": "Anything we should know? A gift, a deadline, a question about your print.",
+        "note_reassure": "We read every note before we print.",
+        "printer_label": "Order printer",
+        "ticket_heading": "Order Receipt",
+        "ticket_meta": "Your bag",
+        "subtotal_label": "Subtotal",
+        "small_print": "Delivery options and discount codes are added at checkout. Printed in our own studio and dispatched in 2–4 days.",
+        "checkout_label": "Checkout securely",
+        "checkout_short": "Checkout",
+        "empty_heading": "Your bag's blank.",
+        "empty_body": "Every good tee starts that way. Put something on one, or pick a Studio Original.",
+        "empty_cta_label": "Design your own",
+        "empty_cta_link": "",
+        "empty_cta2_label": "Shop Studio Originals",
+        "empty_cta2_link": ""
       }
     },
     "cart-footer": {
       "type": "main-cart-footer",
-      "settings": {
-        "color_scheme": "scheme-1",
-        "padding_top": 20,
-        "padding_bottom": 40
-      },
-      "blocks": {
-        "subtotal": {
-          "type": "subtotal",
-          "settings": {
-          }
-        },
-        "buttons": {
-          "type": "buttons",
-          "settings": {
-          }
-        }
-      },
-      "block_order": [
-        "subtotal",
-        "buttons"
-      ]
+      "settings": {}
     }
   },
   "order": [
