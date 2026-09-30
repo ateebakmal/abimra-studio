@@ -989,6 +989,7 @@
 }
 
 .ab-cat-card {
+  position: relative;
   border-radius: var(--r-card);
   padding: 20px;
   min-height: 176px;
@@ -996,6 +997,11 @@
   flex-direction: column;
   justify-content: space-between;
   border: 1px solid var(--rule);
+  /* So the hover rule below stops at the rounded corners instead of
+     running straight past them. Safe for the garment's drop-shadow:
+     the image is inset by 20px of padding and usually has a caption
+     under it, so the shadow is nowhere near the edge. */
+  overflow: hidden;
 }
 
 .ab-cat-card .ab-d3 {
@@ -1026,8 +1032,65 @@
 }
 
 
+/* Hover, the same two moves as the product card: the garment grows a
+   little and a hairline of press red draws across the foot of the card.
+
+   Scale only, never a lift - see the note on .ab-prod. These cards can
+   hold a cut-out or a photograph and the scale reads on both.
+
+   The rule is 4.5% of a 148px image, about 3px a side, well inside the
+   card's 20px padding, so nothing reaches the clip. */
+.ab-cat-card::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--red);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
 .ab-cat-card:hover .ab-d3 {
   color: var(--red);
+}
+
+@media (hover: hover) {
+  .ab-cat-card {
+    transition: border-color 0.12s var(--ab-e);
+  }
+
+  .ab-cat-img img {
+    transition: transform 0.4s var(--ab-e);
+  }
+
+  .ab-cat-card::after {
+    transition: transform 0.4s var(--ab-e);
+  }
+
+  .ab-cat-card:hover {
+    border-color: var(--ink);
+  }
+
+  .ab-cat-card:hover .ab-cat-img img {
+    transform: scale(1.045);
+  }
+
+  .ab-cat-card:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-cat-img img,
+  .ab-cat-card::after {
+    transition: none;
+  }
+
+  .ab-cat-card:hover .ab-cat-img img {
+    transform: none;
+  }
 }
 
 .ab-cat-card.ab-dark {
