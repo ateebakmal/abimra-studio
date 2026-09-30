@@ -20,23 +20,21 @@
 
 {%- if section.settings.show_search -%}
   {%- comment -%}
-    [abmira] Dawn's own machinery does the searching. search-form.js has to
-    load first: PredictiveSearch extends SearchForm, and the subclass file
-    throws on parse if the base class is not defined yet. Both are deferred,
-    which preserves that order.
+    [abmira] Only the panel's own script is loaded here. Everything Dawn
+    needs to do the searching is already in layout/theme.liquid:
+    search-form.js unconditionally, predictive-search.js under
+    `predictive_search_enabled`, and component-predictive-search.css under
+    the same condition, asynchronously.
 
-    Dawn's stylesheet is loaded and then overridden in assets/abmira.css,
-    the same arrangement the facets use - it carries structural rules worth
-    keeping, and re-deriving them would be trading working CSS for risk.
+    This section loaded its own copies for a while and they were worse
+    than redundant. Both files end in customElements.define(), which
+    throws NotSupportedError the second time a name is registered, so
+    every page with the header threw on load. Don't add them back.
+
+    component-search.css is not wanted either: it styles Dawn's
+    .search__input, .search__button and .reset__button, none of which
+    snippets/abmira-search-form.liquid uses.
   {%- endcomment -%}
-  {{ 'component-search.css' | asset_url | stylesheet_tag }}
-  {%- if settings.predictive_search_enabled -%}
-    {{ 'component-predictive-search.css' | asset_url | stylesheet_tag }}
-    <script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
-    <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
-  {%- else -%}
-    <script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
-  {%- endif -%}
   <script src="{{ 'abmira-search.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
 

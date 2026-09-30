@@ -264,11 +264,19 @@ preserves document order.
 Shopify matches whole words only, so "hood" finds nothing and the live
 panel looks broken.
 
-Dawn's `component-predictive-search.css` is loaded and then overridden in
-`abmira.css`, the same arrangement the facets use. It owns the
-open/closed display switch (`predictive-search[open] .predictive-search`),
-the loading states and the keyboard-selected row; ours owns everything
-visible.
+Dawn's `component-predictive-search.css` is overridden in `abmira.css`,
+the same arrangement the facets use. It owns the open/closed display
+switch (`predictive-search[open] .predictive-search`), the loading states
+and the keyboard-selected row; ours owns everything visible. It is loaded
+by `layout/theme.liquid`, not by the header — under the same
+`predictive_search_enabled` condition, and asynchronously. The header
+loaded a second, render-blocking copy for a while; don't add it back.
+
+**The story's finale buttons need `.as__end` in the selector.**
+`assets/abimra-story.css` is loaded by its section, which is to say after
+`abmira.css`. A bare `.as__ctas` rule ties on specificity and loses on
+order. Verified from the served page: the story's stylesheet is the last
+of nine.
 
 ### Shopify pads empty searches
 
