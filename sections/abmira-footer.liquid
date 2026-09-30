@@ -52,17 +52,38 @@
           </div>
         {%- endif -%}
 
-        {%- if social.size > 0 -%}
+        {%- comment -%}
+          An icon with no link behind it is worse than no icon: it says the
+          studio is on Instagram and then goes nowhere. So a block is only
+          drawn once it has a real address, the same rule the policy links
+          follow. "#" counts as empty - it is what the theme editor leaves
+          when someone adds the block and does not fill it in.
+        {%- endcomment -%}
+        {%- assign social_shown = 0 -%}
+        {%- for block in social -%}
+          {%- if block.settings.link != blank and block.settings.link != '#' -%}
+            {%- assign social_shown = social_shown | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- if social_shown > 0 -%}
           <ul class="ab-foot-social" role="list">
             {%- for block in social -%}
-              {%- liquid
-                assign icon = 'icon-' | append: block.settings.network | append: '.svg'
-              -%}
-              <li {{ block.shopify_attributes }}>
-                <a href="{{ block.settings.link | default: '#' }}" aria-label="{{ block.settings.network | capitalize }}">
-                  {{ icon | inline_asset_content }}
-                </a>
-              </li>
+              {%- if block.settings.link != blank and block.settings.link != '#' -%}
+                {%- liquid
+                  assign icon = 'icon-' | append: block.settings.network | append: '.svg'
+                -%}
+                <li {{ block.shopify_attributes }}>
+                  <a
+                    href="{{ block.settings.link }}"
+                    aria-label="{{ block.settings.network | capitalize }}"
+                    rel="noopener"
+                    target="_blank"
+                  >
+                    {{ icon | inline_asset_content }}
+                  </a>
+                </li>
+              {%- endif -%}
             {%- endfor -%}
           </ul>
         {%- endif -%}

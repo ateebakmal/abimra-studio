@@ -58,16 +58,25 @@
     var buttons = document.querySelectorAll('[data-ab-cookie-prefs]');
     if (!buttons.length) return;
 
+    function attempt() {
+      var show = api();
+      if (!show) return false;
+      wire(buttons, show);
+      return true;
+    }
+
+    // Shopify fires this once someone answers the banner. By then the API
+    // is certainly there, so it catches the case where the banner loaded
+    // later than the polling window below.
+    document.addEventListener('visitorConsentCollected', attempt);
+
     var left = TRIES;
     (function look() {
-      var show = api();
-      if (show) {
-        wire(buttons, show);
-        return;
-      }
+      if (attempt()) return;
       if (--left > 0) window.setTimeout(look, WAIT);
       // Otherwise the button stays hidden. That is the correct outcome
-      // when no banner is configured.
+      // when no banner is configured, and when the shopper is outside the
+      // regions the banner is switched on for.
     })();
   }
 
