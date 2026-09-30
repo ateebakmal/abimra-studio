@@ -15,15 +15,35 @@ Store: `aarm13-i0.myshopify.com`
 
 | Theme | ID | Role |
 |---|---|---|
-| Tees dev | `204608307543` | **live** |
-| Tees staging | `204664865111` | the v1 design system, known good |
+| **Abimra live** | `206202339671` | **live** |
+| Tees 3D staging | `205932822871` | where work happens — push here |
 | Tees v1 backup | `205932790103` | frozen snapshot of v1 — never push here |
-| Tees 3D | `205932822871` | current working theme |
+| Tees staging | `204664865111` | the v1 design system, known good |
+| Tees dev | `204608307543` | the old live theme, superseded |
 
-All four were deployed from the commit tagged `v1-pre-3d`.
+**Push to `205932822871`.** Live is a separate id on purpose: every push
+this project has made went to the staging one, and leaving that habit
+pointed at production is how a half-finished file ends up on the shop.
+Deploying is a deliberate push to `206202339671`.
 
 Rollback ladder, cheapest first: `git checkout` one file → `git checkout
 v1-pre-3d` → publish **Tees v1 backup** in the admin (one click, no code).
+
+### Duplicating drops app blocks, and that is sometimes the point
+
+`shopify theme duplicate` does not carry app blocks or embeds across —
+they are registered per theme. When Abimra live was made from Tees 3D it
+came back missing Customify and SB Product Options, which looked like
+data loss and was not: both apps are uninstalled, and what the copy
+dropped were dead references. Tees 3D had been printing
+`<!-- Failed to render app block ... does not exist -->` into every page
+because of them.
+
+Two things follow. **After duplicating, check the app embeds** on the new
+theme before publishing — a live app really would be lost this way. And
+**a dead app block cannot be removed by pushing**: Shopify strips app
+blocks it cannot resolve on the way in, so sending a file that still
+contains one changes nothing. Stop sending it instead.
 
 ```bash
 shopify theme push --store aarm13-i0.myshopify.com --theme <id> --only <path>
@@ -36,9 +56,14 @@ shopify theme list --store aarm13-i0.myshopify.com
 
 **A full push can strip the app embeds.** `shopify theme push` with no
 `--only` sends `config/settings_data.json`, which holds the app embed
-blocks (customify, sb-product-designer, sb-product-options). Prefer
-`--only`, and if you do push everything, load a product page afterwards
-and check the app scripts are still there.
+blocks — today only `sb-product-designer`. Prefer `--only`, and if you do
+push everything, load a product page afterwards and check `pd-boot.js` is
+still there.
+
+**`--path` on a pull is unreliable.** `shopify theme pull --path <dir>`
+stopped after `assets/` and reported success, twice. Running the pull
+from inside the target directory fetched all 405 files. Don't trust a
+pull you haven't counted.
 
 **Push a section before the config that uses it.** Shopify parses a
 template or section group *before* it knows about a new setting or block
