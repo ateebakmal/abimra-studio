@@ -43,6 +43,11 @@
       }
 
       bagCount();
+
+      // Show the printer head. It is hidden the rest of the time, or it
+      // paints a black bar across the top of every page.
+      var wrap = this.querySelector('.cart-notification-wrapper');
+      if (wrap) wrap.classList.add('ab-on');
     };
 
     /* ---- 2. tear off on the way out ---- */
@@ -53,9 +58,13 @@
       if (!el || !el.classList.contains('animate')) return;
 
       el.classList.add('ab-tear');
+      var wrap = this.querySelector('.cart-notification-wrapper');
+
       window.setTimeout(function () {
         el.classList.remove('ab-tear', 'animate');
-      }, 320);
+        // Head goes last, once the paper is back behind it.
+        if (wrap) wrap.classList.remove('ab-on');
+      }, 340);
     };
 
     return true;

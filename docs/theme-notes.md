@@ -521,6 +521,32 @@ the same `settings.cart_type == 'notification'` condition.
   the **line item**, not the cart, so it carries no `item_count` — don't
   try to read one off it.
 
+**Every notification rule needs to outrank Dawn by specificity.**
+`component-cart-notification.css` is loaded by the header section, so it
+lands *after* `abmira.css`, and its rules are single-class — a bare
+`.cart-notification` here loses every conflict. Two of its defaults did
+real damage before this was understood:
+
+- `.cart-notification { position: absolute; z-index: -1 }` — absolute
+  adds no height to the wrapper, so the wrapper collapsed to zero and
+  `overflow: hidden` clipped the receipt out of existence. It rendered
+  and animated perfectly, entirely invisible.
+- `.cart-notification-wrapper { position: relative }` — one class, same
+  as ours, loaded later, so it won: the wrapper sat in normal flow and
+  painted a black printer head across the top of **every page in the
+  shop**. Hence `cart-notification .cart-notification-wrapper`, which is
+  (0,1,1).
+
+**The printer head is gated on `.ab-on`**, toggled by the JS, for the
+same reason — it is painted by the wrapper (the panel moves, so a
+pseudo-element on it would slide away) and the wrapper is always in the
+DOM.
+
+**The hide transform must subtract the head's padding**:
+`translateY(calc(-100% - var(--ab-head) - 6px))`. Plain `-100%` leaves
+the panel resting one head-height low, and its rounded bottom edge peeks
+out under the header on every page.
+
 **The panel must use a `transition`, not an `animation`.** Dawn's
 `open()` waits for `transitionend` before it moves focus into the
 dialog; with an animation that event never fires and keyboard focus

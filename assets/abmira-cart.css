@@ -1124,21 +1124,36 @@
  * Empty bag
  * ---------------------------------------------------------- */
 
+/* An empty cart is one column, not one column plus a 400px hole.
+   The ticket column is hidden when there is nothing to print, so the
+   grid has to stop reserving it - otherwise the empty state is centred
+   inside the left column and reads as off-centre on the page. */
+.ab-cart-grid:has(.is-empty) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .ab-cart-empty {
   text-align: center;
+  /* Narrower than the page and centred in it, so the heading, the line
+     under it and the two buttons read as one centred block rather than
+     three things that happen to be centred. */
+  max-width: 44ch;
+  margin: 0 auto;
   padding: 20px 0 40px;
 }
 
 .ab-cart-empty-art {
-  width: min(260px, 70vw);
+  width: min(190px, 54vw);
   height: auto;
   margin: 0 auto 26px;
   display: block;
   opacity: 0.16;
 }
 
+/* Dialled back from clamp(36px, 9vw, 64px): at full size the headline
+   dominated a page whose whole message is that there is nothing here. */
 .ab-cart-empty .ab-d1 {
-  font-size: clamp(36px, 9vw, 64px);
+  font-size: clamp(30px, 6.4vw, 46px);
 }
 
 .ab-cart-empty p {
