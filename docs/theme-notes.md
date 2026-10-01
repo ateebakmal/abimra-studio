@@ -207,8 +207,32 @@ was current instead of the finale and the story never played. It was
 removed; don't reach for it again.
 
 `overflow-anchor` is off on the section. Collapsing removes six screens
-from above the viewport and browsers correct for that on their own, which
-fought the correction in the script.
+from the page and browsers correct for that on their own, which fought
+the correction in the script.
+
+**The collapse anchors on a measured edge; don't replace it with
+arithmetic.** It records `sec.getBoundingClientRect().bottom`, collapses,
+measures the same edge again, and scrolls by the difference. Two earlier
+versions did sums on heights instead and both were wrong:
+
+- Subtracting the runway's lost height and clamping to the section's new
+  bottom. At the finale the correct answer *is* inside the section — the
+  stage is what fills the screen — so the clamp won every time and
+  shunted the visitor past the story into the marquee.
+- The sum itself assumed the collapsed stage was one
+  `window.innerHeight` tall. The stage is sized in `svh`, and on iOS with
+  the address bar hidden those differ by around 60–100px.
+
+Measuring the same edge twice assumes neither.
+
+**It also waits for the scroll to stop** — `scrollend`, or a 160ms timer
+for Safari, which hasn't shipped it. Calling `scrollTo` during a live
+iOS fling does not replace the momentum; Safari carries on from wherever
+the jump put you, which threw the visitor several sections down.
+
+**Never force a synchronous layout here.** A `void document.body.offsetHeight`
+immediately after taking ~4800px out of the page made iOS blank and
+re-rasterise for a frame.
 
 ---
 

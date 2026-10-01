@@ -67,34 +67,44 @@
     var runway = sec.querySelector('.as__runway');
     if (!runway) return;
 
-    // Read the scroll position BEFORE anything moves, and correct to an
-    // absolute target rather than a relative one.
-    //
-    // scrollBy adds to wherever the page happens to be at the instant it
-    // runs, and during a fast flick - trackpad momentum, or a phone still
-    // gliding - that is a moving target. The correction then lands
-    // somewhere unrelated to the measurement it was based on, which is
-    // how scrolling quickly past the story threw the visitor to the top.
-    var y = window.pageYOffset;
-    var before = runway.getBoundingClientRect().height;
+    /* Anchor on something real, and measure it twice.
+
+       This used to do arithmetic on heights: take the runway's height
+       before and after, subtract the difference from the scroll
+       position, and clamp the result to the section's new bottom so a
+       visitor could not land back inside a story they had just
+       finished. Both halves were wrong.
+
+       The clamp was wrong because at the finale the correct answer IS
+       inside the section - the stage is what fills the screen, so that
+       is where the visitor should stay. The section's bottom is a whole
+       screen further down, so the clamp won every time and shunted them
+       past the story into the marquee.
+
+       The arithmetic was wrong on iOS for a quieter reason: it assumed
+       the collapsed stage was exactly one window.innerHeight tall, and
+       the stage is sized in svh. With the address bar hidden those are
+       not the same number, so the sum was out by the difference.
+
+       Measuring the same edge before and after assumes neither. Whatever
+       the visitor is looking at - the finale, or a section below it -
+       keeps the screen position it already had. */
+    var ref = sec.getBoundingClientRect().bottom;
+
     if (typeof sec.__asDestroy === 'function') sec.__asDestroy();
     sec.classList.add('is-static');
-    var after = runway.getBoundingClientRect().height;
 
-    // Six screens have just been removed from the page ABOVE the viewport,
-    // so the same distance comes off the scroll position and nothing
-    // appears to move. The browser's own scroll anchoring is switched off
-    // for this section in abmira.css, or the change would be corrected
-    // twice.
-    var shrank = before - after;
-    if (shrank > 0) {
-      // A floor, not just a clamp at zero: where the section now ends.
-      // Landing above this would drop the visitor back inside a story
-      // they have just finished watching, which is the worse failure of
-      // the two and the one actually reported.
-      var floor = sec.getBoundingClientRect().bottom + window.pageYOffset;
-      window.scrollTo(0, Math.max(floor, y - shrank));
-    }
+    var moved = sec.getBoundingClientRect().bottom - ref;
+    if (!moved) return;
+
+    /* Absolute, not scrollBy. scrollBy adds to wherever the page happens
+       to be at the instant it runs, and on a phone that can still be a
+       moving target even after the wait. pageYOffset is read here, after
+       the reflow, so it is the position the measurement above belongs
+       to. Scroll anchoring is off for this section in abmira.css, or the
+       browser would correct for the same change a second time. */
+    var target = window.pageYOffset + moved;
+    window.scrollTo(0, target < 0 ? 0 : target);
   }
 
   function replay(sec) {
