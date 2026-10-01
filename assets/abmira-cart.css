@@ -72,7 +72,13 @@
     gap: 48px;
   }
 
-  .ab-cart-side {
+  /* Empty cart: the wrapper still renders (Dawn's updater needs it to
+   exist), so the column collapses rather than holding 400px of nothing. */
+.ab-cart-side:has(> .js-ticket:empty) {
+  display: none;
+}
+
+.ab-cart-side {
     position: sticky;
     top: calc(var(--ab-nav-h) + 20px);
   }

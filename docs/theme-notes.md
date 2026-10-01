@@ -472,6 +472,58 @@ staging the moment the file was gone.
 
 ---
 
+## The cart's section rendering
+
+`assets/cart.js` rebuilds a fixed list of regions after every change and
+has **no null check**: `document.getElementById(id).querySelector(...)`.
+Dawn's list includes `#cart-icon-bubble`, its own header counter, which
+this theme does not render — so every cart update threw there, inside a
+`.then()`, surfacing as nothing at all. The line items updated because
+they are first in the list; every region after them silently did not.
+That is why the order ticket showed stale totals.
+
+`abmira-cart.js` patches `getSectionsToRender` on the `cart-items`
+prototype (reached through `customElements.get`, because cart.js is a
+classic script and the class is not on `window`) to **filter out regions
+whose element is missing**, then append the ticket:
+`{ id: 'ab-cart-side', section: <same section id>, selector: '.js-ticket' }`.
+Same section id, so Dawn reuses the HTML it already fetched.
+
+Two things this requires, both easy to break:
+
+- **`#ab-cart-side` and `.js-ticket` must render even when the cart is
+  empty**, with only their contents conditional. Dawn calls
+  `querySelector(selector).innerHTML` on the fetched section and throws
+  on null, which is exactly what emptying the cart would cause if the
+  wrapper sat inside the `{% if cart != empty %}`.
+- **The header bag counter is ours to update.** Dawn kept its own fresh
+  through the region we filter out, so `bagCount()` reads the new count
+  off the re-rendered ticket.
+
+---
+
+## Gallery colour filtering
+
+Filename first, alt text as fallback — never alt text alone, because alt
+text belongs to screen readers and search engines, not to us.
+
+`Colour_rest.png`: everything before the **first underscore** is the
+colour. A delimiter rather than a substring search, because "Red" would
+otherwise match `faded-red-tee.png`. No underscore means the file makes
+no claim, and alt text gets its turn.
+
+Alt text is matched as a **word**, hyphen-wrapped so "black" does not
+hit "blackberry" — an exact match would mean `alt="Black"`, which is the
+hijacking this exists to avoid.
+
+`data-pt-file` carries the plain filename; the underscore rule lives in
+`mediaIsColor()` in `pt-product-options.js`. Don't move it back into
+Liquid: an earlier version split on `_` there, so a hyphenated filename
+emitted the whole name, which is always truthy, and the alt fallback
+could never fire.
+
+---
+
 ## Linting
 
 `.theme-check.yml` ignores `design-guides/**`, `test-files/**` and

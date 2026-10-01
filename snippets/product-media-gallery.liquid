@@ -113,6 +113,7 @@
           data-media-id="{{ section.id }}-{{ featured_media.id }}"
           {% comment %} [custom] Colour this media belongs to, read by pt-product-options.js. {% endcomment %}
           data-pt-alt="{{ featured_media.alt | default: '' | strip | downcase | escape }}"
+          data-pt-file="{{ featured_media.preview_image.src | default: '' | split: '/' | last | split: '?' | first | downcase | escape }}"
         >
           {%- assign media_position = 1 -%}
           {% render 'product-thumbnail',
@@ -165,6 +166,7 @@
             data-media-id="{{ section.id }}-{{ media.id }}"
             {% comment %} [custom] Colour this media belongs to, read by pt-product-options.js. {% endcomment %}
             data-pt-alt="{{ media.alt | default: '' | strip | downcase | escape }}"
+            data-pt-file="{{ media.preview_image.src | default: '' | split: '/' | last | split: '?' | first | downcase | escape }}"
           >
             {%- liquid
               assign media_position = media_position | default: 0 | plus: 1
@@ -351,6 +353,7 @@
             data-media-position="{{ media_index }}"
             {% comment %} [custom] Colour this media belongs to, read by pt-product-options.js. {% endcomment %}
             data-pt-alt="{{ featured_media.alt | default: '' | strip | downcase | escape }}"
+          data-pt-file="{{ featured_media.preview_image.src | default: '' | split: '/' | last | split: '?' | first | downcase | escape }}"
           >
             {%- capture thumbnail_id -%}
               Thumbnail-{{ section.id }}-0
@@ -397,6 +400,7 @@
               data-media-position="{{ media_index }}"
               {% comment %} [custom] Colour this media belongs to, read by pt-product-options.js. {% endcomment %}
               data-pt-alt="{{ media.alt | default: '' | strip | downcase | escape }}"
+            data-pt-file="{{ media.preview_image.src | default: '' | split: '/' | last | split: '?' | first | downcase | escape }}"
             >
               {%- if media.media_type == 'model' -%}
                 <span class="thumbnail__badge" aria-hidden="true">

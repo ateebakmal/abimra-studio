@@ -151,23 +151,110 @@
   );
 
   /* ------------------------------------------------------------------ *
+   * Make Dawn re-render the order ticket
+   *
+   * assets/cart.js rebuilds a fixed list of regions after every change,
+   * and the only one it knows about in this section is .js-contents -
+   * the line items. The ticket is a sibling column of that, outside it,
+   * because the two form one grid. So the lines updated and the ticket
+   * kept showing the old totals until the page was reloaded.
+   *
+   * Rather than duplicate the cart's fetch, its own list is extended:
+   * same section id, so the HTML it already requested is reused and no
+   * second request is made. Dawn then swaps our .js-ticket exactly as it
+   * swaps .js-contents.
+   *
+   * Reached through the custom element registry rather than the CartItems
+   * binding: cart.js is a classic script, so the class is not on window.
+   * ------------------------------------------------------------------ */
+
+  function teachCart() {
+    var El = window.customElements && customElements.get('cart-items');
+    if (!El || !El.prototype.getSectionsToRender || El.prototype.__abTicket) return;
+    El.prototype.__abTicket = true;
+
+    var original = El.prototype.getSectionsToRender;
+    El.prototype.getSectionsToRender = function () {
+      var list = original.call(this);
+
+      /* Drop regions this theme does not render.
+       *
+       * Dawn's list is fixed and includes #cart-icon-bubble, its own
+       * header cart counter. This theme's header is its own, so that
+       * element does not exist - and Dawn does
+       * document.getElementById(id).querySelector(...) with no null
+       * check, so the whole update threw there. Inside a .then(), so it
+       * surfaced as nothing at all: the line items updated because they
+       * are first in the list, and every region after them silently did
+       * not. That is why the ticket looked stale.
+       */
+      list = list.filter(function (entry) {
+        return document.getElementById(entry.id);
+      });
+
+      var host = document.getElementById('main-cart-items');
+      if (host && document.getElementById('ab-cart-side')) {
+        // Same section id as the line items, so Dawn reuses the HTML it
+        // already requested rather than making a second trip.
+        list.push({
+          id: 'ab-cart-side',
+          section: host.dataset.id,
+          selector: '.js-ticket',
+        });
+      }
+      return list;
+    };
+  }
+
+  /* The header's bag counter.
+   *
+   * Dawn keeps its own counter fresh through the #cart-icon-bubble
+   * region that was just filtered out - this theme's header is its own,
+   * so nothing was updating it and it sat at the count the page loaded
+   * with. The ticket's printer line carries the new count and has just
+   * been re-rendered from the server, so it is read from there rather
+   * than fetched again. */
+  function bagCount() {
+    var src = document.querySelector('.ab-cart-printer-r');
+    var bags = document.querySelectorAll('.ab-bag b, [data-am-count]');
+    if (!bags.length) return;
+
+    var n = src ? parseInt(src.textContent, 10) : 0;
+    if (isNaN(n)) return;
+
+    Array.prototype.forEach.call(bags, function (b) {
+      b.textContent = n;
+      var link = b.closest('[aria-label]');
+      if (link) link.setAttribute('aria-label', link.getAttribute('aria-label').replace(/\d+/, n));
+    });
+  }
+
+  /* ------------------------------------------------------------------ *
    * 3. Phone checkout bar
    * ------------------------------------------------------------------ */
+
+  var barIO = null;
 
   function bar() {
     var el = document.querySelector('[data-ab-bar]');
     var real = document.querySelector('[data-ab-checkout]');
     if (!el || !real || typeof IntersectionObserver !== 'function') return;
 
+    // The checkout button lives inside the ticket, which is now replaced
+    // on every cart change - so the old observer would be watching a
+    // node that is no longer in the document.
+    if (barIO) barIO.disconnect();
+
     el.hidden = false;
-    new IntersectionObserver(
+    barIO = new IntersectionObserver(
       function (en) {
         // Up only while the real button is off screen. Two checkout
         // buttons at once is a choice nobody wants to make.
         el.classList.toggle('is-up', !en[0].isIntersecting);
       },
       { rootMargin: '0px 0px -40px 0px' }
-    ).observe(real);
+    );
+    barIO.observe(real);
   }
 
   /* ------------------------------------------------------------------ *
@@ -238,6 +325,7 @@
 
   function boot() {
     if (!page()) return;
+    teachCart();
     bar();
     ticket();
     images(document);
@@ -248,6 +336,10 @@
     new MutationObserver(function () {
       images(document);
       reprint();
+      // The ticket was re-rendered alongside the lines, so the phone
+      // bar's target is a fresh element.
+      bar();
+      bagCount();
     }).observe(contents, { childList: true, subtree: true });
   }
 

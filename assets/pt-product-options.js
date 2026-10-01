@@ -313,6 +313,55 @@ if (!customElements.get('pt-product-options')) {
        * Gallery filtering by media alt text
        * ------------------------------------------------------------------ */
 
+      /* Which colour a photo belongs to.
+       *
+       * The filename decides it, by convention: everything before the
+       * first underscore is the colour, so Black_tee-front.png is Black.
+       * A delimiter rather than a substring search, because "Red" would
+       * otherwise match faded-red-tee.png and hundred.png - and a file
+       * with no underscore simply has no colour, which is the correct
+       * answer for every one-off photo.
+       *
+       * Alt text is the fallback, for images whose names you do not
+       * control - a photographer's DSC_4471.jpg. It is checked only when
+       * the filename yields nothing, which leaves alt text free to be
+       * what it is supposed to be: a description for screen readers and
+       * for search engines, rather than a colour key.
+       *
+       * Normalised both sides, so "Bone White" matches bone-white_tee.png
+       * and case never matters.
+       */
+      normaliseColor(value) {
+        // Any run of punctuation or space becomes one hyphen, so
+        // "Bone White", "bone_white" and "tee (bone white)" all reduce to
+        // comparable tokens.
+        return String(value)
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '');
+      }
+
+      mediaIsColor(slide, wanted) {
+        const file = slide.dataset.ptFile || '';
+        const cut = file.indexOf('_');
+
+        // An underscore is what makes a filename a claim about colour.
+        // Without one the file is saying nothing - which is the right
+        // answer for faded-red-tee.png - and alt text gets its turn.
+        if (cut > 0) return this.normaliseColor(file.slice(0, cut)) === wanted;
+
+        /* Alt text is matched as a WORD, not as the whole string.
+           An exact match would mean alt="Black" - which is the hijacking
+           this convention exists to stop. Looking for the colour as a
+           token lets alt text stay a real description, "Black hoodie,
+           front view", and still answer the question.
+
+           Hyphen-wrapped so "black" does not match "blackberry". */
+        const alt = slide.dataset.ptAlt;
+        if (!alt) return false;
+        return ('-' + this.normaliseColor(alt) + '-').indexOf('-' + wanted + '-') !== -1;
+      }
+
       syncGallery(selection = this.readSelection()) {
         if (!this.filterGallery) return;
 
@@ -325,14 +374,14 @@ if (!customElements.get('pt-product-options')) {
         if (!slides.length) return;
 
         const color = this.selectedColor(selection);
-        const wanted = color ? color.trim().toLowerCase() : null;
+        const wanted = color ? this.normaliseColor(color) : null;
 
         // Fall back to the full gallery when this colour has no images of its own,
         // so a product with only generic photos still shows them.
-        const hasColorMedia = wanted !== null && slides.some((slide) => slide.dataset.ptAlt === wanted);
+        const hasColorMedia = wanted !== null && slides.some((slide) => this.mediaIsColor(slide, wanted));
 
         slides.forEach((slide) => {
-          const hide = hasColorMedia && slide.dataset.ptAlt !== wanted;
+          const hide = hasColorMedia && !this.mediaIsColor(slide, wanted);
           slide.classList.toggle(PT_HIDDEN_MEDIA_CLASS, hide);
           if (!hide) this.cancelRevealAnimation(slide);
         });

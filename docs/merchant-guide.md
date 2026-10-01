@@ -16,7 +16,7 @@ template** (right-hand column, below Search engine listing).
 |---|---|
 | **Default product** | An ordinary product. Big photos stacked down the page. |
 | **studio** | Ready-made designs — Studio Originals. One big photo with thumbnails and arrows. |
-| **studio-variant-filtering** | Same as studio, plus: pick a colour and the gallery shows **only that colour's photos**. Needs each photo's alt text set to its colour name ("Black", "White") — without that it behaves exactly like studio. The colour option on the product must be called "Color". |
+| **studio-variant-filtering** | Same as studio, plus: pick a colour and the gallery shows **only that colour's photos**. See *Naming photos by colour* below. Without it, behaves exactly like studio. The colour option on the product must be called "Color". |
 | **sb-product-designer** | Personalised products. The studio look plus an order-note box; the designer itself is attached by the app. |
 
 If the dropdown doesn't list the template you want, the theme hasn't been
@@ -70,6 +70,40 @@ change with them.
   around it, on the card's colour. Right for cut-outs.
 - **Fill** — the picture fills the whole card, edge to edge, and is
   cropped to fit. Right for a photo that already has its own background.
+
+---
+
+## Naming photos by colour
+
+Only matters on the **studio-variant-filtering** template, where picking
+a colour hides the other colours' photos.
+
+**Name the file `Colour_anything.png`** — the colour, then an
+underscore, then whatever you like:
+
+```
+Black_hoodie-front.png      → Black
+Black_hoodie-back.png       → Black
+White_hoodie-front.png      → White
+Bone-White_tee.png          → Bone White   (hyphens inside a two-word colour)
+```
+
+Capitals don't matter. The underscore is what counts: a file *without*
+one — `faded-red-tee.png` — is simply ignored, so your other photos are
+never affected.
+
+**If you can't rename the file** (a photographer's `DSC_4471.jpg`), put
+the colour in the photo's **alt text** instead. It only has to *contain*
+the colour, so write a proper description — *"Black hoodie, front
+view"* — which is better for Google and for screen readers anyway. The
+filename is checked first; alt text is the fallback.
+
+**If a colour has no photos of its own, all the photos show.** Nothing
+ever goes blank, so you can do this one product at a time.
+
+One caveat: Shopify can't rename a file after upload. To apply this to
+photos already uploaded you have to delete and re-add them, which also
+clears their variant assignment and order.
 
 ---
 

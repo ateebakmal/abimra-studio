@@ -323,8 +323,18 @@
         </cart-items>
       </div>
 
+      {%- comment -%}
+        The aside and its .js-ticket wrapper render even when the cart is
+        empty, and only their CONTENTS are conditional. assets/cart.js
+        replaces this subtree by doing querySelector('.js-ticket') on the
+        freshly fetched section - if the wrapper were inside the {% if %}
+        it would be missing the moment the last line went, and the
+        updater would throw on null. Empty, the aside collapses itself in
+        abmira-cart.css.
+      {%- endcomment -%}
+      <aside class="ab-cart-side" id="ab-cart-side" data-ab-side>
+        <div class="js-ticket">
       {%- if cart != empty -%}
-        <aside class="ab-cart-side" data-ab-side>
           <div class="ab-cart-printer" aria-hidden="true">
             <span class="ab-cart-led"></span>
             <span class="ab-cart-printer-l">{{ section.settings.printer_label | default: 'Order printer' | escape | upcase }}</span>
@@ -394,8 +404,9 @@
               {%- endfor -%}
             </ul>
           {%- endif -%}
-        </aside>
       {%- endif -%}
+        </div>
+      </aside>
     </form>
   </div>
 </div>
