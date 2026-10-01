@@ -210,25 +210,47 @@ removed; don't reach for it again.
 from the page and browsers correct for that on their own, which fought
 the correction in the script.
 
-**The collapse anchors on a measured edge; don't replace it with
-arithmetic.** It records `sec.getBoundingClientRect().bottom`, collapses,
-measures the same edge again, and scrolls by the difference. Two earlier
-versions did sums on heights instead and both were wrong:
+**The collapse never changes layout and scroll in the same frame.**
+That combination is the one iOS cannot do: its compositor keeps the
+sticky header and the stage's `will-change` layers on its own thread,
+and a layout change arriving together with a ~4000px jump gets presented
+one frame before the rects it depends on — the composited content simply
+isn't painted for that frame. Filmed twice on a real phone, surviving
+two fixes aimed at the wrong element.
 
-- Subtracting the runway's lost height and clamping to the section's new
-  bottom. At the finale the correct answer *is* inside the section — the
-  stage is what fills the screen — so the clamp won every time and
-  shunted the visitor past the story into the marquee.
-- The sum itself assumed the collapsed stage was one
-  `window.innerHeight` tall. The stage is sized in `svh`, and on iOS with
-  the address bar hidden those differ by around 60–100px.
+So there are two paths, and the order is the fix (it is how GSAP
+ScrollTrigger kills a pinned section: scroll to the start, *then* unpin):
 
-Measuring the same edge twice assumes neither.
+- **Stopped at the finale (stage pinned):** freeze the animation, jump
+  the scroll to the runway's start — the pinned stage looks identical
+  from either end, so this is a pure scroll between two identical
+  frames — then collapse next frame. The removed height is all *below*
+  the viewport, so the layout change needs no correction from anyone.
+- **Stopped with the story fully above the viewport:** the measured-edge
+  correction (record `getBoundingClientRect().bottom`, collapse, measure
+  again, scroll by the difference) followed by a ten-frame hold, because
+  Safari applies its own adjustment for a removed tall element a frame
+  or two after ours.
+- **Stopped half-past, finale partly visible:** neither path can hide
+  the change, so nothing happens — the watcher stays armed and collapses
+  at the next opportunity. The animation is already frozen (that happens
+  the moment the runway is fully scrolled, separately from the
+  collapse), so deferring costs nothing and reverse-scrub stays
+  impossible.
+
+Don't replace the measured edge with arithmetic on heights: one earlier
+version clamped to the section's new bottom (wrong — at the finale the
+right answer is *inside* the section) and another assumed the stage was
+`window.innerHeight` tall (wrong — it is sized in `svh`, which differs
+from innerHeight by 60–100px on iOS with the address bar hidden).
 
 **It also waits for the scroll to stop** — `scrollend`, or a 160ms timer
-for Safari, which hasn't shipped it. Calling `scrollTo` during a live
-iOS fling does not replace the momentum; Safari carries on from wherever
-the jump put you, which threw the visitor several sections down.
+plus a same-position-across-frames check for Safari, which hasn't
+shipped `scrollend`. Calling `scrollTo` during a live iOS fling does not
+replace the momentum; Safari carries on from wherever the jump put you,
+which threw the visitor several sections down. And don't collapse in
+steps across frames to "soften" the jump — nine corrections in a row is
+nine chances to collide with momentum, and it was worse.
 
 **Never force a synchronous layout here.** A `void document.body.offsetHeight`
 immediately after taking ~4800px out of the page made iOS blank and
