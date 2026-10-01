@@ -2522,6 +2522,43 @@ body.ab-drawer-open {
   font-size: 14px;
   color: var(--graphite);
   font-variation-settings: 'wdth' 100, 'wght' 500;
+  /* Dawn's heading is an h2 with its own line box, so it rode 8px high
+     of the 43px pills beside it. Centred against the row instead. */
+  margin-top: 0;
+  margin-bottom: 0;
+  align-self: center;
+}
+
+/* The sort control is a native <select>, which Dawn leaves as bare text.
+   Next to the pill-shaped filter triggers it read as unstyled. Same pill
+   as the triggers; Dawn's own caret svg stays, absolutely positioned,
+   which is what the wide right padding clears. The open list is drawn by
+   the operating system and cannot be themed - only the closed control
+   can. */
+.ab-facets .facet-filters__sort,
+.ab-facets select.select__select {
+  appearance: none;
+  -webkit-appearance: none;
+  height: auto;
+  min-height: 0;
+  padding: 9px 38px 9px 16px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-pill);
+  background: var(--paper-raised);
+  cursor: pointer;
+  transition: border-color 0.12s var(--ab-e);
+}
+
+.ab-facets .facet-filters__sort:hover,
+.ab-facets select.select__select:hover {
+  border-color: var(--ink);
+}
+
+.ab-facets .facet-filters__sort:focus-visible,
+.ab-facets select.select__select:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  box-shadow: none;
 }
 
 .ab-facets .facets__summary,
@@ -2951,6 +2988,36 @@ body.ab-drawer-open {
   }
 }
 
+/* Dawn draws its button border as an ::after box-shadow, with Dawn's own
+   radius variable. Our pills never adopted that variable, so every
+   product button wore a red rectangle drawn at the wrong radius behind
+   its rounded self. The ring goes; the pill's own border is the border. */
+.product .button:after,
+.product .shopify-payment-button__button--unbranded:after {
+  box-shadow: none;
+}
+
+/* The designer app injects its Customize button hard against the add to
+   cart button - measured gap: zero - with a 10px radius of its own.
+   The wrapper and button classes below are what it actually injects
+   (div.setubridgeProductDesigner > button.btnCustomization, which also
+   carries Dawn's .button, so the ::after ring kill above covers it).
+   Three-class specificity on purpose: the app's stylesheet can load
+   after ours, and .btnCustomization alone would lose the radius fight.
+   Its colours are the app's own and stay. */
+.product .setubridgeProductDesigner {
+  margin-top: 10px;
+}
+
+.product .product-form .btnCustomization {
+  width: 100%;
+  min-height: 50px;
+  border-radius: var(--r-pill);
+  font-family: var(--ab-f);
+  font-size: 16px;
+  font-variation-settings: 'wdth' 100, 'wght' 500;
+}
+
 .product .product-form__submit {
   font-family: var(--ab-f);
   font-size: 16px;
@@ -3306,6 +3373,14 @@ body.ab-drawer-open {
 /* ============================================================
    Content pages - returns, shipping, terms
    ============================================================ */
+
+/* The intro inherited .ab-sec's full 124px top pad, which under a
+   sticky header read as a hole before the page said anything. Half the
+   air is presence; all of it was absence. Bottom spacing is handled by
+   the :has() pairing below. */
+.ab-page-intro {
+  padding-top: clamp(44px, 7vh, 64px);
+}
 
 .ab-page-intro .ab-eyebrow {
   margin-bottom: 18px;
