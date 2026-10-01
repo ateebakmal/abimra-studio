@@ -502,6 +502,33 @@ Two things this requires, both easy to break:
 
 ---
 
+## The cart notification
+
+Dawn renders `<cart-notification>` from its own `sections/header.liquid`,
+which this theme does not use. Without that element on the page,
+`product-form.js` falls back to `window.location = cart_url` — so every
+add-to-cart was a full navigation and the **Cart type** setting did
+nothing at all. It is rendered from `abmira-header.liquid` now, behind
+the same `settings.cart_type == 'notification'` condition.
+
+`abmira-cart-notification.js` patches two things on the element:
+
+- `renderContents` rebuilds three regions with no null check, one of
+  them `#cart-icon-bubble` — the same trap as `cart.js`. It threw before
+  reaching `open()`, so nothing appeared. Missing regions are filtered
+  out for the duration of that call only.
+- The bag counter is updated by asking `/cart.js`. The add response is
+  the **line item**, not the cart, so it carries no `item_count` — don't
+  try to read one off it.
+
+**The panel must use a `transition`, not an `animation`.** Dawn's
+`open()` waits for `transitionend` before it moves focus into the
+dialog; with an animation that event never fires and keyboard focus
+silently breaks. That is also why the reduced-motion rule shortens the
+duration to 0.01s rather than removing it.
+
+---
+
 ## Gallery colour filtering
 
 Filename first, alt text as fallback — never alt text alone, because alt

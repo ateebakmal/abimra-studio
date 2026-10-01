@@ -366,5 +366,12 @@ Switch a platform off to drop it for good.
 only appear once that policy has text in it, under **Settings →
 Policies**. This is deliberate: it is better than a link to an empty page.
 
+**What happens when someone adds to the cart.** A receipt prints out
+from under the header — it slides down like paper leaving a printer,
+shows what was added, and offers View cart / Checkout / Continue
+shopping. That's the **Cart type** setting in Theme settings, set to
+*Notification*. Switch it to *Cart page* if you'd rather send people
+straight to the cart instead.
+
 **Why "Buy it now" doesn't appear.** It is switched off on every product
 template on purpose.

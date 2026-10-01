@@ -192,6 +192,21 @@
     breakpoint is 861 because that is where this theme swaps the pill for
     the desktop links, not the 990 in the snippet's own default.
   {%- endcomment -%}
+  {%- comment -%}
+    [abmira] Dawn renders this from its own header.liquid, which this
+    theme does not use - so <cart-notification> was never on the page.
+    product-form.js looks for it and, finding nothing, falls back to
+    `window.location = cart_url`: that is why adding an item navigated
+    to the cart even with Cart type set to "notification". The setting
+    had no effect at all until this line existed.
+  {%- endcomment -%}
+  {%- if settings.cart_type == 'notification' -%}
+    {{ 'component-cart-notification.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'abmira-cart-notification.js' | asset_url }}" defer="defer"></script>
+    {%- render 'cart-notification' -%}
+  {%- endif -%}
+
   {% render 'abimra-menu',
     menu: section.settings.abimra_menu,
     cta_label: section.settings.abimra_cta_label,

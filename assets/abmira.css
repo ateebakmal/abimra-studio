@@ -5037,3 +5037,225 @@ predictive-search[loading] .ab-search-spinner {
     bottom: 88px;
   }
 }
+
+/* ============================================================
+   CART NOTIFICATION — printed, not popped
+
+   Dawn slides a panel down from the header. This is the same machine as
+   the order ticket on the cart page: a dark printer head, and the
+   receipt feeding out from under it.
+
+   The receipt is clipped by the wrapper's overflow and pushed up out of
+   sight, so it emerges from beneath the printer head rather than fading
+   in on top of it. Dawn's open() waits for `transitionend` before it
+   moves focus, so the transform below has to be a real transition and
+   not an animation — remove it and keyboard focus silently stops
+   working.
+   ============================================================ */
+
+.cart-notification-wrapper {
+  position: fixed;
+  top: var(--ab-nav-h);
+  right: 0;
+  left: 0;
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--ab-pm);
+  pointer-events: none;
+  /* Clips the receipt while it is still inside the printer. */
+  overflow: hidden;
+}
+
+.cart-notification {
+  position: relative;
+  width: min(420px, 100%);
+  padding: 20px;
+  border: 1px solid var(--rule);
+  border-top: 0;
+  border-radius: 0 0 var(--r-card) var(--r-card);
+  background: var(--paper-raised);
+  color: var(--ink);
+  pointer-events: auto;
+  transform: translateY(-104%);
+  transition: transform 0.52s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* The printer head: the strip the receipt feeds out of. */
+.cart-notification::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: -1px;
+  left: -1px;
+  height: 10px;
+  border-radius: 4px 4px 0 0;
+  background: var(--ink);
+}
+
+/* The torn edge along the top of the paper. */
+.cart-notification::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background-image: linear-gradient(90deg, var(--rule) 0 6px, transparent 6px 12px);
+  background-size: 12px 1px;
+}
+
+.cart-notification.animate.active {
+  transform: translateY(0);
+}
+
+/* Torn off: back up under the head, a touch quicker than it came out. */
+.cart-notification.ab-tear {
+  transition-duration: 0.3s;
+  transform: translateY(-104%);
+}
+
+.cart-notification__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.cart-notification__heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--ab-f-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+
+.cart-notification__heading .icon-checkmark {
+  width: 12px;
+  height: 12px;
+  color: var(--ok);
+}
+
+.cart-notification__close {
+  position: static;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--graphite);
+  cursor: pointer;
+}
+
+.cart-notification__close:hover {
+  color: var(--ink);
+}
+
+.cart-notification__close .svg-wrapper {
+  width: 14px;
+  height: 14px;
+}
+
+.cart-notification-product {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px dashed var(--rule);
+}
+
+.cart-notification-product__image {
+  flex: none;
+  width: 54px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--b-sand);
+}
+
+.cart-notification-product__name {
+  margin: 0;
+  font-family: var(--ab-f);
+  font-size: 15px;
+  font-variation-settings: 'wdth' 100, 'wght' 600;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.cart-notification-product dl,
+.cart-notification-product .product-option {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--graphite);
+}
+
+.cart-notification__links {
+  display: grid;
+  gap: 8px;
+}
+
+.cart-notification__links .button,
+.cart-notification__links .button-label {
+  width: 100%;
+  min-height: 46px;
+  border-radius: var(--r-pill);
+  font-family: var(--ab-f);
+  font-size: 15px;
+  font-variation-settings: 'wdth' 100, 'wght' 500;
+}
+
+/* Dawn's ::after ring again - square, at its own radius, behind our
+   pills. Same reason it is killed on the product page. */
+.cart-notification__links .button:after {
+  box-shadow: none;
+}
+
+.cart-notification__links .button--primary {
+  border: 1px solid var(--red);
+  background: var(--red);
+  color: #fff;
+}
+
+.cart-notification__links .button--primary:hover {
+  background: var(--red-deep);
+  border-color: var(--red-deep);
+}
+
+.cart-notification__links .button--secondary {
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+}
+
+.cart-notification__links .button--secondary:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.cart-notification__links .button-label {
+  border: 0;
+  background: none;
+  color: var(--graphite);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.cart-notification__links .button-label:hover {
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cart-notification {
+    /* Still a transition, because open() waits for transitionend before
+       it moves focus - just too quick to read as motion. */
+    transition-duration: 0.01s;
+  }
+}
