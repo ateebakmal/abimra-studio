@@ -106,6 +106,12 @@ collections marked in the admin*.
 
 ## Changing how cards and product images look
 
+**Clicking a product photo opens it full screen** — one image at a
+time, on a dark background, with previous/next arrows and a counter.
+That's on for every product template. It's the "Abimra lightbox"
+checkbox on the Product information section, paired with Image zoom set
+to "No zoom"; change both together or two viewers answer the same click.
+
 **Theme editor → Theme settings → ABIMRA.** These apply across the whole
 store, so everything stays consistent.
 
