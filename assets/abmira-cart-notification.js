@@ -1,16 +1,19 @@
 /*
-  Two patches to Dawn's <cart-notification>, both small.
+  One patch to Dawn's <cart-notification>, and one addition.
 
-  1. It rebuilds three regions after an add and, like cart.js, calls
-     document.getElementById(id).innerHTML with no null check. One of
-     them is #cart-icon-bubble - Dawn's own header counter, which this
-     theme does not render - so renderContents() threw before it ever
-     reached open(), and the receipt never appeared. Missing regions are
-     filtered out, and the header bag is updated from the cart instead.
+  Dawn rebuilds three regions after an add and, like cart.js, calls
+  document.getElementById(id).innerHTML with no null check. One of them
+  is #cart-icon-bubble - its own header counter, which this theme does
+  not render - so renderContents() threw before it ever reached open(),
+  and nothing appeared at all. Missing regions are filtered out.
 
-  2. The receipt is torn off when it closes. Dawn only removes .active,
-     which snaps it away; the printing animation deserves an exit, and
-     the class is removed after it has played.
+  The header bag counter is then ours to update, since the region that
+  used to do it is the one being filtered.
+
+  The appearing and disappearing is CSS. An earlier version added and
+  removed classes here to drive a printer-head animation; it is gone,
+  along with the timers that sequenced it. Dawn's own .active class and
+  a transition do the whole job.
 
   Reached through the custom element registry because cart-notification.js
   is a classic script, so the class is not on window.
@@ -24,7 +27,7 @@
     if (!El || El.prototype.__abPatched) return true;
     El.prototype.__abPatched = true;
 
-    /* ---- 1. survive the regions this theme does not render ---- */
+    /* Survive the regions this theme does not render. */
     var render = El.prototype.renderContents;
     El.prototype.renderContents = function (parsedState) {
       var original = this.getSectionsToRender;
@@ -43,28 +46,6 @@
       }
 
       bagCount();
-
-      // Show the printer head. It is hidden the rest of the time, or it
-      // paints a black bar across the top of every page.
-      var wrap = this.querySelector('.cart-notification-wrapper');
-      if (wrap) wrap.classList.add('ab-on');
-    };
-
-    /* ---- 2. tear off on the way out ---- */
-    var close = El.prototype.close;
-    El.prototype.close = function () {
-      var el = this.notification;
-      close.call(this);
-      if (!el || !el.classList.contains('animate')) return;
-
-      el.classList.add('ab-tear');
-      var wrap = this.querySelector('.cart-notification-wrapper');
-
-      window.setTimeout(function () {
-        el.classList.remove('ab-tear', 'animate');
-        // Head goes last, once the paper is back behind it.
-        if (wrap) wrap.classList.remove('ab-on');
-      }, 340);
     };
 
     return true;

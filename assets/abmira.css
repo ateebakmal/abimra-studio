@@ -5039,133 +5039,64 @@ predictive-search[loading] .ab-search-spinner {
 }
 
 /* ============================================================
-   CART NOTIFICATION — printed, not popped
+   CART NOTIFICATION — a toast, top right
 
-   Every rule here is scoped under .cart-notification-wrapper, and that
-   is not decoration. component-cart-notification.css is loaded by the
-   header section, so it lands AFTER this file, and its rules are
-   single-class - a bare .cart-notification here loses every conflict.
-   Two classes wins, which is the same trick Dawn itself uses to undo
-   the inline `display: none` in the snippet.
+   Kept deliberately plain. An earlier version built a printer head: a
+   dark bar that faded in with the receipt sliding out from under it.
+   On screen that read as a glitch rather than a machine - a black block
+   appearing, then a panel - so it is gone. A card that fades and
+   settles says "added" without a performance.
 
-   What had to be beaten, and why it mattered: Dawn makes the panel
-   `position: absolute` with `z-index: -1`. Absolute means it adds no
-   height to the wrapper, so the wrapper collapsed to zero and
-   overflow: hidden clipped the receipt out of existence. It was
-   rendering and animating the whole time, entirely invisible.
+   Every rule is scoped under `cart-notification` the element, and that
+   is load-bearing: component-cart-notification.css is loaded by the
+   header section, so it lands AFTER this file and its rules are
+   single-class. A bare .cart-notification here loses every conflict -
+   including `position: absolute; z-index: -1` on the panel and
+   `position: relative` on the wrapper, which between them made the
+   thing invisible and then painted a bar across every page.
 
-   The printer head is on the WRAPPER, not the panel, because the panel
-   is what moves - a ::before on it would slide away with the paper.
+   Visibility is left to Dawn: it hides the panel by default and shows
+   it on .active with a 0s transition. That is what stops an invisible
+   panel swallowing clicks, so don't override it here.
    ============================================================ */
 
-/* The element selector is doing real work: Dawn's own
-   `.cart-notification-wrapper { position: relative }` is also one class
-   and loads after this file, so a bare class here lost - and a relative
-   wrapper sits in normal flow, which put a black printer head across
-   the top of every page in the shop. (0,1,1) beats (0,1,0). */
 cart-notification .cart-notification-wrapper {
   position: fixed;
-  top: var(--ab-nav-h);
-  right: 0;
-  left: 0;
+  top: calc(var(--ab-nav-h) + 12px);
+  right: var(--ab-pm);
+  left: auto;
   z-index: 40;
+  width: min(370px, calc(100vw - var(--ab-pm) * 2));
   max-width: none;
   margin: 0;
-  /* Room for the head, which the paper then emerges from under. */
-  padding: var(--ab-head, 30px) var(--ab-pm) 0;
+  padding: 0;
   pointer-events: none;
-  overflow: hidden;
 }
 
-/* The head only exists while something is printing. It is painted by
-   the wrapper rather than the panel because the panel is what moves,
-   and it is gated on a class rather than :has() so the rule does not
-   depend on the panel's state leaking upward. abmira-cart-notification.js
-   toggles it. */
-cart-notification .cart-notification-wrapper::before,
-cart-notification .cart-notification-wrapper::after {
-  content: '';
-  position: absolute;
-  opacity: 0;
-  transition: opacity 0.15s linear;
-}
-
-cart-notification .cart-notification-wrapper.ab-on::before,
-cart-notification .cart-notification-wrapper.ab-on::after {
-  opacity: 1;
-}
-
-/* The head: solid, opaque, above the paper. */
-cart-notification .cart-notification-wrapper::before {
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 2;
-  height: var(--ab-head, 30px);
-  background: var(--ink);
-}
-
-/* The slot it feeds through. */
-cart-notification .cart-notification-wrapper::after {
-  top: calc(var(--ab-head, 30px) - 5px);
-  left: 50%;
-  z-index: 3;
-  width: min(420px, calc(100% - var(--ab-pm) * 2));
-  height: 3px;
-  transform: translateX(-50%);
-  border-radius: 2px;
-  background: rgba(0, 0, 0, 0.55);
-}
-
-.cart-notification-wrapper .cart-notification {
-  /* relative, so it gives the wrapper height and is not clipped away */
+cart-notification .cart-notification-wrapper .cart-notification {
   position: relative;
   right: auto;
-  z-index: 1;
-  /* Dawn hides it with visibility; the overflow clip does that job here,
-     and visibility would stop the paper showing mid-feed. */
-  visibility: visible;
-  width: min(420px, 100%);
+  z-index: auto;
+  width: 100%;
   max-width: none;
-  margin: 0 auto;
-  padding: 20px;
+  padding: 18px;
   border: 1px solid var(--rule);
-  border-top: 0;
-  border-radius: 0 0 var(--r-card) var(--r-card);
+  border-radius: var(--r-card);
   background: var(--paper-raised);
   color: var(--ink);
   box-shadow: none;
   pointer-events: auto;
-  /* -100% clears its own height; the head's padding has to come off as
-     well, or the panel rests 30px lower than it thinks and its rounded
-     bottom edge peeks out under the header on every page. The extra 6px
-     is slack so no sub-pixel rounding shows a hairline. */
-  transform: translateY(calc(-100% - var(--ab-head, 30px) - 6px));
-  /* Slow enough to read as paper feeding, with a mechanical ease that
-     starts fast and settles - printers do not overshoot. */
-  transition: transform 0.62s cubic-bezier(0.16, 0.84, 0.44, 1);
+  opacity: 0;
+  transform: translateY(-10px);
+  /* A transition, not an animation: Dawn's open() waits for
+     transitionend before it moves focus into the dialog, and an
+     animation never fires that event. */
+  transition: opacity 0.22s var(--ab-e), transform 0.28s var(--ab-e);
 }
 
-/* The torn edge along the top of the paper. */
-.cart-notification-wrapper .cart-notification::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 2px;
-  background-image: linear-gradient(90deg, var(--rule) 0 7px, transparent 7px 13px);
-  background-size: 13px 2px;
-}
-
-.cart-notification-wrapper .cart-notification.active {
-  transform: translateY(0);
-}
-
-/* Torn off: back under the head, quicker than it came out. */
-.cart-notification-wrapper .cart-notification.ab-tear {
-  transform: translateY(calc(-100% - var(--ab-head, 30px) - 6px));
-  transition-duration: 0.34s;
+cart-notification .cart-notification-wrapper .cart-notification.active {
+  opacity: 1;
+  transform: none;
 }
 
 .cart-notification__header {
@@ -5306,9 +5237,10 @@ cart-notification .cart-notification-wrapper::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cart-notification-wrapper .cart-notification {
+  cart-notification .cart-notification-wrapper .cart-notification {
     /* Still a transition, because open() waits for transitionend before
        it moves focus - just too quick to read as motion. */
     transition-duration: 0.01s;
+    transform: none;
   }
 }

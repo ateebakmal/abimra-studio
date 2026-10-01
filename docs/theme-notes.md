@@ -528,24 +528,25 @@ lands *after* `abmira.css`, and its rules are single-class — a bare
 real damage before this was understood:
 
 - `.cart-notification { position: absolute; z-index: -1 }` — absolute
-  adds no height to the wrapper, so the wrapper collapsed to zero and
-  `overflow: hidden` clipped the receipt out of existence. It rendered
-  and animated perfectly, entirely invisible.
+  adds no height to a wrapper, so a clipping wrapper collapsed to zero
+  and hid the panel entirely. It rendered and animated perfectly,
+  invisible.
 - `.cart-notification-wrapper { position: relative }` — one class, same
   as ours, loaded later, so it won: the wrapper sat in normal flow and
-  painted a black printer head across the top of **every page in the
-  shop**. Hence `cart-notification .cart-notification-wrapper`, which is
-  (0,1,1).
+  painted its decoration across the top of **every page in the shop**.
 
-**The printer head is gated on `.ab-on`**, toggled by the JS, for the
-same reason — it is painted by the wrapper (the panel moves, so a
-pseudo-element on it would slide away) and the wrapper is always in the
-DOM.
+Hence `cart-notification .cart-notification-wrapper`, which is (0,1,1).
 
-**The hide transform must subtract the head's padding**:
-`translateY(calc(-100% - var(--ab-head) - 6px))`. Plain `-100%` leaves
-the panel resting one head-height low, and its rounded bottom edge peeks
-out under the header on every page.
+**It is a plain toast, and it should stay one.** A version in between
+built a printer head — a dark bar that faded in with the panel sliding
+out from under it, to match the cart page's order ticket. On screen it
+read as a glitch: a black block appearing, then a panel. The owner's
+actual request was "a simple toast", and that is what is there now.
+Don't re-litigate it without watching the old one move first.
+
+**Leave visibility to Dawn.** It hides the panel by default and shows it
+on `.active` with a `0s` transition. That is what stops a
+zero-opacity panel from swallowing clicks over the page behind it.
 
 **The panel must use a `transition`, not an `animation`.** Dawn's
 `open()` waits for `transitionend` before it moves focus into the
