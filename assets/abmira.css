@@ -1394,6 +1394,11 @@
     grid-column: 1;
     grid-row: 1 / -1;
     align-self: center;
+    /* width, not only max-width: the base breakpoint sets width: 186px
+       for lazy-image space reservation, and 186px inside this 124px
+       track overflowed into the text column. auto = stretch to the
+       fixed track, which is definite, so the reservation still works. */
+    width: auto;
     max-width: none;
     margin: 0;
   }
@@ -1621,6 +1626,7 @@
   }
 
   .ab-step-img {
+    width: auto;
     margin: 0 0 16px;
     max-width: none;
   }

@@ -220,9 +220,21 @@ heights — then held for ten frames against Safari's own late
 adjustment, releasing the instant the visitor touches anything.
 
 Positioning is exact: probed headless at four stop positions, 0px
-drift at all of them. What remains is a **one-frame flash on iOS
-Safari, once per page load, at the moment of the collapse.** It is
-accepted. Removing ~4000px of document and correcting the scroll is
+drift at all of them.
+
+**On iOS there is no collapse at all.** Every iOS browser is WebKit,
+and WebKit presents one frame of the collapse before its compositor
+catches up — a flash that survived six distinct fixes. So iOS freezes
+the story at the finale and leaves the runway tall: no height change,
+no scroll correction, no flash, and no way to be scroll-corrected to
+the wrong place. The chosen cost is that scrolling back up crosses the
+full frozen runway (soften it with the Brand story's *Scroll length on
+phones* setting, 6 → 4, if it grates). The gate is the `IOS` constant
+at the top of `abmira-story-extras.js`; it also catches iPads
+reporting themselves as Macs.
+
+On everything else the one compound operation was the flash risk, and
+it was Removing ~4000px of document and correcting the scroll is
 one compound operation, and iOS presents one frame of it before its
 compositor catches up. Every targeted fix was tried and filmed failing:
 
@@ -240,11 +252,15 @@ compositor catches up. Every targeted fix was tried and filmed failing:
   flash unchanged, all reverted.
 
 A `?nocollapse=1` isolation build proved the collapse is the trigger
-and the rest of the page is clean. If anyone reopens this: the two
-untried dials are the Brand story's *Scroll length on phones* setting
-(6 → 4 shrinks the whole operation by a third, no code) and the
-designed option of hiding the header during the story so the moment has
-less chrome to blink. Do not retry the list above.
+and the rest of the page is clean — which is what justified the iOS
+gate. Do not retry the list above on iOS; it is complete.
+
+**Step images reserve space with a width, not only a cap.** The base
+breakpoint sets `width: 186px` on `.ab-step-img` so the lazy-image box
+exists before the file arrives; the 401px+ layouts must set
+`width: auto` back, because their image column is a fixed 124px/168px
+grid track and a 186px box overflows it into the text. That overlap
+shipped once.
 
 **Lazy images must reserve their boxes.** A pending `loading="lazy"`
 image measures 0×0 whatever its width/height attributes say. The step
