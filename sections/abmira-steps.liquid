@@ -32,7 +32,21 @@
                   assign step_alt = block.settings.heading
                 endif
               -%}
-              <div class="ab-step-img">
+              <div
+                class="ab-step-img"
+                {% if block.settings.image != blank %}
+                  {%- comment -%}
+                    The ratio rides on the container, not the image. A
+                    pending lazy image measures 0x0 whatever its width and
+                    height attributes say, so until the file arrived this
+                    box had no height - and the card grew 155px the moment
+                    it did, right below the brand story, which reads as the
+                    whole page twitching mid-scroll. The container cannot
+                    be collapsed by a file that has not arrived.
+                  {%- endcomment -%}
+                  style="aspect-ratio: {{ block.settings.image.aspect_ratio }};"
+                {% endif %}
+              >
                 {%- if block.settings.image != blank -%}
                   {{
                     block.settings.image

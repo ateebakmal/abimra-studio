@@ -40,14 +40,13 @@
   combination was poison.
 
   Step b's identical-frames guarantee only holds while the stage is
-  actually pinned, so this path runs when the visitor stops at the
-  finale. Stopped long past it, the story is off screen and the old
-  anchored correction runs instead - at worst it can blink things that
-  are on screen then, which is far from the story. Stopped half-past,
-  with the finale partly visible, neither path can hide the change, so
-  nothing happens yet: the watcher stays armed and collapses at the next
-  opportunity. A deferred collapse costs nothing - the animation is
-  already frozen, so there is nothing left to rewind.
+  actually pinned, so that path runs when the visitor stops at the
+  finale. Stopped anywhere past it, the measured-edge correction runs
+  instead. (A version in between deferred the half-past case, waiting
+  for a stop where the change could be hidden - and that was worse than
+  what it avoided: the runway stayed six screens tall, so getting back
+  to the hero meant six swipes through a frozen frame. The story must
+  always end up one screen.)
 
   WHAT IS DELIBERATELY NOT HERE
 
@@ -282,22 +281,28 @@
       var pin = parseFloat(window.getComputedStyle(stage).top) || 0;
       var at = stage.getBoundingClientRect().top;
 
+      // Diagnostic: ?nocollapse=1 freezes the story but never shrinks
+      // it, so the flash can be hunted with the collapse ruled out.
+      // TEMPORARY - remove with the ?nocollapse note in theme-notes.
+      if (/[?&]nocollapse=1/.test(window.location.search)) {
+        stop();
+        return;
+      }
+
+      stop();
+
       if (Math.abs(at - pin) <= 2) {
-        stop();
         collapsePinned(sec, runway, stage);
-        return;
-      }
-
-      if (sec.getBoundingClientRect().bottom <= 0) {
-        stop();
+      } else {
+        // Half-past or fully past: the measured-edge correction. An
+        // earlier version deferred the half-past case to dodge its
+        // glitch risk, and that was worse than the glitch - the runway
+        // stayed six screens tall, so going back to the hero meant six
+        // swipes through a frozen frame. The story must always end up
+        // one screen; a possible one-frame blink loses to a certain
+        // six-screen dead zone.
         collapseAnchored(sec);
-        return;
       }
-
-      // Half-past: the finale is partly on screen, and neither path can
-      // hide the change from here. Stay armed and wait for a position
-      // where it can. The story is already frozen, so deferring costs
-      // nothing.
     }
 
     function arm() {

@@ -664,7 +664,12 @@
 .ab-step-img {
   grid-column: 1;
   grid-row: 1;
-  max-width: 186px;
+  /* A width, not only a cap. With max-width alone the box's size leant
+     on the image's intrinsic width, which is zero until a lazy file
+     arrives - so the box collapsed, and its inline aspect-ratio (set in
+     the section, from the real image) had nothing to resolve against. */
+  width: 186px;
+  max-width: 100%;
   margin: 0 auto 14px;
 }
 
@@ -1013,7 +1018,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 0;
+  /* The images are height-capped at 148px below, so 148px of box exists
+     whether or not the file has arrived. Before this, a pending lazy
+     image measured 0x0 and each card grew ~28px as its garment loaded -
+     which happened just below the brand story, mid-scroll. The garment
+     stays centred in the same box either way. */
+  min-height: 148px;
   margin: 14px 0;
 }
 
