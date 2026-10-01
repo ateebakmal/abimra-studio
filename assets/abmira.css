@@ -3938,6 +3938,23 @@ a.ab-detail-t:hover {
 .as.is-static[data-as] .as__stage {
   height: calc(100vh - var(--as-offset, 0px));
   height: calc(100svh - var(--as-offset, 0px));
+
+  /* Stays sticky. The supplied rule drops it to position: relative, and
+     that is what makes the stage go blank for a frame on iOS.
+
+     There are seven `will-change` declarations inside this stage, so
+     its contents sit on compositing layers of their own. Changing the
+     position of their containing block tears all of them down and
+     rebuilds them, and for one frame nothing is painted - which is
+     exactly what the screenshot shows: the red ground still there, and
+     the tees, the headline and the buttons all gone. The header is not
+     involved; hiding it changed nothing.
+
+     Keeping it sticky costs nothing. By this point the runway is
+     height: auto and exactly as tall as the stage, so there is no
+     travel left and sticky behaves as static anyway. */
+  position: sticky;
+  top: var(--as-offset, 0px);
 }
 
 /* ---- brand story: watch again ----

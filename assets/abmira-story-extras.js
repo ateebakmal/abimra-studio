@@ -155,10 +155,25 @@
     })();
   }
 
+  /* The section builds these up with appendChild and never empties them,
+     so a second init writes on top of the first: the typed line on the
+     shirt comes out doubled, which is the reported "ABIMRA CLUB written
+     twice". .as__wall is left alone - it clears itself with
+     innerHTML = '' before it rebuilds. */
+  var REBUILT = ['.as__prText', '.as__rows', '.as__fly'];
+
+  function clearRebuilt(sec) {
+    REBUILT.forEach(function (sel) {
+      var el = sec.querySelector(sel);
+      if (el) el.textContent = '';
+    });
+  }
+
   function replay(sec) {
     // The button is NOT removed here, and is not re-added on collapse.
     // It is in the DOM from boot and stays there, because taking it out
     // and putting it back is a layout change either way. See addReplay.
+    clearRebuilt(sec);
     sec.classList.remove('is-static');
 
     // The section refuses to init twice; this is the flag it guards with.
