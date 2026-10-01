@@ -4223,6 +4223,20 @@ a.ab-detail-t:hover {
    search never moves the page under the reader's cursor. */
 .ab-nav {
   position: relative;
+  /* Its own compositing layer, so a large reflow elsewhere re-composites
+     the bar instead of re-rasterising it. Without this, iOS blanked the
+     header for a frame when the brand story collapsed and took ~4800px
+     out of the page under it.
+
+     On .ab-nav and NOT on .shopify-section-group-header-group, which is
+     the element that is actually sticky. A transform there would make it
+     the containing block for `position: fixed` descendants, and the
+     mobile menu overlay is one - its `inset: 0` would resolve against a
+     76px bar instead of the viewport and the menu would collapse to a
+     sliver. The overlay is a sibling of this element, not a child, so it
+     is out of reach from here. */
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* Desktop only. Below 861 the mobile menu carries its own search bar, and
