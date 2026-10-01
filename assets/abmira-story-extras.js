@@ -105,6 +105,25 @@
        browser would correct for the same change a second time. */
     var target = window.pageYOffset + moved;
     window.scrollTo(0, target < 0 ? 0 : target);
+
+    /* Re-assert the same position on the next frame.
+
+       iOS keeps sticky elements pinned on the compositor thread, against
+       a constraint rect it updates from the main thread. A single jump
+       of ~4000px can outrun that by a frame: the header is composited
+       against the old rect, which puts it off the top of the screen, and
+       it snaps back once the constraint catches up. That is the header
+       blinking, and it is why content is drawn under the status bar in
+       the frame where it is missing - the bar is not unpainted, it is
+       painted somewhere else.
+
+       Setting the scroll to the value it already has is free when
+       nothing is wrong, and forces the constraint to be recomputed when
+       it is stale. */
+    window.requestAnimationFrame(function () {
+      var now = window.pageYOffset;
+      window.scrollTo(0, now);
+    });
   }
 
   function replay(sec) {
