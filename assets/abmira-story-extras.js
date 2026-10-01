@@ -32,18 +32,6 @@
 
   var SEL = '[data-as]';
 
-  /* Every browser on iOS is WebKit underneath, and WebKit is the one
-     engine that presents a frame of the collapse before its compositor
-     catches up - a flash that survived six distinct fixes, filmed each
-     time, with a ?nocollapse build proving the collapse was the trigger.
-     So on iOS the story freezes at the finale and never collapses: no
-     height change, no scroll correction, which also means iOS can never
-     be moved to the wrong place by one. The cost, chosen deliberately,
-     is that scrolling back up crosses the full frozen runway. The
-     second test covers iPads that report themselves as Macs. */
-  var IOS =
-    /iP(hone|od|ad)/.test(navigator.userAgent) ||
-    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
   function label(sec) {
     return sec.getAttribute('data-replay-label') || 'Watch again';
@@ -80,11 +68,6 @@
     var runway = sec.querySelector('.as__runway');
     if (!runway) return;
 
-    // iOS: freeze only. See the note on IOS at the top.
-    if (IOS) {
-      if (typeof sec.__asDestroy === 'function') sec.__asDestroy();
-      return;
-    }
 
     /* Anchor on something real, and measure it twice.
 

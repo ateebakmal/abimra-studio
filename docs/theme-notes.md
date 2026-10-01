@@ -222,19 +222,19 @@ adjustment, releasing the instant the visitor touches anything.
 Positioning is exact: probed headless at four stop positions, 0px
 drift at all of them.
 
-**On iOS there is no collapse at all.** Every iOS browser is WebKit,
-and WebKit presents one frame of the collapse before its compositor
-catches up — a flash that survived six distinct fixes. So iOS freezes
-the story at the finale and leaves the runway tall: no height change,
-no scroll correction, no flash, and no way to be scroll-corrected to
-the wrong place. The chosen cost is that scrolling back up crosses the
-full frozen runway (soften it with the Brand story's *Scroll length on
-phones* setting, 6 → 4, if it grates). The gate is the `IOS` constant
-at the top of `abmira-story-extras.js`; it also catches iPads
-reporting themselves as Macs.
+**The collapse runs everywhere, iOS included, and the one-frame iOS
+flash is accepted — by the owner, who tried both trade-offs on a real
+iPhone.** WebKit presents one frame of the collapse before its
+compositor catches up; a flash that survived six distinct fixes. An
+iOS-only no-collapse build was shipped and lived for one day: no
+flash, but scrolling back up crossed six screens of frozen runway,
+and the owner judged the dead scrolling worse than the blink. Don't
+quietly reinstate either extreme — this exact choice was made twice.
+(*Scroll length on phones*, 6 → 4, in the Brand story settings is
+still the free way to shrink both the flash's operation and the
+runway.)
 
-On everything else the one compound operation was the flash risk, and
-it was Removing ~4000px of document and correcting the scroll is
+The compound operation was the flash risk, and it was Removing ~4000px of document and correcting the scroll is
 one compound operation, and iOS presents one frame of it before its
 compositor catches up. Every targeted fix was tried and filmed failing:
 
@@ -252,8 +252,8 @@ compositor catches up. Every targeted fix was tried and filmed failing:
   flash unchanged, all reverted.
 
 A `?nocollapse=1` isolation build proved the collapse is the trigger
-and the rest of the page is clean — which is what justified the iOS
-gate. Do not retry the list above on iOS; it is complete.
+and the rest of the page is clean. Do not retry the list above on
+iOS; it is complete.
 
 **Step images reserve space with a width, not only a cap.** The base
 breakpoint sets `width: 186px` on `.ab-step-img` so the lazy-image box
