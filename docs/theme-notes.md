@@ -442,6 +442,22 @@ and guards on `window.__abAbout`, so the later copies only refresh.
 
 ---
 
+## Product templates
+
+Four: Default, `studio`, `studio-variant-filtering` (studio plus the
+colour-filtered gallery switched on - the only difference is
+`pt_filter_gallery_by_color: true`), and `sb-product-designer` (studio
+plus the order-note block). The customify / plain / sb-product-options /
+testing leftovers were deleted once probing showed nothing used them.
+
+Worth knowing: a product's template assignment (`template_suffix`) is
+store-level, not per-theme. Delete a template and any product still on
+it silently falls back to Default - no error anywhere. That is how the
+one product still on customify was found: its gallery went stacked on
+staging the moment the file was gone.
+
+---
+
 ## Linting
 
 `.theme-check.yml` ignores `design-guides/**`, `test-files/**` and

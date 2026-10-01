@@ -27,13 +27,6 @@
     },
     "process": {
       "type": "abmira-about-process",
-      "settings": {
-        "heading_1": "From your screen",
-        "heading_2": "to your",
-        "heading_accent": "shoulders.",
-        "intro": "What happens between you pressing order and the parcel landing.",
-        "step_word": "Step"
-      },
       "blocks": {
         "step_1": {
           "type": "step",
@@ -68,34 +61,65 @@
           }
         }
       },
-      "block_order": ["step_1", "step_2", "step_3", "step_4"]
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3",
+        "step_4"
+      ],
+      "settings": {
+        "heading_1": "From your screen",
+        "heading_2": "to your",
+        "heading_accent": "shoulders.",
+        "intro": "What happens between you pressing order and the parcel landing.",
+        "step_word": "Step"
+      }
     },
     "facts": {
       "type": "abmira-about-facts",
-      "settings": {},
       "blocks": {
         "fact_1": {
           "type": "fact",
-          "settings": { "value": "In-house", "text": "Printed in our own UK studio" }
+          "settings": {
+            "value": "In-house",
+            "text": "Printed in our own UK studio"
+          }
         },
         "fact_2": {
           "type": "fact",
-          "settings": { "value": "2–4 days", "text": "From order to dispatch" }
+          "settings": {
+            "value": "2–4 days",
+            "text": "From order to dispatch"
+          }
         },
         "fact_3": {
           "type": "fact",
-          "settings": { "value": "No min.", "text": "One shirt or fifty" }
+          "settings": {
+            "value": "No min.",
+            "text": "One shirt or fifty"
+          }
         },
         "fact_4": {
           "type": "fact",
-          "settings": { "value": "UK-wide", "text": "Delivered anywhere in the UK" }
+          "settings": {
+            "value": "UK-wide",
+            "text": "Delivered anywhere in the UK"
+          }
         }
       },
-      "block_order": ["fact_1", "fact_2", "fact_3", "fact_4"]
+      "block_order": [
+        "fact_1",
+        "fact_2",
+        "fact_3",
+        "fact_4"
+      ],
+      "settings": {}
     },
     "story": {
       "type": "abmira-about-story",
       "settings": {
+        "image": "shopify://shop_images/studio-image.png",
+        "image_note": "",
         "heading": "How it started",
         "text": "<p>Abimra Studio started in [year] in [town or city], when [founder's name] [one line on why: for example, couldn't find anywhere to print one good tee without ordering fifty].</p><p>So we set up our own press. Today we print tees, hoodies and sweatshirts for birthdays, leavers, teams, bands, small businesses and anyone with an idea worth wearing, one order at a time.</p><p>[A line about the team today, or what's next for the studio.]</p>",
         "sign_initials": "AS",
@@ -106,11 +130,6 @@
     },
     "hello": {
       "type": "abmira-about-hello",
-      "settings": {
-        "heading": "Say hello",
-        "intro": "Questions about a print, a bulk order or an idea you're not sure about? We'd love to hear it.",
-        "tight_top": true
-      },
       "blocks": {
         "card_1": {
           "type": "card",
@@ -123,7 +142,12 @@
         },
         "card_2": {
           "type": "card",
-          "settings": { "label": "Instagram", "value": "[@yourhandle]", "plain": true }
+          "settings": {
+            "label": "Instagram",
+            "value": "[@yourhandle]",
+            "link": "",
+            "plain": true
+          }
         },
         "card_3": {
           "type": "card",
@@ -135,7 +159,16 @@
           }
         }
       },
-      "block_order": ["card_1", "card_2", "card_3"]
+      "block_order": [
+        "card_1",
+        "card_2",
+        "card_3"
+      ],
+      "settings": {
+        "heading": "Say hello",
+        "intro": "Questions about a print, a bulk order or an idea you're not sure about? We'd love to hear it.",
+        "tight_top": true
+      }
     },
     "closer": {
       "type": "abmira-closer",
@@ -149,5 +182,12 @@
       }
     }
   },
-  "order": ["hero", "process", "facts", "story", "hello", "closer"]
+  "order": [
+    "hero",
+    "process",
+    "facts",
+    "story",
+    "hello",
+    "closer"
+  ]
 }

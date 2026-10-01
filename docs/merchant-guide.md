@@ -14,9 +14,10 @@ template** (right-hand column, below Search engine listing).
 
 | Template | Use it for |
 |---|---|
-| **Default product** | An ordinary product. Stock Shopify gallery. |
-| **studio** | Ready-made designs — Studio Originals. Gallery is a carousel with thumbnails and arrows. |
-| **customify** | Anything the customer designs themselves. Loads the Customify designer in place of the gallery. |
+| **Default product** | An ordinary product. Big photos stacked down the page. |
+| **studio** | Ready-made designs — Studio Originals. One big photo with thumbnails and arrows. |
+| **studio-variant-filtering** | Same as studio, plus: pick a colour and the gallery shows **only that colour's photos**. Needs each photo's alt text set to its colour name ("Black", "White") — without that it behaves exactly like studio. The colour option on the product must be called "Color". |
+| **sb-product-designer** | Personalised products. The studio look plus an order-note box; the designer itself is attached by the app. |
 
 If the dropdown doesn't list the template you want, the theme hasn't been
 published yet. See *Why a template is missing* below.
