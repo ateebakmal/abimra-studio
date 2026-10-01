@@ -95,14 +95,12 @@
       var floor = sec.getBoundingClientRect().bottom + window.pageYOffset;
       window.scrollTo(0, Math.max(floor, y - shrank));
     }
-
-    addReplay(sec);
   }
 
   function replay(sec) {
-    var b = sec.querySelector('.ab-story-replay');
-    if (b && b.parentNode) b.parentNode.removeChild(b);
-
+    // The button is NOT removed here, and is not re-added on collapse.
+    // It is in the DOM from boot and stays there, because taking it out
+    // and putting it back is a layout change either way. See addReplay.
     sec.classList.remove('is-static');
 
     // The section refuses to init twice; this is the flag it guards with.
@@ -149,8 +147,19 @@
 
   function start() {
     Array.prototype.forEach.call(document.querySelectorAll(SEL), function (sec) {
-      if (sec.classList.contains('is-static')) addReplay(sec);
-      else watch(sec);
+      // Added now, not when the story collapses. It used to be appended
+      // at the end of collapse(), which is after the scroll correction
+      // has already been worked out and applied - so the page gained the
+      // button's height a frame later and everything below it jumped.
+      //
+      // Costs nothing to do it early: it lives in .as__end, which is
+      // `visibility: hidden` until the finale rather than display:none,
+      // so its box is already laid out and reserved. Adding the button
+      // there changes the layout once, before anything is measured, and
+      // never again.
+      addReplay(sec);
+
+      if (!sec.classList.contains('is-static')) watch(sec);
     });
   }
 
