@@ -408,24 +408,38 @@
   opacity: 0;
 }
 
-.ab-cart-item.is-going {
+/* --w is the card's measured width, set by abmira-cart.js the moment
+   before the class lands. The sweep used to travel 100cqw, which needs
+   a container-type on an ancestor to mean anything; a measured pixel
+   value cannot be wrong. */
+.ab-cart-item.is-wiping {
   pointer-events: none;
 }
 
-.ab-cart-item.is-going .ab-cart-blade {
+.ab-cart-item.is-wiping .ab-cart-blade {
   opacity: 1;
-  animation: ab-cart-sweep 0.5s cubic-bezier(0.7, 0, 0.2, 1) forwards;
+  animation: ab-cart-sweep 0.48s cubic-bezier(0.7, 0, 0.2, 1) forwards;
 }
 
-.ab-cart-item.is-going .ab-cart-thumb,
-.ab-cart-item.is-going .ab-cart-info {
-  animation: ab-cart-clip 0.5s cubic-bezier(0.7, 0, 0.2, 1) forwards;
+.ab-cart-item.is-wiping .ab-cart-thumb,
+.ab-cart-item.is-wiping .ab-cart-info {
+  animation: ab-cart-clip 0.48s cubic-bezier(0.7, 0, 0.2, 1) forwards;
+}
+
+/* In flight, but still on screen and still readable. */
+.ab-cart-item.is-busy {
+  pointer-events: none;
+}
+
+.ab-cart-item.is-busy .ab-cart-qty,
+.ab-cart-item.is-busy .ab-cart-remove {
+  opacity: 0.5;
+  transition: opacity 0.15s linear;
 }
 
 @keyframes ab-cart-sweep {
   to {
-    transform: translateX(calc(100% + 100cqw));
-    left: 100%;
+    transform: translateX(var(--w, 100%));
   }
 }
 
@@ -597,7 +611,8 @@
   margin-left: auto;
 }
 
-[data-ab-side].is-printing .ab-cart-led {
+[data-ab-side].is-printing .ab-cart-led,
+[data-ab-side].is-blink .ab-cart-led {
   background: var(--red);
   animation: ab-cart-blink 0.22s steps(1) 3;
 }
@@ -637,6 +652,23 @@
 
 [data-ab-side].is-in .ab-cart-ticket {
   animation: ab-cart-print 1.3s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+/* Set once the print has finished, and never unset. */
+[data-ab-side].is-settled .ab-cart-ticket {
+  animation: none;
+}
+
+[data-ab-side].is-settled .ab-cart-stamp {
+  animation: none;
+  opacity: 0.85;
+  transform: rotate(-10deg);
+}
+
+/* A row leaving or joining the ticket. Height is animated by the
+   script, which has to measure it; this is only the ink. */
+.ab-cart-tk-lines li {
+  overflow: hidden;
 }
 
 @keyframes ab-cart-print {
@@ -1197,7 +1229,7 @@
   }
 
   .ab-cart-checkout::after,
-  .ab-cart-item.is-going .ab-cart-blade {
+  .ab-cart-item.is-wiping .ab-cart-blade {
     animation: none;
     display: none;
   }
@@ -1208,7 +1240,7 @@
     transform: rotate(-10deg);
   }
 
-  .ab-cart-item.is-going {
+  .ab-cart-item.is-wiping {
     opacity: 0;
     transition: opacity 0.2s;
   }

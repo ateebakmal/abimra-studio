@@ -82,9 +82,25 @@
                       assign b = forloop.index0 | modulo: backdrops.size
 
                     -%}
+                    {%- comment -%}
+                      data-key ties the card to its ticket row and to
+                      cart/change.js. The variant, quantity and
+                      properties are what Undo needs to put the line
+                      back - they have to be captured now, because once
+                      the card is gone there is nowhere left to read
+                      them from.
+                    {%- endcomment -%}
                     <li
                       class="cart-item ab-cart-item"
                       id="CartItem-{{ item.index | plus: 1 }}"
+                      data-key="{{ item.key }}"
+                      data-variant="{{ item.variant_id }}"
+                      data-qty="{{ item.quantity }}"
+                      data-title="{{ item.product.title | escape }}"
+                      data-unit="{{ item.original_price }}"
+                      {%- if item.properties != blank %}
+                        data-props="{{ item.properties | json | escape }}"
+                      {%- endif %}
                       style="--i: {{ forloop.index0 }}; --tile: {{ backdrops[b] }};"
                     >
                       <a
@@ -136,11 +152,19 @@
                             </span>
                           </div>
 
+                          {%- comment -%}
+                            data-cents again: the line total is tweened
+                            in place when the quantity changes, so it
+                            needs to know where it is starting from. The
+                            "each" line is written by the JS when it
+                            appears, which is why the span is always
+                            here and simply empty at quantity 1.
+                          {%- endcomment -%}
                           <div class="ab-cart-price">
-                            {{ item.original_line_price | money }}
-                            {%- if item.quantity > 1 -%}
-                              <span>{{ item.original_price | money }} each</span>
-                            {%- endif -%}
+                            <span data-ab-line data-cents="{{ item.original_line_price }}">{{ item.original_line_price | money }}</span>
+                            <span data-ab-each>
+                              {%- if item.quantity > 1 -%}{{ item.original_price | money }} each{%- endif -%}
+                            </span>
                           </div>
                         </div>
 
@@ -338,9 +362,16 @@
           <div class="ab-cart-printer" aria-hidden="true">
             <span class="ab-cart-led"></span>
             <span class="ab-cart-printer-l">{{ section.settings.printer_label | default: 'Order printer' | escape | upcase }}</span>
-            <span class="ab-cart-printer-r">{{ cart.item_count }} {% if cart.item_count == 1 %}item{% else %}items{% endif %}</span>
+            <span class="ab-cart-printer-r" data-ab-count>{{ cart.item_count }} {% if cart.item_count == 1 %}item{% else %}items{% endif %}</span>
           </div>
 
+          {%- comment -%}
+            The ticket feeds out of the printer bar above it. That is
+            done with clip-path on the ticket itself rather than a
+            clipping wrapper - a wrapper with overflow: hidden would
+            also cut off the torn bottom edge and the stamp, both of
+            which sit outside the ticket's box.
+          {%- endcomment -%}
           <div class="ab-cart-ticket">
             <div class="ab-cart-tk-head">
               <div>
@@ -355,22 +386,26 @@
 
             <ul class="ab-cart-tk-lines" role="list">
               {%- for item in cart.items -%}
-                <li>
+                <li data-key="{{ item.key }}">
                   <span><span class="ab-cart-q">{{ item.quantity }}&times;</span>{{ item.product.title | escape }}</span>
-                  <span>{{ item.original_line_price | money }}</span>
+                  {%- comment -%}
+                    data-cents is where the money tween starts from, so
+                    it has to hold the same number the text shows.
+                  {%- endcomment -%}
+                  <span data-cents="{{ item.original_line_price }}">{{ item.original_line_price | money }}</span>
                 </li>
               {%- endfor -%}
             </ul>
 
             <dl class="ab-cart-tk-sum">
-              <div><dt>{{ section.settings.subtotal_label | default: 'Subtotal' | escape }}</dt><dd>{{ cart.total_price | money }}</dd></div>
+              <div><dt>{{ section.settings.subtotal_label | default: 'Subtotal' | escape }}</dt><dd data-ab-subtotal data-cents="{{ cart.items_subtotal_price }}">{{ cart.items_subtotal_price | money }}</dd></div>
               <div><dt>Delivery</dt><dd>At checkout</dd></div>
               <div><dt>Discount code</dt><dd>At checkout</dd></div>
             </dl>
 
             <div class="ab-cart-tk-total">
               <dt>Total</dt>
-              <dd data-ab-total>{{ cart.total_price | money }}</dd>
+              <dd data-ab-total data-cents="{{ cart.total_price }}">{{ cart.total_price | money }}</dd>
             </div>
 
             {%- if section.settings.small_print != blank -%}
