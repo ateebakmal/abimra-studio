@@ -177,7 +177,16 @@
     data-filter-gallery="{{ section.settings.pt_filter_gallery_by_color }}"
     data-color-option="{{ section.settings.pt_color_option_name | default: 'Color' | escape }}"
     data-select-label="{{ 'products.product.pt_select_option' | t: option: '[option]' | escape }}"
+    data-lightbox="{{ section.settings.pt_lightbox }}"
   ></pt-product-options>
+  {%- if section.settings.pt_lightbox -%}
+    {%- comment -%}
+      [abmira] The gallery lightbox: one image at a time, arrows, counter.
+      Pair it with Image zoom set to "No zoom" on the same template, or
+      Dawn's own modal answers the same click.
+    {%- endcomment -%}
+    <script src="{{ 'abmira-lightbox.js' | asset_url }}" defer="defer"></script>
+  {%- endif -%}
 
   <product-component view-event-payload="{{ product | standard_event_data: 'view', context: 'page' | escape }}">
     <div class="page-width">
@@ -2474,6 +2483,13 @@
       "default": "Color",
       "label": "Colour option name",
       "info": "The product option used for gallery filtering and the 'Select a colour' prompt. Change this if you rename the option."
+    },
+    {
+      "type": "checkbox",
+      "id": "pt_lightbox",
+      "default": false,
+      "label": "Abimra lightbox",
+      "info": "Click an image to see it full screen, one at a time, with previous and next arrows. Set Image zoom below to 'No zoom' alongside this, or two viewers answer the same click."
     },
     {
       "type": "checkbox",

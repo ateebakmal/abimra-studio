@@ -12,7 +12,7 @@
     "intro": {
       "type": "abmira-page-intro",
       "settings": {
-        "eyebrow": "We read every message",
+        "eyebrow": "",
         "heading": "Talk to us.",
         "intro": "A real person replies, usually within one working day. If something's wrong with a print, send a photo and we'll sort it."
       }

@@ -535,3 +535,153 @@
     boot(event.target);
   });
 })();
+
+/* ============================================================
+   Sort dropdown, replaced.
+
+   The open list of a native <select> is drawn by the operating system
+   and cannot be themed, so the control is swapped at runtime for a
+   button and a listbox styled like the filter popups. The select stays
+   in the DOM, hidden, holding the value: choosing an option sets it and
+   fires a change event, and Dawn's FacetFiltersForm takes it from there
+   exactly as if the native control had been used. No JS means the
+   native select simply remains - a plainer control, not a broken one.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  function enhance(scope) {
+    var selects = (scope || document).querySelectorAll(
+      '.ab-facets select.facet-filters__sort:not([data-ab-sorted])'
+    );
+
+    Array.prototype.forEach.call(selects, function (sel) {
+      sel.dataset.abSorted = '1';
+
+      var wrap = document.createElement('div');
+      wrap.className = 'ab-sort';
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'ab-sort-btn';
+      btn.setAttribute('aria-haspopup', 'listbox');
+      btn.setAttribute('aria-expanded', 'false');
+      if (sel.id) btn.setAttribute('aria-labelledby', sel.id + '-label ' + sel.id);
+
+      var list = document.createElement('ul');
+      list.className = 'ab-sort-menu';
+      list.setAttribute('role', 'listbox');
+      list.hidden = true;
+
+      function paintButton() {
+        var current = sel.options[sel.selectedIndex];
+        btn.textContent = current ? current.text : '';
+        var caret = document.createElement('span');
+        caret.className = 'ab-sort-caret';
+        caret.setAttribute('aria-hidden', 'true');
+        btn.appendChild(caret);
+      }
+
+      function paintSelected() {
+        Array.prototype.forEach.call(list.children, function (li, i) {
+          li.setAttribute('aria-selected', i === sel.selectedIndex ? 'true' : 'false');
+        });
+      }
+
+      Array.prototype.forEach.call(sel.options, function (opt, i) {
+        var li = document.createElement('li');
+        li.setAttribute('role', 'option');
+        li.tabIndex = -1;
+        li.textContent = opt.text;
+        li.addEventListener('click', function () {
+          choose(i);
+        });
+        list.appendChild(li);
+      });
+
+      function openList() {
+        list.hidden = false;
+        btn.setAttribute('aria-expanded', 'true');
+        var sel0 = list.querySelector('[aria-selected="true"]') || list.firstElementChild;
+        if (sel0) sel0.focus();
+      }
+
+      function closeList(refocus) {
+        list.hidden = true;
+        btn.setAttribute('aria-expanded', 'false');
+        if (refocus) btn.focus();
+      }
+
+      function choose(i) {
+        if (sel.selectedIndex !== i) {
+          sel.selectedIndex = i;
+          // Dawn listens for this on the form; bubbling makes it arrive.
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        paintButton();
+        paintSelected();
+        closeList(true);
+      }
+
+      btn.addEventListener('click', function () {
+        if (list.hidden) openList();
+        else closeList(false);
+      });
+
+      btn.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          openList();
+        }
+      });
+
+      list.addEventListener('keydown', function (e) {
+        var focus = document.activeElement;
+        if (e.key === 'ArrowDown' && focus.nextElementSibling) {
+          e.preventDefault();
+          focus.nextElementSibling.focus();
+        } else if (e.key === 'ArrowUp' && focus.previousElementSibling) {
+          e.preventDefault();
+          focus.previousElementSibling.focus();
+        } else if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          choose(Array.prototype.indexOf.call(list.children, focus));
+        } else if (e.key === 'Escape') {
+          closeList(true);
+        } else if (e.key === 'Tab') {
+          closeList(false);
+        }
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!list.hidden && !wrap.contains(e.target)) closeList(false);
+      });
+
+      sel.style.display = 'none';
+      // Dawn renders its own caret svg beside the select; it points at
+      // nothing once the select is hidden.
+      var dawnCaret = sel.parentElement && sel.parentElement.querySelector('svg');
+      if (dawnCaret) dawnCaret.style.display = 'none';
+
+      sel.parentElement.insertBefore(wrap, sel);
+      wrap.appendChild(btn);
+      wrap.appendChild(list);
+      paintButton();
+      paintSelected();
+    });
+  }
+
+  function boot() {
+    enhance(document);
+    // Facet changes re-render parts of this area; catch anything new.
+    var host = document.querySelector('.ab-facets');
+    if (!host || host.dataset.abSortWatch === '1' || typeof MutationObserver !== 'function') return;
+    host.dataset.abSortWatch = '1';
+    new MutationObserver(function () {
+      enhance(host);
+    }).observe(host, { childList: true, subtree: true });
+  }
+
+  if (document.readyState === 'complete' || document.readyState === 'interactive') boot();
+  else document.addEventListener('DOMContentLoaded', boot);
+})();
