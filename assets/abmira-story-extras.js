@@ -169,26 +169,69 @@
     }
   }
 
+  /* ------------------------------------------------------------------ *
+   * Watch for the runway being passed
+   *
+   * The collapse must not run while the page is still moving. It used to
+   * be called straight out of the scroll handler, and on iOS that means
+   * calling window.scrollTo in the middle of a live fling: Safari does
+   * not replace the momentum, it carries on from wherever the jump put
+   * you. A flick past the story therefore landed somewhere further down
+   * the page - the reviews - with the layout rearranging on the way.
+   *
+   * A wheel or a trackpad has far less momentum left by the time the
+   * runway is passed, which is why none of this showed on a laptop.
+   *
+   * So the trigger only arms here, and the collapse waits for the scroll
+   * to stop. scrollend is exact where it exists; the timer covers Safari,
+   * which has not shipped it, and anything else that has not either.
+   * Waiting costs nothing visually, because the correction keeps whatever
+   * is on screen on screen however far past the visitor has travelled.
+   * ------------------------------------------------------------------ */
   function watch(sec) {
     if (sec.__abWatching) return;
     sec.__abWatching = true;
 
-    function onScroll() {
+    var timer = 0;
+    var hasScrollEnd = 'onscrollend' in window;
+
+    function stop() {
+      window.removeEventListener('scroll', onScroll);
+      if (hasScrollEnd) window.removeEventListener('scrollend', fire);
+      window.clearTimeout(timer);
+      sec.__abWatching = false;
+    }
+
+    function fire() {
       if (sec.classList.contains('is-static')) {
-        window.removeEventListener('scroll', onScroll);
-        sec.__abWatching = false;
+        stop();
         return;
       }
+      // Re-checked rather than trusted: the visitor may have scrolled
+      // back up into the story while the timer was running.
+      if (sec.getBoundingClientRect().bottom > 0) return;
+      stop();
+      collapse(sec);
+    }
+
+    function onScroll() {
+      if (sec.classList.contains('is-static')) {
+        stop();
+        return;
+      }
+
+      window.clearTimeout(timer);
+
       // Fully above the viewport means the runway has been scrolled past,
       // which can only happen after the last frame has been drawn.
-      if (sec.getBoundingClientRect().bottom <= 0) {
-        window.removeEventListener('scroll', onScroll);
-        sec.__abWatching = false;
-        collapse(sec);
-      }
+      if (sec.getBoundingClientRect().bottom > 0) return;
+
+      // Past it. Arm, and let the page come to rest first.
+      timer = window.setTimeout(fire, 160);
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
+    if (hasScrollEnd) window.addEventListener('scrollend', fire);
   }
 
   function start() {
