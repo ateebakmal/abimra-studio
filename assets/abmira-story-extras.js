@@ -52,6 +52,50 @@
   }
 
   /* ------------------------------------------------------------------ *
+   * Settle the reveals the collapse just skipped past
+   *
+   * Collapsing takes six screens out of the page above the viewport, so
+   * everything below the story leaps up into view at once. Any .ab-rv
+   * that had not intersected yet then fires together - 26 of them on the
+   * homepage, each a 0.75s fade and a 22px slide - and the whole page
+   * appears to shimmer.
+   *
+   * On a laptop you scroll past them one at a time long before the
+   * collapse runs, which is why this only showed on a phone, where a
+   * fling reaches the end of the runway with most of the page unrevealed.
+   *
+   * These elements have effectively already been scrolled past, so they
+   * are marked revealed outright. The class suppresses the transition for
+   * one frame, otherwise marking them would start the very animation
+   * being avoided.
+   * ------------------------------------------------------------------ */
+  function settleReveals() {
+    var h = window.innerHeight || document.documentElement.clientHeight;
+    var pending = document.querySelectorAll('.ab-rv:not(.ab-in)');
+    var hit = [];
+
+    Array.prototype.forEach.call(pending, function (el) {
+      if (el.getBoundingClientRect().top < h) hit.push(el);
+    });
+    if (!hit.length) return;
+
+    hit.forEach(function (el) {
+      el.classList.add('ab-rv-now', 'ab-in');
+    });
+
+    // Commit the no-transition state before releasing it. Reading a
+    // layout property is what forces that; without it both class changes
+    // land in the same style recalculation and the transition still runs.
+    void document.body.offsetHeight;
+
+    requestAnimationFrame(function () {
+      hit.forEach(function (el) {
+        el.classList.remove('ab-rv-now');
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------------ *
    * Collapse
    *
    * `is-static` is the section's own state for one frame and no pinning -
@@ -95,6 +139,8 @@
       var floor = sec.getBoundingClientRect().bottom + window.pageYOffset;
       window.scrollTo(0, Math.max(floor, y - shrank));
     }
+
+    settleReveals();
   }
 
   function replay(sec) {

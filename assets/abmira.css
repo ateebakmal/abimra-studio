@@ -376,6 +376,13 @@
   transform: none;
 }
 
+/* Revealed without animating. abmira-story-extras.js adds this for one
+   frame to anything the story's collapse has just jumped the page past,
+   so six screens' worth of reveals do not all fade in at once behind it. */
+.ab-rv.ab-rv-now {
+  transition: none;
+}
+
 .ab-rv-1 {
   transition-delay: 0.08s;
 }
