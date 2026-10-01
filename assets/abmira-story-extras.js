@@ -62,95 +62,68 @@
    * This only ever runs once the runway has been scrolled fully past, so
    * the frame it freezes is always the finale.
    * ------------------------------------------------------------------ */
-  /* ------------------------------------------------------------------ *
-   * Collapse
-   *
-   * `is-static` is the section's own state for one frame and no pinning -
-   * what it uses for prefers-reduced-motion. Reusing it means the
-   * collapsed layout is a path the section already supports.
-   *
-   * WHY THIS IS DONE IN STEPS
-   *
-   * Taking the runway from seven screens to one in a single frame means
-   * a single scroll correction of around 4000px. On iOS that is the
-   * thing the compositor cannot keep up with: sticky elements are
-   * pinned on the compositor thread against a constraint rect the main
-   * thread owns, and one jump that large arrives before the new rect
-   * does. The header is composited against the old one, lands off the
-   * top of the screen, and snaps back a frame later. That is the blink,
-   * and it is why content gets drawn under the status bar in the frame
-   * where the header is missing - it is not unpainted, it is painted
-   * somewhere else.
-   *
-   * So the runway comes down roughly 600px at a time, one frame each,
-   * with the view re-anchored after every step. Nothing moves on screen
-   * at any point: each step removes a slice above the viewport and
-   * takes the same slice off the scroll position. If a frame does slip,
-   * it is 600px out of register rather than 4000, which is the
-   * difference between a flicker and the header vanishing.
-   *
-   * There are two sticky elements in play - this stage and the theme
-   * header - and only the last step disturbs the first of them, by
-   * which point the runway is already down to a single screen.
-   * ------------------------------------------------------------------ */
-
-  /* Re-anchor on an edge rather than on arithmetic. Record where the
-     section's bottom sits on screen, change the layout, then put it
-     back where it was. Assumes nothing about viewport units, which
-     matters because the stage is sized in svh and window.innerHeight is
-     a different number on iOS once the address bar has gone. */
-  function hold(sec, ref) {
-    var moved = sec.getBoundingClientRect().bottom - ref;
-    if (!moved) return;
-    var target = window.pageYOffset + moved;
-    window.scrollTo(0, target < 0 ? 0 : target);
-  }
-
   function collapse(sec) {
     if (sec.classList.contains('is-static')) return;
     var runway = sec.querySelector('.as__runway');
-    var stage = sec.querySelector('.as__stage');
     if (!runway) return;
 
-    // Freeze first. The frame on screen is already the finale, and
-    // stopping the loop here means the shrinking runway cannot drag the
-    // animation's progress with it.
+    /* Anchor on something real, and measure it twice.
+
+       This used to do arithmetic on heights: take the runway's height
+       before and after, subtract the difference from the scroll
+       position, and clamp the result to the section's new bottom so a
+       visitor could not land back inside a story they had just
+       finished. Both halves were wrong.
+
+       The clamp was wrong because at the finale the correct answer IS
+       inside the section - the stage is what fills the screen, so that
+       is where the visitor should stay. The section's bottom is a whole
+       screen further down, so the clamp won every time and shunted them
+       past the story into the marquee.
+
+       The arithmetic was wrong on iOS for a quieter reason: it assumed
+       the collapsed stage was exactly one window.innerHeight tall, and
+       the stage is sized in svh. With the address bar hidden those are
+       not the same number, so the sum was out by the difference.
+
+       Measuring the same edge before and after assumes neither. Whatever
+       the visitor is looking at - the finale, or a section below it -
+       keeps the screen position it already had. */
+    var ref = sec.getBoundingClientRect().bottom;
+
     if (typeof sec.__asDestroy === 'function') sec.__asDestroy();
+    sec.classList.add('is-static');
 
-    var STEP = 600;
-    // Never shorter than the stage, which still has to fit inside it
-    // until the section's own static layout takes over.
-    var floor = stage ? stage.getBoundingClientRect().height : window.innerHeight;
+    var moved = sec.getBoundingClientRect().bottom - ref;
+    if (!moved) return;
 
-    function finish() {
-      var ref = sec.getBoundingClientRect().bottom;
-      runway.style.height = '';
-      sec.classList.add('is-static');
-      hold(sec, ref);
+    /* Absolute, not scrollBy. scrollBy adds to wherever the page happens
+       to be at the instant it runs, and on a phone that can still be a
+       moving target even after the wait. pageYOffset is read here, after
+       the reflow, so it is the position the measurement above belongs
+       to. Scroll anchoring is off for this section in abmira.css, or the
+       browser would correct for the same change a second time. */
+    var target = window.pageYOffset + moved;
+    window.scrollTo(0, target < 0 ? 0 : target);
 
-      /* One more, a frame later, at the position it already has. Free
-         when nothing is wrong; forces the sticky constraint to be
-         recomputed when it is stale. */
-      window.requestAnimationFrame(function () {
-        window.scrollTo(0, window.pageYOffset);
-      });
-    }
+    /* Re-assert the same position on the next frame.
 
-    function step(height) {
-      if (height <= floor + 1) {
-        finish();
-        return;
-      }
-      var next = Math.max(floor, height - STEP);
-      var ref = sec.getBoundingClientRect().bottom;
-      runway.style.height = next + 'px';
-      hold(sec, ref);
-      window.requestAnimationFrame(function () {
-        step(next);
-      });
-    }
+       iOS keeps sticky elements pinned on the compositor thread, against
+       a constraint rect it updates from the main thread. A single jump
+       of ~4000px can outrun that by a frame: the header is composited
+       against the old rect, which puts it off the top of the screen, and
+       it snaps back once the constraint catches up. That is the header
+       blinking, and it is why content is drawn under the status bar in
+       the frame where it is missing - the bar is not unpainted, it is
+       painted somewhere else.
 
-    step(runway.getBoundingClientRect().height);
+       Setting the scroll to the value it already has is free when
+       nothing is wrong, and forces the constraint to be recomputed when
+       it is stale. */
+    window.requestAnimationFrame(function () {
+      var now = window.pageYOffset;
+      window.scrollTo(0, now);
+    });
   }
 
   function replay(sec) {
