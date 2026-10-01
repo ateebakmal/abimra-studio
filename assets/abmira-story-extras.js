@@ -112,6 +112,17 @@
    * runway with the scroll already at its final value. The rAF recheck
    * is belt and braces; `moved` is expected to be zero.
    * ------------------------------------------------------------------ */
+  /* One frame before either collapse path touches anything, the story's
+     will-change layers are dissolved (see .ab-settled in abmira.css).
+     The page is already confirmed still, and de-promoting a layer
+     repaints identical pixels - invisible by definition. What it buys:
+     when the jump and the height change come next frame, there are no
+     composited layers left inside the story for iOS to lose. */
+  function settle(sec, then) {
+    sec.classList.add('ab-settled');
+    window.requestAnimationFrame(then);
+  }
+
   function collapsePinned(sec, runway, stage) {
     freeze(sec);
 
@@ -203,6 +214,7 @@
     // and putting it back is a layout change either way. See addReplay.
     clearRebuilt(sec);
     sec.classList.remove('is-static');
+    sec.classList.remove('ab-settled');
     sec.__abFroze = false;
 
     // The section refuses to init twice; this is the flag it guards with.
@@ -292,7 +304,9 @@
       stop();
 
       if (Math.abs(at - pin) <= 2) {
-        collapsePinned(sec, runway, stage);
+        settle(sec, function () {
+          collapsePinned(sec, runway, stage);
+        });
       } else {
         // Half-past or fully past: the measured-edge correction. An
         // earlier version deferred the half-past case to dodge its
@@ -301,7 +315,9 @@
         // swipes through a frozen frame. The story must always end up
         // one screen; a possible one-frame blink loses to a certain
         // six-screen dead zone.
-        collapseAnchored(sec);
+        settle(sec, function () {
+          collapseAnchored(sec);
+        });
       }
     }
 
