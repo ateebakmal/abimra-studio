@@ -52,50 +52,6 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * Settle the reveals the collapse just skipped past
-   *
-   * Collapsing takes six screens out of the page above the viewport, so
-   * everything below the story leaps up into view at once. Any .ab-rv
-   * that had not intersected yet then fires together - 26 of them on the
-   * homepage, each a 0.75s fade and a 22px slide - and the whole page
-   * appears to shimmer.
-   *
-   * On a laptop you scroll past them one at a time long before the
-   * collapse runs, which is why this only showed on a phone, where a
-   * fling reaches the end of the runway with most of the page unrevealed.
-   *
-   * These elements have effectively already been scrolled past, so they
-   * are marked revealed outright. The class suppresses the transition for
-   * one frame, otherwise marking them would start the very animation
-   * being avoided.
-   * ------------------------------------------------------------------ */
-  function settleReveals() {
-    var h = window.innerHeight || document.documentElement.clientHeight;
-    var pending = document.querySelectorAll('.ab-rv:not(.ab-in)');
-    var hit = [];
-
-    Array.prototype.forEach.call(pending, function (el) {
-      if (el.getBoundingClientRect().top < h) hit.push(el);
-    });
-    if (!hit.length) return;
-
-    hit.forEach(function (el) {
-      el.classList.add('ab-rv-now', 'ab-in');
-    });
-
-    // Commit the no-transition state before releasing it. Reading a
-    // layout property is what forces that; without it both class changes
-    // land in the same style recalculation and the transition still runs.
-    void document.body.offsetHeight;
-
-    requestAnimationFrame(function () {
-      hit.forEach(function (el) {
-        el.classList.remove('ab-rv-now');
-      });
-    });
-  }
-
-  /* ------------------------------------------------------------------ *
    * Collapse
    *
    * `is-static` is the section's own state for one frame and no pinning -
@@ -139,8 +95,6 @@
       var floor = sec.getBoundingClientRect().bottom + window.pageYOffset;
       window.scrollTo(0, Math.max(floor, y - shrank));
     }
-
-    settleReveals();
   }
 
   function replay(sec) {
@@ -202,6 +156,23 @@
       sec.__abWatching = false;
     }
 
+    /* Done means the runway has been scrolled to its end, so the stage
+       has stopped travelling and is holding the finale.
+
+       This used to wait for the whole section to clear the top of the
+       screen. Collapsing at the finale instead means the reflow happens
+       while the stage still covers the viewport, so the six screens
+       being taken out of the page are all behind a full-screen panel
+       and there is nothing on show to flicker. It is also what the
+       section was asked for in the first place: collapse to the finale
+       frame on completion. */
+    function done() {
+      var runway = sec.querySelector('.as__runway');
+      if (!runway) return false;
+      var h = window.innerHeight || document.documentElement.clientHeight;
+      return runway.getBoundingClientRect().bottom <= h + 1;
+    }
+
     function fire() {
       if (sec.classList.contains('is-static')) {
         stop();
@@ -209,7 +180,7 @@
       }
       // Re-checked rather than trusted: the visitor may have scrolled
       // back up into the story while the timer was running.
-      if (sec.getBoundingClientRect().bottom > 0) return;
+      if (!done()) return;
       stop();
       collapse(sec);
     }
@@ -221,12 +192,9 @@
       }
 
       window.clearTimeout(timer);
+      if (!done()) return;
 
-      // Fully above the viewport means the runway has been scrolled past,
-      // which can only happen after the last frame has been drawn.
-      if (sec.getBoundingClientRect().bottom > 0) return;
-
-      // Past it. Arm, and let the page come to rest first.
+      // At the finale. Arm, and let the page come to rest first.
       timer = window.setTimeout(fire, 160);
     }
 
