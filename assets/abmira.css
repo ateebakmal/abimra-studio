@@ -3919,6 +3919,27 @@ a.ab-detail-t:hover {
   overflow-anchor: none;
 }
 
+/* The collapsed stage has to be the same box as the pinned one.
+
+   The supplied stylesheet gives it `height: 100svh`, while pinned it is
+   `calc(100svh - var(--as-offset))` - 76px shorter, sitting 76px down so
+   it clears the header. Collapsing therefore grew the panel by 76px and,
+   because the correction holds the section's BOTTOM edge still, it grew
+   upwards: measured at 1440x900, the stage top went 76 -> 0 and the
+   finale's centred content rose 38px. That is the nudge you see at the
+   end of the animation on a laptop.
+
+   Matching the height means the bottom edge and the height are both
+   unchanged, so the top is too, and nothing moves.
+
+   [data-as] is on the same element as .as, purely to outrank the
+   supplied rule: it is (0,3,0) and loads after this file, so an
+   identical selector here would lose on order. */
+.as.is-static[data-as] .as__stage {
+  height: calc(100vh - var(--as-offset, 0px));
+  height: calc(100svh - var(--as-offset, 0px));
+}
+
 /* ---- brand story: watch again ----
    Added by assets/abmira-story-extras.js once the story has collapsed to
    its finale, so it never appears mid-animation. Styled as the quieter of
