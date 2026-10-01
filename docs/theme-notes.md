@@ -104,6 +104,7 @@ constantly and has its own scroll container.
 | `assets/abmira-search.js` | Opens and closes the header search panel. Nothing else. |
 | `assets/abmira-about.css` | The About page. Namespaced `ab-about-`. |
 | `assets/abmira-about.js` | Two-ink slide and the process rail. Reveals are the theme's. |
+| `assets/abmira-lightbox.js` | The gallery lightbox: one image, arrows, counter. Gated by `pt_lightbox` per template, with Dawn's Image zoom set to none alongside. |
 
 ### Dawn files that were modified
 
