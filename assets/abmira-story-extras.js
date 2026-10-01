@@ -183,6 +183,32 @@
       return runway.getBoundingClientRect().bottom <= h + 1;
     }
 
+    /* Confirm the page has actually come to rest before touching it.
+
+       The timer is not proof. iOS stops firing scroll events slightly
+       before a glide ends, so the timer can expire while the page is
+       still creeping - and a scrollTo then does not replace the
+       remaining momentum, it adds to it, carrying the visitor on down
+       the page. That is the "it moved me to a lower section" case; the
+       arithmetic itself is exact, measured in a headless Chromium at
+       390x844, where the view holds to the pixel.
+
+       So: watch pageYOffset across frames, and only collapse once it
+       has been identical for two in a row. The cap stops this spinning
+       forever on a page that never settles - a marquee animating the
+       scroll position, say - in which case collapsing anyway is better
+       than never collapsing. */
+    function whenStill(tries, last, run) {
+      window.requestAnimationFrame(function () {
+        var y = window.pageYOffset;
+        if (y === last || tries <= 0) {
+          run();
+          return;
+        }
+        whenStill(tries - 1, y, run);
+      });
+    }
+
     function fire() {
       if (sec.classList.contains('is-static')) {
         stop();
@@ -191,8 +217,14 @@
       // Re-checked rather than trusted: the visitor may have scrolled
       // back up into the story while the timer was running.
       if (!done()) return;
-      stop();
-      collapse(sec);
+
+      whenStill(30, null, function () {
+        // Re-check once more. Thirty frames is half a second, and the
+        // visitor may have set off again inside it.
+        if (sec.classList.contains('is-static') || !done()) return;
+        stop();
+        collapse(sec);
+      });
     }
 
     function onScroll() {
