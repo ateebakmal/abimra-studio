@@ -24,7 +24,20 @@ Store: `aarm13-i0.myshopify.com`
 **Push to `205932822871`.** Live is a separate id on purpose: every push
 this project has made went to the staging one, and leaving that habit
 pointed at production is how a half-finished file ends up on the shop.
-Deploying is a deliberate push to `206202339671`.
+
+**Deploying** is a deliberate push to the live id, and the CLI will not
+do it without the flag — which is the point:
+
+```bash
+# 1. pull live into a scratch dir and diff it, in case the live theme
+#    editor has changes the repo does not know about
+# 2. then, only if the repo is strictly newer:
+shopify theme push --store aarm13-i0.myshopify.com --theme 206202339671 --allow-live --force
+# 3. re-pull both themes and diff against the repo - all three identical
+```
+
+Both themes are kept in step so the theme editor can be used on staging
+while live serves the same thing. Edit on staging, deploy, re-verify.
 
 Rollback ladder, cheapest first: `git checkout` one file → `git checkout
 v1-pre-3d` → publish **Tees v1 backup** in the admin (one click, no code).
