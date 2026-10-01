@@ -103,27 +103,56 @@
        the reflow, so it is the position the measurement above belongs
        to. Scroll anchoring is off for this section in abmira.css, or the
        browser would correct for the same change a second time. */
+    /* Clamp to what the shortened document can actually reach, so the
+       hold below is never chasing a position that does not exist. */
+    var doc = document.documentElement;
+    var max = Math.max(0, doc.scrollHeight - (window.innerHeight || doc.clientHeight));
     var target = window.pageYOffset + moved;
-    window.scrollTo(0, target < 0 ? 0 : target);
+    if (target < 0) target = 0;
+    if (target > max) target = max;
 
-    /* Re-assert the same position on the next frame.
+    window.scrollTo(0, target);
 
-       iOS keeps sticky elements pinned on the compositor thread, against
-       a constraint rect it updates from the main thread. A single jump
-       of ~4000px can outrun that by a frame: the header is composited
-       against the old rect, which puts it off the top of the screen, and
-       it snaps back once the constraint catches up. That is the header
-       blinking, and it is why content is drawn under the status bar in
-       the frame where it is missing - the bar is not unpainted, it is
-       painted somewhere else.
+    /* Then hold it there for a few frames.
 
-       Setting the scroll to the value it already has is free when
-       nothing is wrong, and forces the constraint to be recomputed when
-       it is stale. */
-    window.requestAnimationFrame(function () {
-      var now = window.pageYOffset;
-      window.scrollTo(0, now);
-    });
+       Safari does not treat a tall element being removed from a
+       scrollable area the way Chrome does. Chrome leaves the scroll
+       position alone and our single correction is the end of it -
+       measured in a headless Chromium, the view holds to the pixel.
+       Safari makes its own adjustment, and makes it a frame or two
+       later, on top of ours. That is why this has only ever gone wrong
+       on the phone, and why it moves the visitor further down the page
+       rather than a little.
+
+       So the intended position is re-asserted until Safari stops
+       pushing. Free on a browser that is not pushing, because the
+       comparison fails and nothing is set.
+
+       It gives up the instant a finger or a wheel appears: fighting the
+       browser for a few frames is one thing, fighting the visitor is
+       another. */
+    var held = 0;
+    var live = true;
+
+    function release() {
+      live = false;
+      window.removeEventListener('touchstart', release);
+      window.removeEventListener('wheel', release);
+      window.removeEventListener('keydown', release);
+    }
+
+    window.addEventListener('touchstart', release, { passive: true });
+    window.addEventListener('wheel', release, { passive: true });
+    window.addEventListener('keydown', release);
+
+    (function reassert() {
+      if (!live || held++ > 10) {
+        release();
+        return;
+      }
+      if (Math.abs(window.pageYOffset - target) > 1) window.scrollTo(0, target);
+      window.requestAnimationFrame(reassert);
+    })();
   }
 
   function replay(sec) {
