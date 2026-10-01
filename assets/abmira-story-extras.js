@@ -5,48 +5,12 @@
   the handoff files stay byte-identical and can be replaced wholesale if
   their author ships an update.
 
-    1. Collapse on completion. Once the story has played, the section
-       shrinks from seven screens to one, holding the finale, so that
-       scrolling back up passes a single screen instead of rewinding.
+    1. Collapse on completion. Once the runway has been scrolled all the
+       way past, the section stops animating and shrinks from seven screens
+       to one, holding the finale. Scrolling back up then passes a single
+       screen instead of rewinding the whole story.
 
     2. Watch again. Puts the runway back and re-boots the animation.
-
-  HOW THE COLLAPSE AVOIDS THE iOS FLASH
-
-  Shrinking the runway means removing ~4000px from the page, and iOS
-  cannot be asked to change layout and scroll position in the same frame:
-  its compositor keeps sticky elements and will-change layers on its own
-  thread, and a combined layout-change-plus-jump arrives before the
-  rects it depends on do. One frame gets presented with the composited
-  content missing - the header, and everything inside the stage. That is
-  the flash that was filmed, twice, from two different fixes.
-
-  The answer (borrowed from how GSAP ScrollTrigger kills a pinned
-  section: scroll to the trigger's start, THEN unpin) is to never combine
-  the two operations:
-
-    a. Freeze the animation the moment it completes, so the scroll
-       position no longer drives it.
-    b. Jump the scroll to the runway's START. While the stage is pinned
-       the screen looks identical from either end of the runway, so this
-       is a pure scroll move between two identical frames - layout
-       untouched, constraint rects untouched, nothing for the compositor
-       to recompute.
-    c. Next frame, collapse the runway. The removed height is now
-       entirely BELOW the viewport, so the layout change needs no scroll
-       correction at all - from us or from Safari.
-
-  Each step is something iOS does safely on its own. Only the
-  combination was poison.
-
-  Step b's identical-frames guarantee only holds while the stage is
-  actually pinned, so that path runs when the visitor stops at the
-  finale. Stopped anywhere past it, the measured-edge correction runs
-  instead. (A version in between deferred the half-past case, waiting
-  for a stop where the change could be hidden - and that was worse than
-  what it avoided: the runway stayed six screens tall, so getting back
-  to the hero meant six swipes through a frozen frame. The story must
-  always end up one screen.)
 
   WHAT IS DELIBERATELY NOT HERE
 
@@ -88,79 +52,59 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * Freeze
+   * Collapse
    *
-   * Runs the moment the runway has been fully scrolled, separately from
-   * the collapse, which may happen much later. Two reasons it cannot
-   * wait: it is what stops scrolling back up from rewinding the story,
-   * and the pinned-path jump below moves the scroll to the runway's
-   * start - with a live, scroll-driven animation that would mean
-   * snapping back to frame zero.
-   * ------------------------------------------------------------------ */
-  function freeze(sec) {
-    if (sec.__abFroze) return;
-    sec.__abFroze = true;
-    if (typeof sec.__asDestroy === 'function') sec.__asDestroy();
-  }
-
-  /* ------------------------------------------------------------------ *
-   * Collapse, pinned path
+   * `is-static` is the section's own state for one frame and no pinning -
+   * what it uses for prefers-reduced-motion. Reusing it means the
+   * collapsed layout is a path the section already supports and tests,
+   * rather than something invented here.
    *
-   * The visitor stopped at the finale, stage pinned and filling the
-   * screen. Jump to the runway's start - identical pixels, because the
-   * pinned stage looks the same from either end - then shrink the
-   * runway with the scroll already at its final value. The rAF recheck
-   * is belt and braces; `moved` is expected to be zero.
+   * This only ever runs once the runway has been scrolled fully past, so
+   * the frame it freezes is always the finale.
    * ------------------------------------------------------------------ */
-  /* One frame before either collapse path touches anything, the story's
-     will-change layers are dissolved (see .ab-settled in abmira.css).
-     The page is already confirmed still, and de-promoting a layer
-     repaints identical pixels - invisible by definition. What it buys:
-     when the jump and the height change come next frame, there are no
-     composited layers left inside the story for iOS to lose. */
-  function settle(sec, then) {
-    sec.classList.add('ab-settled');
-    window.requestAnimationFrame(then);
-  }
+  function collapse(sec) {
+    if (sec.classList.contains('is-static')) return;
+    var runway = sec.querySelector('.as__runway');
+    if (!runway) return;
 
-  function collapsePinned(sec, runway, stage) {
-    freeze(sec);
+    /* Anchor on something real, and measure it twice.
 
-    var pin = stage.getBoundingClientRect().top;
-    var doc = document.documentElement;
-    var max = Math.max(0, doc.scrollHeight - (window.innerHeight || doc.clientHeight));
-    var target = Math.round(runway.getBoundingClientRect().top + window.pageYOffset - pin);
-    if (target < 0) target = 0;
-    if (target > max) target = max;
+       This used to do arithmetic on heights: take the runway's height
+       before and after, subtract the difference from the scroll
+       position, and clamp the result to the section's new bottom so a
+       visitor could not land back inside a story they had just
+       finished. Both halves were wrong.
 
-    window.scrollTo(0, target);
+       The clamp was wrong because at the finale the correct answer IS
+       inside the section - the stage is what fills the screen, so that
+       is where the visitor should stay. The section's bottom is a whole
+       screen further down, so the clamp won every time and shunted them
+       past the story into the marquee.
 
-    window.requestAnimationFrame(function () {
-      var before = stage.getBoundingClientRect().top;
-      sec.classList.add('is-static');
-      var moved = stage.getBoundingClientRect().top - before;
-      if (moved) window.scrollTo(0, window.pageYOffset + moved);
-    });
-  }
+       The arithmetic was wrong on iOS for a quieter reason: it assumed
+       the collapsed stage was exactly one window.innerHeight tall, and
+       the stage is sized in svh. With the address bar hidden those are
+       not the same number, so the sum was out by the difference.
 
-  /* ------------------------------------------------------------------ *
-   * Collapse, off-screen path
-   *
-   * The visitor stopped with the story entirely above the viewport. The
-   * removed height is all above, so the correction is measured - the
-   * same edge before and after, no arithmetic on heights - and then held
-   * for a few frames, because Safari applies its own adjustment for a
-   * removed tall element a frame or two after ours. The hold releases
-   * the instant the visitor touches anything.
-   * ------------------------------------------------------------------ */
-  function collapseAnchored(sec) {
-    freeze(sec);
-
+       Measuring the same edge before and after assumes neither. Whatever
+       the visitor is looking at - the finale, or a section below it -
+       keeps the screen position it already had. */
     var ref = sec.getBoundingClientRect().bottom;
+
+    if (typeof sec.__asDestroy === 'function') sec.__asDestroy();
     sec.classList.add('is-static');
+
     var moved = sec.getBoundingClientRect().bottom - ref;
     if (!moved) return;
 
+    /* Absolute, not scrollBy. scrollBy adds to wherever the page happens
+       to be at the instant it runs, and on a phone that can still be a
+       moving target even after the wait. pageYOffset is read here, after
+       the reflow, so it is the position the measurement above belongs
+       to. Scroll anchoring is off for this section in abmira.css, or the
+       browser would correct for the same change a second time. */
+    /* Clamp to what the shortened document can actually reach, so the
+       hold below is never chasing a position that does not exist. */
     var doc = document.documentElement;
     var max = Math.max(0, doc.scrollHeight - (window.innerHeight || doc.clientHeight));
     var target = window.pageYOffset + moved;
@@ -169,6 +113,24 @@
 
     window.scrollTo(0, target);
 
+    /* Then hold it there for a few frames.
+
+       Safari does not treat a tall element being removed from a
+       scrollable area the way Chrome does. Chrome leaves the scroll
+       position alone and our single correction is the end of it -
+       measured in a headless Chromium, the view holds to the pixel.
+       Safari makes its own adjustment, and makes it a frame or two
+       later, on top of ours. That is why this has only ever gone wrong
+       on the phone, and why it moves the visitor further down the page
+       rather than a little.
+
+       So the intended position is re-asserted until Safari stops
+       pushing. Free on a browser that is not pushing, because the
+       comparison fails and nothing is set.
+
+       It gives up the instant a finger or a wheel appears: fighting the
+       browser for a few frames is one thing, fighting the visitor is
+       another. */
     var held = 0;
     var live = true;
 
@@ -193,12 +155,11 @@
     })();
   }
 
-  /* ------------------------------------------------------------------ *
-   * The section builds these up with appendChild and never empties them,
-   * so a second init writes on top of the first: the typed line on the
-   * shirt comes out doubled. .as__wall is left alone - it clears itself
-   * with innerHTML = '' before it rebuilds.
-   * ------------------------------------------------------------------ */
+  /* The section builds these up with appendChild and never empties them,
+     so a second init writes on top of the first: the typed line on the
+     shirt comes out doubled, which is the reported "ABIMRA CLUB written
+     twice". .as__wall is left alone - it clears itself with
+     innerHTML = '' before it rebuilds. */
   var REBUILT = ['.as__prText', '.as__rows', '.as__fly'];
 
   function clearRebuilt(sec) {
@@ -214,8 +175,6 @@
     // and putting it back is a layout change either way. See addReplay.
     clearRebuilt(sec);
     sec.classList.remove('is-static');
-    sec.classList.remove('ab-settled');
-    sec.__abFroze = false;
 
     // The section refuses to init twice; this is the flag it guards with.
     // Reaching for an internal, and the one part of this that a future
@@ -237,22 +196,24 @@
     }
   }
 
-  /* Confirm the page has actually come to rest. The debounce timer is
-     not proof: iOS stops firing scroll events slightly before a glide
-     ends, so the timer can expire while the page is still creeping. */
-  function whenStill(tries, last, run) {
-    window.requestAnimationFrame(function () {
-      var y = window.pageYOffset;
-      if (y === last || tries <= 0) {
-        run();
-        return;
-      }
-      whenStill(tries - 1, y, run);
-    });
-  }
-
   /* ------------------------------------------------------------------ *
    * Watch for the runway being passed
+   *
+   * The collapse must not run while the page is still moving. It used to
+   * be called straight out of the scroll handler, and on iOS that means
+   * calling window.scrollTo in the middle of a live fling: Safari does
+   * not replace the momentum, it carries on from wherever the jump put
+   * you. A flick past the story therefore landed somewhere further down
+   * the page - the reviews - with the layout rearranging on the way.
+   *
+   * A wheel or a trackpad has far less momentum left by the time the
+   * runway is passed, which is why none of this showed on a laptop.
+   *
+   * So the trigger only arms here, and the collapse waits for the scroll
+   * to stop. scrollend is exact where it exists; the timer covers Safari,
+   * which has not shipped it, and anything else that has not either.
+   * Waiting costs nothing visually, because the correction keeps whatever
+   * is on screen on screen however far past the visitor has travelled.
    * ------------------------------------------------------------------ */
   function watch(sec) {
     if (sec.__abWatching) return;
@@ -263,13 +224,21 @@
 
     function stop() {
       window.removeEventListener('scroll', onScroll);
-      if (hasScrollEnd) window.removeEventListener('scrollend', arm);
+      if (hasScrollEnd) window.removeEventListener('scrollend', fire);
       window.clearTimeout(timer);
       sec.__abWatching = false;
     }
 
-    // The runway has been scrolled to its end: the stage has stopped
-    // travelling and is holding the finale.
+    /* Done means the runway has been scrolled to its end, so the stage
+       has stopped travelling and is holding the finale.
+
+       This used to wait for the whole section to clear the top of the
+       screen. Collapsing at the finale instead means the reflow happens
+       while the stage still covers the viewport, so the six screens
+       being taken out of the page are all behind a full-screen panel
+       and there is nothing on show to flicker. It is also what the
+       section was asked for in the first place: collapse to the finale
+       frame on completion. */
     function done() {
       var runway = sec.querySelector('.as__runway');
       if (!runway) return false;
@@ -277,57 +246,48 @@
       return runway.getBoundingClientRect().bottom <= h + 1;
     }
 
+    /* Confirm the page has actually come to rest before touching it.
+
+       The timer is not proof. iOS stops firing scroll events slightly
+       before a glide ends, so the timer can expire while the page is
+       still creeping - and a scrollTo then does not replace the
+       remaining momentum, it adds to it, carrying the visitor on down
+       the page. That is the "it moved me to a lower section" case; the
+       arithmetic itself is exact, measured in a headless Chromium at
+       390x844, where the view holds to the pixel.
+
+       So: watch pageYOffset across frames, and only collapse once it
+       has been identical for two in a row. The cap stops this spinning
+       forever on a page that never settles - a marquee animating the
+       scroll position, say - in which case collapsing anyway is better
+       than never collapsing. */
+    function whenStill(tries, last, run) {
+      window.requestAnimationFrame(function () {
+        var y = window.pageYOffset;
+        if (y === last || tries <= 0) {
+          run();
+          return;
+        }
+        whenStill(tries - 1, y, run);
+      });
+    }
+
     function fire() {
       if (sec.classList.contains('is-static')) {
         stop();
         return;
       }
+      // Re-checked rather than trusted: the visitor may have scrolled
+      // back up into the story while the timer was running.
       if (!done()) return;
 
-      var runway = sec.querySelector('.as__runway');
-      var stage = sec.querySelector('.as__stage');
-      if (!runway || !stage) return;
-
-      // Pinned means the stage sits exactly at its sticky offset - the
-      // identical-frames guarantee the pinned path relies on.
-      var pin = parseFloat(window.getComputedStyle(stage).top) || 0;
-      var at = stage.getBoundingClientRect().top;
-
-      // Diagnostic: ?nocollapse=1 freezes the story but never shrinks
-      // it, so the flash can be hunted with the collapse ruled out.
-      // TEMPORARY - remove with the ?nocollapse note in theme-notes.
-      if (/[?&]nocollapse=1/.test(window.location.search)) {
+      whenStill(30, null, function () {
+        // Re-check once more. Thirty frames is half a second, and the
+        // visitor may have set off again inside it.
+        if (sec.classList.contains('is-static') || !done()) return;
         stop();
-        return;
-      }
-
-      stop();
-
-      if (Math.abs(at - pin) <= 2) {
-        settle(sec, function () {
-          collapsePinned(sec, runway, stage);
-        });
-      } else {
-        // Half-past or fully past: the measured-edge correction. An
-        // earlier version deferred the half-past case to dodge its
-        // glitch risk, and that was worse than the glitch - the runway
-        // stayed six screens tall, so going back to the hero meant six
-        // swipes through a frozen frame. The story must always end up
-        // one screen; a possible one-frame blink loses to a certain
-        // six-screen dead zone.
-        settle(sec, function () {
-          collapseAnchored(sec);
-        });
-      }
-    }
-
-    function arm() {
-      if (sec.classList.contains('is-static')) {
-        stop();
-        return;
-      }
-      if (!done()) return;
-      whenStill(30, null, fire);
+        collapse(sec);
+      });
     }
 
     function onScroll() {
@@ -339,15 +299,12 @@
       window.clearTimeout(timer);
       if (!done()) return;
 
-      // The first moment the finale is complete, stop the scrub - even
-      // though the collapse itself may wait for a better position.
-      freeze(sec);
-
-      timer = window.setTimeout(arm, 160);
+      // At the finale. Arm, and let the page come to rest first.
+      timer = window.setTimeout(fire, 160);
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    if (hasScrollEnd) window.addEventListener('scrollend', arm);
+    if (hasScrollEnd) window.addEventListener('scrollend', fire);
   }
 
   function start() {

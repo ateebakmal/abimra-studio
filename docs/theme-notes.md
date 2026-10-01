@@ -210,47 +210,50 @@ removed; don't reach for it again.
 from the page and browsers correct for that on their own, which fought
 the correction in the script.
 
-**The collapse never changes layout and scroll in the same frame.**
-That combination is the one iOS cannot do: its compositor keeps the
-sticky header and the stage's `will-change` layers on its own thread,
-and a layout change arriving together with a ~4000px jump gets presented
-one frame before the rects it depends on — the composited content simply
-isn't painted for that frame. Filmed twice on a real phone, surviving
-two fixes aimed at the wrong element.
+**The collapse: what it is, and the one defect that is accepted.**
+When the runway has been fully scrolled and the page has provably
+stopped (scrollend, or a 160ms timer plus a same-position-across-frames
+check — iOS stops firing scroll events before a glide truly ends), the
+section freezes, `is-static` lands, and the scroll is corrected by
+measuring the same edge before and after — never by arithmetic on
+heights — then held for ten frames against Safari's own late
+adjustment, releasing the instant the visitor touches anything.
 
-So there are two paths, and the order is the fix (it is how GSAP
-ScrollTrigger kills a pinned section: scroll to the start, *then* unpin):
+Positioning is exact: probed headless at four stop positions, 0px
+drift at all of them. What remains is a **one-frame flash on iOS
+Safari, once per page load, at the moment of the collapse.** It is
+accepted. Removing ~4000px of document and correcting the scroll is
+one compound operation, and iOS presents one frame of it before its
+compositor catches up. Every targeted fix was tried and filmed failing:
 
-- **Stopped at the finale (stage pinned):** freeze the animation, jump
-  the scroll to the runway's start — the pinned stage looks identical
-  from either end, so this is a pure scroll between two identical
-  frames — then collapse next frame. The removed height is all *below*
-  the viewport, so the layout change needs no correction from anyone.
-- **Stopped with the story fully above the viewport:** the measured-edge
-  correction (record `getBoundingClientRect().bottom`, collapse, measure
-  again, scroll by the difference) followed by a ten-frame hold, because
-  Safari applies its own adjustment for a removed tall element a frame
-  or two after ours.
-- **Stopped half-past, finale partly visible:** neither path can hide
-  the change, so nothing happens — the watcher stays armed and collapses
-  at the next opportunity. The animation is already frozen (that happens
-  the moment the runway is fully scrolled, separately from the
-  collapse), so deferring costs nothing and reverse-scrub stays
-  impossible.
+- keeping the stage `position: sticky` through the collapse — flash
+  unchanged (the sticky-height override in abmira.css stays, because it
+  also stops the finale nudging up 76px on desktop);
+- a GSAP-style "jump to the runway start, then collapse below the
+  viewport" path — the jump collided with fresh flicks and threw
+  visitors down the page; worse than the flash;
+- collapsing in 600px steps — nine corrections, nine momentum
+  collisions; much worse;
+- deferring the half-past case — left the runway six screens tall;
+- `position: fixed` on the header, `translateZ(0)` on the nav,
+  dissolving the story's seven `will-change` layers a frame early —
+  flash unchanged, all reverted.
 
-Don't replace the measured edge with arithmetic on heights: one earlier
-version clamped to the section's new bottom (wrong — at the finale the
-right answer is *inside* the section) and another assumed the stage was
-`window.innerHeight` tall (wrong — it is sized in `svh`, which differs
-from innerHeight by 60–100px on iOS with the address bar hidden).
+A `?nocollapse=1` isolation build proved the collapse is the trigger
+and the rest of the page is clean. If anyone reopens this: the two
+untried dials are the Brand story's *Scroll length on phones* setting
+(6 → 4 shrinks the whole operation by a third, no code) and the
+designed option of hiding the header during the story so the moment has
+less chrome to blink. Do not retry the list above.
 
-**It also waits for the scroll to stop** — `scrollend`, or a 160ms timer
-plus a same-position-across-frames check for Safari, which hasn't
-shipped `scrollend`. Calling `scrollTo` during a live iOS fling does not
-replace the momentum; Safari carries on from wherever the jump put you,
-which threw the visitor several sections down. And don't collapse in
-steps across frames to "soften" the jump — nine corrections in a row is
-nine chances to collide with momentum, and it was worse.
+**Lazy images must reserve their boxes.** A pending `loading="lazy"`
+image measures 0×0 whatever its width/height attributes say. The step
+illustrations and category garments reserved nothing and grew the page
+by ~394px right below the story, mid-scroll — found because the probes
+kept reporting it as "noise". The step image's container now carries
+the image's real aspect-ratio inline plus a definite width, and
+`.ab-cat-img` has `min-height` equal to its 148px image cap. A full
+scroll-through now changes document height by 0px. Keep it that way.
 
 **Never force a synchronous layout here.** A `void document.body.offsetHeight`
 immediately after taking ~4800px out of the page made iOS blank and

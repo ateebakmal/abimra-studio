@@ -1721,35 +1721,10 @@
    actually stuck; the pinned brand story is just the first thing that
    made it obvious. The group wrapper sits directly in <body>, so from
    there it can hold for the whole page. */
-/* Fixed, not sticky - and this is load-bearing for the brand story.
-
-   A sticky element is pinned by the compositor against a constraint
-   rect the main thread owns. When the story collapses it removes
-   ~4000px of document, and on iOS the frame after that change gets
-   composited against the old rect: the header was filmed vanishing for
-   a frame in every variant of the collapse we tried, because its
-   constraint was always one frame stale. position: fixed has no
-   constraint rect at all - it is viewport-anchored, the one thing the
-   compositor can never get wrong during a layout change.
-
-   Visually identical to what it replaces: this bar stuck from scroll 0,
-   so it was always pinned anyway. The body padding below returns the
-   76px that leaving the flow takes away.
-
-   Do NOT add a transform here: the mobile menu overlay is a
-   position: fixed descendant of this element, and a transformed
-   ancestor would become its containing block - inset: 0 would resolve
-   against a 76px bar instead of the viewport. */
 .shopify-section-group-header-group {
-  position: fixed;
+  position: sticky;
   top: 0;
-  right: 0;
-  left: 0;
   z-index: 50;
-}
-
-body {
-  padding-top: var(--ab-nav-h);
 }
 
 .ab-nav {
@@ -3952,17 +3927,6 @@ a.ab-detail-t:hover {
 .as,
 .as__runway {
   overflow-anchor: none;
-}
-
-/* Added by abmira-story-extras.js one frame before the collapse, while
-   the page is confirmed still. The story carries seven will-change
-   declarations; those layers have to come down sometime, and taking
-   them down during the collapse is how the stage's contents went
-   unpainted for a frame on iOS. Dissolving them here instead costs a
-   repaint between two pixel-identical frames, which cannot be seen.
-   !important because it must beat all seven of the supplied rules. */
-.as.ab-settled * {
-  will-change: auto !important;
 }
 
 /* The collapsed stage has to be the same box as the pinned one.
