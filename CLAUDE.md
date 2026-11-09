@@ -14,6 +14,35 @@ Operational facts for working on this theme. Where to go for everything else:
 **Read `docs/theme-notes.md` before changing the cart, the brand story, the
 facets or the gallery colour filter.**
 
+## ⚠️ This repo is PUBLIC
+
+`https://github.com/ateebakmal/abimra-studio` — readable by anyone, no login.
+That is deliberate: the owner wants access without depending on a GitHub
+account.
+
+**So never commit a secret here.** No Shopify API tokens, no app credentials,
+no customer data, no order exports, no `.env`. Verified clean as of
+2026-11-09: no tokens in any commit in the entire history, and `.shopify` (the
+CLI session) is gitignored. Keep it that way — a secret pushed here is public
+the instant it lands, and deleting it afterwards does not help, because forks
+and caches survive.
+
+The store domain and the five theme IDs are in `docs/theme-notes.md` and are
+public too. They are not credentials — they grant nothing without a login — but
+know that they are visible.
+
+## Two remotes
+
+| Remote | Purpose |
+|---|---|
+| `origin` | the project's own GitHub repo |
+| `dawn` | `Shopify/dawn.git`, for diffing against a newer Dawn before an upgrade |
+
+The `dawn` remote is also why the history is complete: this started as a
+shallow clone of Dawn, which **cannot be pushed** (the base commit references a
+parent that was never downloaded). It was un-shallowed from that remote rather
+than rewritten, so every commit SHA quoted in the docs still resolves.
+
 ## What this is
 
 A fork of Shopify's **Dawn 16.0.0** theme, customised for **Abimra**, a
