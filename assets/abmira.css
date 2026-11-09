@@ -707,6 +707,15 @@
   font-variation-settings: 'wdth' 100, 'wght' 600;
 }
 
+/* Dawn colours h3 directly (base.css), and a rule that matches the element
+   always beats the colour inherited from .ab-dark - so without this the
+   heading stayed dark ink on the dark card and read as missing entirely.
+   Two classes plus the element outranks the bare h3. Same fix as
+   .ab-cat-card.ab-dark .ab-d3 below. */
+.ab-step.ab-dark h3 {
+  color: var(--paper);
+}
+
 .ab-step p {
   grid-column: 1;
   grid-row: 4;
@@ -2402,6 +2411,35 @@ body.ab-drawer-open {
    load after component-facets.css and override it.
    ============================================================ */
 
+/* This section opens a page, it does not sit between bands, so a full
+   --ab-sec on top (124px on desktop) left the breadcrumb stranded well
+   below the header. Same reduced top as .ab-page-intro, which exists for
+   exactly this case. Covers the catalogue and search too - both render
+   .ab-coll-page. The bottom padding stays: it still separates from the
+   footer. */
+.ab-coll-page {
+  padding-top: clamp(44px, 7vh, 64px);
+}
+
+/* /collections opens on a full screen, like the home hero. Deliberately
+   the same rule as .ab-hero rather than a second idea: svh for the real
+   height a phone's collapsing address bar leaves, vh first as the
+   fallback where svh is unsupported. The 20px padding replaces --ab-sec
+   (124px on desktop) - min-height sets the floor, the padding must not
+   also push the content down. Ties with .ab-sec on specificity, so it
+   has to stay below it in this file. */
+.ab-coll-hero {
+  min-height: calc(100vh - var(--ab-nav-h));
+  min-height: calc(100svh - var(--ab-nav-h));
+  display: flex;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.ab-coll-hero > .ab-wrap {
+  width: 100%;
+}
+
 .ab-coll-page .ab-coll-head {
   margin-bottom: 28px;
 }
@@ -2527,6 +2565,13 @@ body.ab-drawer-open {
   margin-top: 0;
   margin-bottom: 0;
   align-self: center;
+}
+
+/* Dawn gives the label a 2rem right margin. That was tuned against its bare
+   text select; ours is a pill with 16px of its own left padding, so the two
+   gaps stacked and the label drifted away from the control it names. */
+.ab-facets .facet-filters__label {
+  margin-right: 8px;
 }
 
 /* The sort control is a native <select>, which Dawn leaves as bare text.
@@ -2991,9 +3036,18 @@ body.ab-drawer-open {
 /* Dawn draws its button border as an ::after box-shadow, with Dawn's own
    radius variable. Our pills never adopted that variable, so every
    product button wore a red rectangle drawn at the wrong radius behind
-   its rounded self. The ring goes; the pill's own border is the border. */
+   its rounded self. The ring goes; the pill's own border is the border.
+
+   The hover selectors are not redundant. Dawn redraws the ring, thicker,
+   on `.button:not([disabled]):hover::after` — (0,3,1), which outranks the
+   (0,2,1) of `.product .button:after` — so killing only the resting state
+   left the rectangle snapping back the moment the pointer landed, on both
+   Add to cart and the app's Customise button. Matching Dawn's hover state
+   takes us to (0,4,1). */
 .product .button:after,
-.product .shopify-payment-button__button--unbranded:after {
+.product .button:not([disabled]):hover::after,
+.product .shopify-payment-button__button--unbranded:after,
+.product .shopify-payment-button__button--unbranded:hover::after {
   box-shadow: none;
 }
 
@@ -3203,10 +3257,14 @@ body.ab-drawer-open {
   opacity: 0.75;
 }
 
+/* Matches .ab-cart-note textarea:focus - see the note there for why this
+   is one inset ring rather than a border plus an offset blue outline.
+   The two note fields are the same control in two places and must not
+   drift apart. */
 .ab-note-field:focus {
   border-color: var(--ink);
-  outline: 2px solid var(--blue);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--ink);
 }
 
 .ab-note-help {

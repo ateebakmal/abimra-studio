@@ -16,7 +16,13 @@
 -%}
 
 <div class="ab-section">
-  <section class="ab-sec">
+  {%- comment -%}
+    Opens /collections, so by default it fills the first screen the way the
+    home hero does. It has a preset, though, so it can also be dropped part
+    way down a page - where a full screen would be wrong. Hence a setting
+    rather than a hardcoded class.
+  {%- endcomment -%}
+  <section class="ab-sec{% if section.settings.full_height %} ab-coll-hero{% endif %}">
     <div class="ab-wrap">
       <div class="ab-coll-head">
         {%- if section.settings.eyebrow != blank -%}
@@ -135,6 +141,13 @@
       "id": "intro",
       "label": "Intro",
       "default": "Start from a blank and make it yours, or take one of ours. Every garment on the site opens in the designer."
+    },
+    {
+      "type": "checkbox",
+      "id": "full_height",
+      "default": true,
+      "label": "Full height opening",
+      "info": "Fills the first screen, like the home page hero. Turn this off if the section sits part way down a page rather than at the top."
     }
   ],
   "blocks": [

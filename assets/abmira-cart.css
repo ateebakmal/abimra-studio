@@ -136,15 +136,13 @@
   overflow: hidden;
 }
 
+/* No hover movement. These are items someone has already chosen, not
+   products being browsed - nudging them on hover suggests they are
+   clickable when the whole row is not. */
 .ab-cart-thumb img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transition: transform 0.3s var(--ab-e);
-}
-
-.ab-cart-item:hover .ab-cart-thumb img {
-  transform: scale(1.05) rotate(-2deg);
 }
 
 .ab-cart-tag {
@@ -554,10 +552,22 @@
   resize: vertical;
 }
 
+/* One ring, not two. This darkened the border AND drew a blue outline 2px
+   outside it, so focusing the field produced two concentric rings with a
+   gap between them - heavy on a box this size. The inset shadow thickens
+   the existing border to 2px instead, which reads as one crisp edge and
+   costs no layout shift.
+
+   The focus state is still obvious on purpose: --rule to --ink at double
+   weight is a large, high-contrast change, so keyboard users are not left
+   guessing where they are. Don't reduce this to outline: none alone.
+
+   :focus, not :focus-visible - browsers match :focus-visible on text
+   fields even for mouse clicks, so it would change nothing here. */
 .ab-cart-note textarea:focus {
   border-color: var(--ink);
-  outline: 2px solid var(--blue);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--ink);
 }
 
 .ab-cart-note small {
@@ -1073,20 +1083,27 @@
   color: var(--paper);
 }
 
+/* The design runs the full width of the modal. It is not a tile inside
+   one: the negative margin cancels .ab-cart-modal-in's 20px padding so
+   there is no inset frame around the artwork, and the image simply fills
+   that width. Nothing is centred because nothing is narrower than the box.
+
+   No aspect-ratio either. The app composites front and back into one tall
+   image, and forcing a square either squashed it (object-fit: contain,
+   which shrank the print past reading size) or left dead space under a
+   short one. Natural height, capped, and the overflow scrolls. */
 .ab-cart-stage {
-  display: grid;
-  place-items: center;
-  aspect-ratio: 1;
+  margin: 0 -20px;
   max-height: 56svh;
-  border-radius: 18px;
+  overflow: auto;
+  overscroll-behavior: contain;
   background: #f4f1ea;
-  overflow: hidden;
 }
 
 .ab-cart-stage img {
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  height: auto;
 }
 
 .ab-cart-stage p {

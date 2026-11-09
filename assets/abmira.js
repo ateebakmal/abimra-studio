@@ -543,8 +543,8 @@
    and cannot be themed, so the control is swapped at runtime for a
    button and a listbox styled like the filter popups. The select stays
    in the DOM, hidden, holding the value: choosing an option sets it and
-   fires a change event, and Dawn's FacetFiltersForm takes it from there
-   exactly as if the native control had been used. No JS means the
+   fires input + change on it, and Dawn's FacetFiltersForm takes it from
+   there exactly as if the native control had been used. No JS means the
    native select simply remains - a plainer control, not a broken one.
    ============================================================ */
 (function () {
@@ -615,7 +615,13 @@
       function choose(i) {
         if (sel.selectedIndex !== i) {
           sel.selectedIndex = i;
-          // Dawn listens for this on the form; bubbling makes it arrive.
+          // Dawn binds ONE listener for this, and it is 'input', not 'change'
+          // (facets.js: facetForm.addEventListener('input', ...)). Dispatching
+          // change alone bubbled to the form and landed on nothing, so sorting
+          // did nothing at all while the filter checkboxes - which fire input
+          // natively - kept working. Fire both, in the order a real <select>
+          // does, so anything else listening for change still hears it.
+          sel.dispatchEvent(new Event('input', { bubbles: true }));
           sel.dispatchEvent(new Event('change', { bubbles: true }));
         }
         paintButton();

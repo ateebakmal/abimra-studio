@@ -64,34 +64,69 @@
           </div>
         {%- endif -%}
 
-        {%- if collection.products.size > 0 -%}
-          <ul class="ab-prod-grid" role="list">
-            {%- for product in collection.products -%}
-              {%- liquid
-                assign lazy = true
-                if forloop.index <= 4
-                  assign lazy = false
-                endif
-              -%}
-              <li>
-                {% render 'abmira-product-card',
-                  card_product: product,
-                  index: forloop.index0,
-                  lazy: lazy,
-                  color_option: section.settings.color_option_name
-                %}
-              </li>
-            {%- endfor -%}
-          </ul>
+        {%- comment -%}
+          Dawn's facets.js applies filtering and sorting over AJAX, and it looks
+          up three hooks by id with no null guards:
 
-          {%- if paginate.pages > 1 -%}
-            {% render 'pagination', paginate: paginate %}
+            #product-grid[data-id]  getSections() - which section to re-fetch
+            #ProductGridContainer   the element whose innerHTML it swaps in
+            .collection inside it   gets a .loading class during the fetch
+
+          None of them existed here, so getSections() threw on its very first
+          line. onSubmitHandler() had already called preventDefault() by then,
+          so the form could not fall back to a normal submit either, and every
+          filter and sort silently did nothing.
+
+          #product-grid has to be on BOTH branches, as it is in Dawn: filter
+          down to zero results and the empty branch is the only thing left to
+          re-filter from.
+
+          .collection carries no styling of its own - template-collection.css
+          is not loaded here - so these are hooks, not layout.
+        {%- endcomment -%}
+        <div id="ProductGridContainer">
+          {%- if collection.products.size > 0 -%}
+            <div class="collection">
+              <ul
+                id="product-grid"
+                data-id="{{ section.id }}"
+                class="ab-prod-grid"
+                role="list"
+              >
+                {%- for product in collection.products -%}
+                  {%- liquid
+                    assign lazy = true
+                    if forloop.index <= 4
+                      assign lazy = false
+                    endif
+                  -%}
+                  <li>
+                    {% render 'abmira-product-card',
+                      card_product: product,
+                      index: forloop.index0,
+                      lazy: lazy,
+                      color_option: section.settings.color_option_name
+                    %}
+                  </li>
+                {%- endfor -%}
+              </ul>
+
+              {%- if paginate.pages > 1 -%}
+                {% render 'pagination', paginate: paginate %}
+              {%- endif -%}
+            </div>
+          {%- else -%}
+            <div
+              class="collection collection--empty"
+              id="product-grid"
+              data-id="{{ section.id }}"
+            >
+              <p class="ab-coll-empty">
+                {{ 'sections.collection_template.empty' | t }}
+              </p>
+            </div>
           {%- endif -%}
-        {%- else -%}
-          <p class="ab-coll-empty">
-            {{ 'sections.collection_template.empty' | t }}
-          </p>
-        {%- endif -%}
+        </div>
       {%- endpaginate -%}
     </div>
   </section>
