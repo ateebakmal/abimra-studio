@@ -2769,25 +2769,68 @@ body.ab-drawer-open {
 
 /* ---- price range ---- */
 
+/* Dawn floats these labels from INSIDE the input: absolutely positioned,
+   resting over the field like a placeholder, then rising to a 1rem caption
+   once the field has content - with the input gaining a 2.2rem top padding
+   at the same moment to make room for it.
+
+   That top padding never arrived here. `.ab-facets .facets__price
+   .field__input` is (0,3,0) and Dawn's `.field__input:not(:placeholder-shown)`
+   is (0,2,0), so our flat `padding: 0 10px` won and the room was never made.
+   The risen label had nowhere to go and landed on the number. It also rests
+   at `left: 2rem` against our 10px padding, so even an empty field had the
+   label 10px out of line with the value beneath it.
+
+   So the label comes out of the box and sits above it as a small caption.
+   That is this system's own convention for a label anyway - sentence case,
+   graphite, no animation - and it ends a second Dawn quirk in passing, where
+   the resting label overlapped the input's own "0" / "50" placeholder.
+
+   The selectors below have to beat Dawn's `:focus ~` and
+   `:not(:placeholder-shown) ~` pair, which is (0,3,0) and loads after this
+   file, so a tie would go to Dawn. */
+
 .ab-facets .facets__price {
   gap: 12px;
   padding: 16px 18px;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .ab-facets .facets__price .field {
   margin: 0;
+  display: flex;
+  /* The label follows the input in the DOM. Reversing the column lifts it
+     above without touching the markup or breaking the label's `for`. */
+  flex-direction: column-reverse;
+  align-items: stretch;
+  gap: 5px;
+}
+
+.ab-facets .facets__price .field__label,
+.ab-facets .facets__price .field__input:focus ~ .field__label,
+.ab-facets .facets__price .field__input:not(:placeholder-shown) ~ .field__label {
+  position: static;
+  font-family: var(--ab-f);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--graphite);
+  transition: none;
 }
 
 .ab-facets .facets__price .field + .field-currency {
   margin-left: 0;
 }
 
+/* Centred on the input, not on the input plus its new label - so the two £
+   signs still sit level with the figures rather than riding high. */
 .ab-facets .facets__price .field-currency {
   margin-right: 0;
   font-family: var(--ab-f);
   font-size: 14px;
   color: var(--graphite);
+  align-self: flex-end;
+  padding-bottom: 11px;
 }
 
 .ab-facets .facets__price .field__input {
