@@ -93,7 +93,31 @@
           {%- endcomment -%}
           {%- assign products = search.results | where: 'object_type', 'product' -%}
 
+          {%- comment -%}
+            Dawn's facets.js looks up three hooks by id and guards none of
+            them, so all three have to exist here exactly as they do on the
+            collection page:
+
+              #ProductGridContainer   the element whose innerHTML it swaps
+              #product-grid[data-id]  which section to re-fetch
+              .collection inside it   gets a .loading class during the fetch
+
+            Without them getSections() throws on its first line, and
+            onSubmitHandler() has already called preventDefault() by then, so
+            the form cannot fall back to a normal submit either - every filter
+            and every sort silently does nothing.
+
+            #product-grid sits on a wrapper rather than on the <ul>, which is
+            where the collection page puts it. A search can return pages and
+            articles with no products at all, and then the <ul> never renders;
+            on a wrapper the hook survives that.
+
+            It has to be on BOTH branches: filter down to nothing and the
+            empty branch is the only thing left to re-filter from.
+          {%- endcomment -%}
+          <div id="ProductGridContainer">
           {%- if search.results_count > 0 -%}
+            <div class="collection" id="product-grid" data-id="{{ section.id }}">
             {%- if products.size > 0 -%}
               <ul class="ab-prod-grid" role="list">
                 {%- for product in products -%}
@@ -154,7 +178,9 @@
             {%- if paginate.pages > 1 -%}
               {% render 'pagination', paginate: paginate %}
             {%- endif -%}
+            </div>
           {%- else -%}
+            <div class="collection collection--empty" id="product-grid" data-id="{{ section.id }}">
             <div class="ab-search-none">
               <h2 class="ab-d3">{{ section.settings.empty_heading | default: 'Nothing matched that.' | escape }}</h2>
               {%- if section.settings.empty_body != blank -%}
@@ -179,7 +205,9 @@
                 </ul>
               {%- endif -%}
             </div>
+            </div>
           {%- endif -%}
+          </div>
         {%- endpaginate -%}
       {%- else -%}
         <p class="ab-search-none-b ab-search-idle">
