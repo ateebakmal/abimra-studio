@@ -1,9 +1,18 @@
 # CLAUDE.md
 
-Operational facts for working on this theme. Narrative and history live in
-`PROJECT_CONTEXT.md`. The traps live in `docs/theme-notes.md`, which is the
-authoritative maintainer doc — **read it before changing the cart, the brand
-story, the facets or the gallery colour filter.**
+Operational facts for working on this theme. Where to go for everything else:
+
+| Looking for | Read |
+|---|---|
+| **Traps that have already cost time** | `docs/theme-notes.md` — **authoritative** |
+| How a system works, and recipes | `docs/system-reference.md` |
+| Every setting on every section | `docs/settings-reference.md` (generated) |
+| Running the shop day to day, no code | `docs/merchant-guide.md` |
+| History, architecture, current state | `PROJECT_CONTEXT.md` |
+| Why a specific change was made | `git log --grep=` |
+
+**Read `docs/theme-notes.md` before changing the cart, the brand story, the
+facets or the gallery colour filter.**
 
 ## What this is
 

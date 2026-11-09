@@ -2,10 +2,17 @@
 
 Orientation for anyone — human or model — picking this project up cold.
 
-Three docs, three jobs. **This file** is the story: what the project is, how it
-got here, how to run it. **`docs/theme-notes.md`** is the authoritative
-maintainer doc: the traps, written up as they were paid for.
-**`docs/merchant-guide.md`** is for whoever runs the shop day to day, no code.
+Five docs, five jobs. **This file** is the story: what the project is, how it
+got here, how to run it.
+
+| Looking for | Read |
+|---|---|
+| **Traps that have already cost time** | `docs/theme-notes.md` — **authoritative** |
+| How a system works, and recipes | `docs/system-reference.md` |
+| Every setting on every section | `docs/settings-reference.md` (generated) |
+| Running the shop day to day, no code | `docs/merchant-guide.md` |
+| Rules before touching anything | `CLAUDE.md` |
+
 Where this file and `theme-notes.md` overlap, `theme-notes.md` wins — it is not
 restated here, because a second copy would drift.
 
