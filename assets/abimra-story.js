@@ -39,7 +39,17 @@
     var cards = $$('.as__card'), caps = $$('.as__capt'), hint = $('.as__hint'), end = $('.as__end'), inked = $$('.as__inked');
     var phrases = (sec.getAttribute('data-phrases') || '').split('|').map(function (s) { return s.trim(); }).filter(Boolean);
     var CATCH = (sec.getAttribute('data-catch') || 'Saturday Club').trim();
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    /* [abmira] The ONLY edit to this supplied file. `data-seen` is set by
+       abmira-story-extras.js, before this script runs, for a visitor who has
+       already watched the story through to its end.
+
+       Taking the section's own reduced-motion path is the only way to land on
+       the finale without scrubbing to it: line ~287 is the one branch that
+       calls draw(1, 0). Freezing the section any other way leaves whatever
+       frame is current, which at the top of the page is the blank tee - that
+       is exactly how the 2026-09 attempt (88f7998) failed. */
+    var reduce = (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) ||
+      sec.hasAttribute('data-seen');
     sec.style.setProperty('--as-grain', 'url(' + grainURL() + ')');
     if (!phrases.length) phrases = ["Nan's 80th", 'Dog dad', 'Est. 1994', 'Hen do', 'The band', 'Little legend', 'Class of 26', 'Stag do', 'Five-a-side'];
 

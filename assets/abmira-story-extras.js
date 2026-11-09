@@ -12,25 +12,97 @@
 
     2. Watch again. Puts the runway back and re-boots the animation.
 
-  WHAT IS DELIBERATELY NOT HERE
+    3. Play it once per visitor. Someone who has already watched the story
+       through to its end lands on the finale, one screen, no scrubbing.
+       Watch again is still there for them.
 
-  An earlier version also remembered, for the browsing session, that the
-  story had been seen, and booted a returning visitor straight into the
-  static finale. The section gives no way to ask for that: every boot
-  clears the `is-static` class, and the finale frame can only be drawn by
-  the section's own code. The way in was to answer matchMedia `true` for
-  the reduced-motion query while it booted - and that turned out to freeze
-  whatever frame happened to be current rather than the finale, so the
-  animation never played at all.
+  ON (3), AND WHY THIS IS NOT THE VERSION THAT WAS REMOVED
 
-  It was too clever for what it bought. The animation now plays on every
-  page load, which is also the only behaviour that cannot surprise anyone.
+  An earlier attempt at this (88f7998, removed in bad275d) answered
+  matchMedia `true` for the reduced-motion query while the section booted,
+  so that the section would take its own static path. It froze whatever
+  frame happened to be current rather than the finale, and the animation
+  never played at all. The notes say not to reach for that again, and they
+  are right about that mechanism: it faked a global media query and then
+  depended on winning a race it did not control.
+
+  What is here instead is an attribute on the element, `data-seen`, set
+  before the section's script runs - see premark() below for why that
+  ordering is guaranteed rather than hoped for. abimra-story.js reads it in
+  one place, alongside the real media query, and that is the only edit to
+  that supplied file. Both routes then run the section's own reduced-motion
+  branch, which is the single place that calls draw(1, 0) - the finale.
+  That is the part the old attempt could not guarantee.
+
+  Nothing about a first visit changes. With no attribute on the element the
+  section computes exactly what it computed before, so the animation and the
+  collapse are byte-for-byte the same code path they have always been.
 */
 
 (function () {
   'use strict';
 
   var SEL = '[data-as]';
+
+  /* ------------------------------------------------------------------ *
+   * Seen once, by this visitor
+   * ------------------------------------------------------------------ */
+
+  /* localStorage, not sessionStorage: once ever, as asked. Worth knowing
+     plainly - a hard refresh does NOT bring the story back. That clears the
+     HTTP cache, not web storage. A private window does, and so does
+     clearing site data. To test it by hand: localStorage.removeItem on the
+     key below, then reload. */
+  var SEEN_KEY = 'abimra:story:seen';
+
+  function hasSeen() {
+    try {
+      return window.localStorage.getItem(SEEN_KEY) === '1';
+    } catch (e) {
+      /* Storage throws in private mode and with site data blocked. A failed
+         read counts as NOT seen, so the story plays: showing it twice is a
+         far smaller harm than wrongly hiding the thing the section exists
+         to do. */
+      return false;
+    }
+  }
+
+  function remember() {
+    try {
+      window.localStorage.setItem(SEEN_KEY, '1');
+    } catch (e) {
+      /* Nothing to do. The story plays again next time, which is the safe
+         direction to fail in. */
+    }
+  }
+
+  /* Runs NOW, at script execution - deliberately not on DOMContentLoaded
+     like start() below, because the attribute has to be on the element
+     before the section's init() reads it.
+
+     That ordering is guaranteed, not hoped for. Both this file and
+     abimra-story.js are deferred; this one is in <head> and the section's is
+     in the body, so document order runs this first. Deferred scripts also
+     execute only after the document has been parsed, so the section element
+     is already there to be marked.
+
+     Skipped in the theme editor, so the merchant always sees the animation
+     they are editing rather than a finale frame they cannot account for. */
+  function premark() {
+    if (window.Shopify && window.Shopify.designMode) return;
+
+    /* Sections first, storage second. This file is loaded by the layout, so
+       it runs on every page in the shop, and only the home page carries the
+       story - no reason to touch localStorage on any of the others. */
+    var secs = document.querySelectorAll(SEL);
+    if (!secs.length || !hasSeen()) return;
+
+    Array.prototype.forEach.call(secs, function (sec) {
+      sec.setAttribute('data-seen', '');
+    });
+  }
+
+  premark();
 
 
   function label(sec) {
@@ -95,6 +167,13 @@
 
     if (typeof sec.__asDestroy === 'function') sec.__asDestroy();
     sec.classList.add('is-static');
+
+    /* Recorded here, and not on page load, because this is the first moment
+       the visitor has demonstrably reached the end of the story. Someone who
+       leaves half way through has not seen it and gets it again next time.
+       Above the `!moved` return on purpose: the story is collapsed by the
+       line before this one either way. */
+    remember();
 
     var moved = sec.getBoundingClientRect().bottom - ref;
     if (!moved) return;
@@ -177,6 +256,17 @@
     // and putting it back is a layout change either way. See addReplay.
     clearRebuilt(sec);
     sec.classList.remove('is-static');
+
+    /* Load-bearing. The dispatch below re-runs init(), which recomputes its
+       `reduce` flag from scratch - and that now reads this attribute. Leave
+       it on and the section would re-add is-static and redraw the finale
+       immediately, so Watch again would do nothing at all.
+
+       The stored flag is left alone: the visitor asked to watch it again,
+       they did not ask for it on every future visit. The attribute is not
+       put back either - it is re-applied from storage by premark() on the
+       next page load. */
+    sec.removeAttribute('data-seen');
 
     // The section refuses to init twice; this is the flag it guards with.
     // Reaching for an internal, and the one part of this that a future
