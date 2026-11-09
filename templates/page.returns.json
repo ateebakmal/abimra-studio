@@ -45,7 +45,10 @@
           }
         }
       },
-      "block_order": ["standard", "custom"],
+      "block_order": [
+        "standard",
+        "custom"
+      ],
       "settings": {
         "heading": "",
         "note_heading": "Faults are always covered, whatever you ordered.",
@@ -84,7 +87,12 @@
           }
         }
       },
-      "block_order": ["s1", "s2", "s3", "s4"],
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
       "settings": {
         "heading": "How to return something",
         "intro": "Four steps. Most are sorted within a day of us hearing from you."
@@ -134,7 +142,13 @@
           }
         }
       },
-      "block_order": ["q1", "q2", "q3", "q4", "q5"],
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ],
       "settings": {
         "heading": "Common questions",
         "intro": ""
@@ -143,6 +157,7 @@
     "closer": {
       "type": "abmira-closer",
       "settings": {
+        "align": "center",
         "show_mark": false,
         "heading": "Still stuck?",
         "body": "A real person reads every email, usually within a working day.",
@@ -151,5 +166,11 @@
       }
     }
   },
-  "order": ["intro", "compare", "steps", "faq", "closer"]
+  "order": [
+    "intro",
+    "compare",
+    "steps",
+    "faq",
+    "closer"
+  ]
 }

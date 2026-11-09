@@ -38,6 +38,14 @@
             "link": ""
           }
         },
+        "refunds": {
+          "type": "legal",
+          "settings": {
+            "label": "Refunds",
+            "policy": "refund",
+            "link": ""
+          }
+        },
         "terms2": {
           "type": "legal",
           "settings": {
@@ -51,14 +59,6 @@
           "settings": {
             "label": "Cookie preferences",
             "policy": "cookies",
-            "link": ""
-          }
-        },
-        "refunds": {
-          "type": "legal",
-          "settings": {
-            "label": "Refunds",
-            "policy": "refund",
             "link": ""
           }
         }
@@ -75,17 +75,17 @@
         "logo_text": "Abimra",
         "blurb": "Wear it. Make it yours.\nDesigned and printed in the United Kingdom.",
         "show_colour_bar": false,
-        "legal_details": "Abimra Studio Ltd, registered in England and Wales, company no. 00000000. Registered office: 1 Example Street, Manchester M1 1AA. VAT no. GB 000 0000 00.",
-        "copyright_suffix": "Studio",
-        "legal_text_unused": "Privacy · Terms · Accessibility",
         "show_instagram": true,
         "instagram_link": "",
-        "show_facebook": true,
+        "show_facebook": false,
         "facebook_link": "",
         "show_twitter": true,
         "twitter_link": "",
         "show_tiktok": true,
-        "tiktok_link": ""
+        "tiktok_link": "",
+        "legal_details": "Abimra Studio Ltd, registered in England and Wales, company no. 00000000. Registered office: 1 Example Street, Manchester M1 1AA. VAT no. GB 000 0000 00.",
+        "copyright_suffix": "Studio",
+        "legal_text_unused": "Privacy · Terms · Accessibility"
       }
     }
   },

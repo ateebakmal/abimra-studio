@@ -220,8 +220,8 @@
           "type": "photo",
           "settings": {
             "image": "shopify://shop_images/model-image-3.png",
-            "name": "Print detail",
-            "garment": "DTF on washed cotton",
+            "name": "Designed by Justin G",
+            "garment": "Oversize tee, gray",
             "show_prefix": false
           }
         }
@@ -292,7 +292,7 @@
         "collection": "design-your-own",
         "products_to_show": 6,
         "backdrop_mode": "theme",
-        "backdrop_color": "#e8e2d4",
+        "backdrop_color": "#000000",
         "shadow_mode": "theme",
         "shadow": 45,
         "link_label": "View all",
